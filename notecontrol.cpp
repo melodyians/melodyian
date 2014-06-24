@@ -2,6 +2,7 @@
 #include "pitches.h"
 
 namespace NoteControl {
+  
   bool noteC3act = false;
   bool noteCS3act = false;
   bool noteD3act = false;
@@ -43,7 +44,9 @@ namespace NoteControl {
 
 
   //==============MIDI NOTE CALL BACK================
+/*
   void HandleNoteOn(byte channel, byte note, byte velocity);
+*/
 
   void noteOnControl (byte channel, byte note, byte velocity) 
   {
@@ -193,8 +196,10 @@ namespace NoteControl {
   }
 
 
+/*
   void HandleNoteOff(byte channel, byte note, byte velocity);  //only needed if receiving MIDI Note Off messages from controller device to stop notes
                                                                //(TouchOSC does this, but Lemur and other controllers commonly send Note On messages w/ a 0 velocity value to turn notes off)
+*/
   void noteOffControl(byte channel, byte note, byte velocity)  //only needed if receiving MIDI Note Off messages from controller device to stop notes
   {
     if (note == MIDINOTE_C3) {noteC3act = false;}
