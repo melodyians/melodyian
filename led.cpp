@@ -41,7 +41,7 @@ namespace LED {
 
 
   // Formerly Rate1
-  int colorRate = 1000;
+  unsigned int colorRate = 1000;
 
 
   int lightPresetData[24];

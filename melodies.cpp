@@ -25,7 +25,7 @@ namespace Melodies {
 
   int melody1[] = {NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0 /*rest*/, NOTE_B3, NOTE_C4};
 
-  int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
+  unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
   void playMelody1()
   { 
@@ -35,10 +35,10 @@ namespace Melodies {
 
     if (notePosition == melody1NoteLength) //if we've reached the last note of the melody
     {
-      int noteDuration = toneRate/melody1noteDurations[notePosition]; // to calculate the note duration, take one second divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
-      int pauseBetweenNotes = noteDuration * 1.30;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
+      unsigned int noteDuration = toneRate/melody1noteDurations[notePosition]; // to calculate the note duration, take one second divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
+      unsigned int pauseBetweenNotes = noteDuration * 1.30;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
-      int maxNoteEventLength = noteDuration + pauseBetweenNotes;
+      unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes;
 
       byte randomNoteVal = map(noteJitter, 0, 127, 0, melody1NoteLength);
       byte randomNote = 1 + random(0, randomNoteVal);
@@ -88,10 +88,10 @@ namespace Melodies {
 
     else //for all other notes of the melody...
     {
-      int noteDuration = toneRate/melody1noteDurations[notePosition]; // to calculate the note duration, take a time value (2ms - ~10 seconds) divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
-      int pauseBetweenNotes = noteDuration * 1.30 /*could replace this w/ variable value linked w/ encoder on CC76*/;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
+      unsigned int noteDuration = toneRate/melody1noteDurations[notePosition]; // to calculate the note duration, take a time value (2ms - ~10 seconds) divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
+      unsigned int pauseBetweenNotes = noteDuration * 1.30 /*could replace this w/ variable value linked w/ encoder on CC76*/;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
-      int maxNoteEventLength = noteDuration + pauseBetweenNotes;
+      unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes;
 
       byte randomNoteVal = map(noteJitter, 0, 127, 0, melody1NoteLength);
       byte randomNote = 1 + random(0, randomNoteVal);
@@ -157,10 +157,10 @@ namespace Melodies {
 
     if (notePosition == melody2NoteLength) 
     {
-      int noteDuration = toneRate/melody2noteDurations[notePosition]; // to calculate the note duration, take a time value (2ms - ~10 seconds) divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
-      int pauseBetweenNotes = noteDuration * 1.30;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
+      unsigned int noteDuration = toneRate/melody2noteDurations[notePosition]; // to calculate the note duration, take a time value (2ms - ~10 seconds) divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
+      unsigned int pauseBetweenNotes = noteDuration * 1.30;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
-      int maxNoteEventLength = noteDuration + pauseBetweenNotes;
+      unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes;
       
       byte randomNoteVal = map(noteJitter, 0, 127, 0, melody2NoteLength);
       byte randomNote = 1 + random(0, randomNoteVal);
@@ -194,10 +194,10 @@ namespace Melodies {
 
     else
     {
-      int noteDuration = toneRate/melody2noteDurations[notePosition]; // to calculate the note duration, take a time value (2ms - ~10 seconds) divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
-      int pauseBetweenNotes = noteDuration * 1.30 /*could replace this w/ variable value linked w/ encoder on CC76*/;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
+      unsigned int noteDuration = toneRate/melody2noteDurations[notePosition]; // to calculate the note duration, take a time value (2ms - ~10 seconds) divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
+      unsigned int pauseBetweenNotes = noteDuration * 1.30 /*could replace this w/ variable value linked w/ encoder on CC76*/;  // to distinguish the notes, set a minimum time between them. the note's duration + 30% seems to work well.   
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
-      int maxNoteEventLength = noteDuration + pauseBetweenNotes; //time of note duration and following rest (space between notes)
+      unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes; //time of note duration and following rest (space between notes)
       
       ///
       byte randomNoteVal = map(noteJitter, 0, 127, 0, melody2NoteLength); //scale MIDI CC value range to the amount of addresses of the the melody2 matrix.
