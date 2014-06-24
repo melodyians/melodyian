@@ -1,4 +1,5 @@
 #include "melodyian.h"
+#include "easing.h"
 
 //=========MOTOR DRIVER SETUP============
 //motor A connected between A01 and A02 on motor driver breakout
@@ -92,7 +93,7 @@ namespace Motor {
     
     if (number == MSTRMTRSPD_CC) //Master Motor Speed Control for new steering system (D16 fader)
     {
-      motorSpdVal = motorFader(value);
+      motorSpdVal = Easing::motorFader(value);
       if (value >= 80)
       {
         motorAdirection = 0; //should be clockwise wheel rotation..
@@ -140,15 +141,15 @@ namespace Motor {
 
     // MOTOR A
     if (motorAon == true) {
-      moveMotor(0, motorAspeed, motorAdirection);
+      ArduinoPins::moveMotor(0, motorAspeed, motorAdirection);
     } else {
-      moveMotor(0, 0, motorAdirection);
+      ArduinoPins::moveMotor(0, 0, motorAdirection);
     }
     // MOTOR B
     if (motorBon == true) {
-      moveMotor(1, motorBspeed, motorBdirection);
+      ArduinoPins::moveMotor(1, motorBspeed, motorBdirection);
     } else {
-      moveMotor(1, 0, motorBdirection);
+      ArduinoPins::moveMotor(1, 0, motorBdirection);
     }
     
   }
