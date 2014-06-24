@@ -5,18 +5,10 @@
 #include <midi_Settings.h>
 #include <Wire.h>
 
-
 #include "melodyian.h"
-
 #include "midicc.h"
-#include "led.h"
-#include "colorhelper.h"
-#include "easing.h"
-#include "motor.h"
-#include "melodies.h"
-#include "arduinopins.h"
-#include "melodies.h"
 
+MIDI_CREATE_DEFAULT_INSTANCE();
 
 void setup()  {
   
@@ -48,14 +40,14 @@ void loop()
 
   LED::writeEEPROMValues();
   Melodies::processMelodyTriggers();
-  processMotorMovement();
+  Motor::actuateMotors();
  
 }
 
 void handleControlChange (byte channel, byte number, byte value)
 {
   LED::processLEDCC(channel, number, value);
-  processMotorCC(channel, number, value);
+  Motor::processMotorCC(channel, number, value);
   Melodies::processMelodyCC(channel, number, value);     
 }
 

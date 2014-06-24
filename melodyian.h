@@ -37,6 +37,11 @@ namespace Melodies {
   void processMelodyCC(byte channel, byte number, byte value);
 }
 
+namespace Motor {
+
+  void processMotorCC (byte channel, byte number, byte value);
+  void actuateMotors();
+}
 
 namespace Flags {
   bool melodyOneAct();
