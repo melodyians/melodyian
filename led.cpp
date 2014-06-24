@@ -44,9 +44,11 @@ namespace LED {
   int colorRate = 1000;
 
 
-  int lightPresetVal;
   int lightPresetData[24];
-  int* lightPreset1 = lightPresetData; //0 1 2 lightPreset1[0] == lightPresetData[0], lightPreset1[3] == lightPreset2[0]
+
+  // Pointers to position in the int array.
+  // Each pointer advances 3 indexes in the array, representing 3 bytes.
+  int* lightPreset1 = lightPresetData;
   int* lightPreset2 = lightPresetData + 3*1; //3 4 5
   int* lightPreset3 = lightPresetData + 3*2;
   int* lightPreset4 = lightPresetData + 3*3;
@@ -67,9 +69,9 @@ namespace LED {
   };
 
 
-
-
   int lightPresetSelect = 1; //variable for storing last selected lightPreset value (1-8)
+  int lightPresetVal;
+
   int fadeSpeed = 0;  //will be used by 'DYNAMICQCC' light pattern, but not actively used now. Ask Scott if you're curious for more details....
   float colorJitter = 0;  //variable used to randomize LED color
 
