@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "melodyian.h"
+#include "easing.h"
 
 #include "pitches.h"
 #include "notecontrol.h"
@@ -305,7 +306,7 @@ namespace Melodies {
 
     if(number == RATE1_CC) //RATE #1  (knob pot 'B5' on axiom)
     {
-      toneRate = mapRate1(value) * 2;
+      toneRate = Easing::mapRate1(value) * 2;
     }
 
     if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)

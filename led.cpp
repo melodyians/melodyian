@@ -1,10 +1,11 @@
-#pragma once
+#include <Arduino.h>
+#include <EEPROM.h>
 
-#include "midicc.h"
-#include "colorhelper.h"
-#include "arduinopins.h"
+#include "melodyian.h"
 #include "easing.h"
-#include "flags.h"
+#include "colorhelper.h"
+
+using namespace ColorHelper;
 
 namespace LED {
 
@@ -20,7 +21,7 @@ namespace LED {
   int colorStore[3]; //*****ONLY BEING USED IN INACTIVE fadeBetween() FUNCTION ******//
 
   float brightness = 1;
-  uint32_t LEDcolor;
+  RGBColor myLEDColor;
   int queue; //the value of this variable determines which "light queues/patterns" are triggered in the loop() function below
 
   float xr;
@@ -30,12 +31,9 @@ namespace LED {
   int transColor[3] = {0, 0, 0}; //starts off as 'black' (no light)
   int modWheel = 1; //**********THIS IS NOT BEING USED FOR ANYTHING RIGHT NOW*******//
 
-
-
   boolean armEEPROMwrite = false;
   // would like to rename, will eventually be a virtual button to toggle the arming of EEPROMwrite...
   boolean pShift = false; 
-
 
 
   unsigned long currentMillis = 0;
@@ -83,17 +81,17 @@ namespace LED {
   void crossFade(int color1[3], int color2[3])
   {
     //writeToLED....SHOW color1 first!
-    writeToLED(color1[0], color1[1], color1[2]);
+    ArduinoPins::writeToLED(color1[0], color1[1], color1[2]);
     
     //then calculate distance between color1 and color2  
-    int stepR = calculateStep(color1[0], color2[0]);
-    int stepG = calculateStep(color1[1], color2[1]); 
-    int stepB = calculateStep(color1[2], color2[2]);
+    int stepR = Easing::calculateStep(color1[0], color2[0]);
+    int stepG = Easing::calculateStep(color1[1], color2[1]); 
+    int stepB = Easing::calculateStep(color1[2], color2[2]);
     
     //then increment color1 RGB values '1' closer to color2 values
-    transColor[0] = calculateVal(stepR, color1[0]);
-    transColor[1] = calculateVal(stepG, color1[1]);
-    transColor[2] = calculateVal(stepB, color1[2]);
+    transColor[0] = Easing::calculateVal(stepR, color1[0]);
+    transColor[1] = Easing::calculateVal(stepG, color1[1]);
+    transColor[2] = Easing::calculateVal(stepB, color1[2]);
   }
 
   //current_color is transColor
@@ -109,6 +107,7 @@ namespace LED {
   }
 
 
+  /*
   void fadeBetween(int colorStore[3], int transColor[3], int color2[3]) // ***NOT USING THIS FUNCTION CURRENTLY...BUT MAY LIKE TO IN FUTURE** ORIGINAL fadeBetween function that works w/ lightPreset array input for third parameter
   {
    
@@ -123,22 +122,25 @@ namespace LED {
    else {crossFade(transColor, colorStore);}
 
   }
-
+  */
 
   //vvvvvv=======Functions Matt wrote...used for fading from mini stage code========vvvvv
 
-  uint32_t AdjustBrightness(uint32_t color, float brightness)
+  RGBColor adjustBrightness(RGBColor color, float brightness)
   {
-     if(brightness < 0)
+     if (brightness < 0) {
       brightness = 0;
-      
-     byte r = (color & 0xFF0000) >> 16;
-     byte g = (color & 0xFF00) >> 8;
-     byte b = (color & 0xFF);
-     r = r * brightness;
-     g = g * brightness;
-     b = b * brightness;
-     return Color(r,g,b);
+     }
+
+     byte r = color.r * brightness;
+     byte g = color.g * brightness;
+     byte b = color.b * brightness;
+
+     RGBColor newcolor;
+     newcolor.r = r;
+     newcolor.g = g;
+     newcolor.b = b;
+     return newcolor;
   }
 
   float getBrightness(float Time, float ActivationTime, float FadeTime)
@@ -184,17 +186,12 @@ namespace LED {
 
   void altFlash()
   {
-    if (lightOnState == true)
-    {
-      AdjustBrightness(LEDcolor, brightness); 
-      byte r = (LEDcolor & 0xFF0000) >> 16; //is this code necessary? I don't think it's doing what I think it's doing...TEST AND FIND OUT
-      byte g = (LEDcolor & 0xFF00) >> 8;
-      byte b = (LEDcolor & 0xFF);
-      
-      writeToLED(r, g, b);
+    if (lightOnState == true) {
+      myLEDColor = adjustBrightness(myLEDColor, brightness); 
+      ArduinoPins::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+    } else {
+      ArduinoPins::writeToLED(0, 0, 0);
     }
-    
-    else {writeToLED(0, 0, 0);}
     
     lightOnState = !lightOnState;
     
@@ -202,13 +199,8 @@ namespace LED {
 
   void dynamicPulse()
   {       
-      uint32_t thisLEDColor = AdjustBrightness(LEDcolor, brightness);
-      
-      byte red = r(thisLEDColor);
-      byte grn = g(thisLEDColor);
-      byte blu = b(thisLEDColor);    
-      
-      writeToLED(red, grn, blu);
+      RGBColor thisLEDColor = adjustBrightness(myLEDColor, brightness);
+      ArduinoPins::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
   }
 
   void processLEDCC(byte channel, byte number, byte value) 
@@ -458,17 +450,17 @@ namespace LED {
     //==================LIGHT FADERS & QUEUE TOGGLE BUTTONS
     if (number == RED_CC)
     {
-      fdr1 = smoothFade(value);
+      fdr1 = Easing::smoothFade(value);
     }
     
     if (number == GREEN_CC)
     {
-      fdr2 = smoothFade(value);
+      fdr2 = Easing::smoothFade(value);
     }
     
     if (number == BLUE_CC)
     {
-      fdr3 = smoothFade(value);
+      fdr3 = Easing::smoothFade(value);
     }
     
     if (number == DYNAMIC_CC) //test signal for Dynamic Pulse light control
@@ -528,7 +520,7 @@ namespace LED {
     
     if(number == RATE1_CC) //RATE #1  (knob pot 'B5' on axiom)
     {
-      colorRate = mapRate1(value) * 2;
+      colorRate = Easing::mapRate1(value) * 2;
     }
     
     /*
@@ -563,35 +555,31 @@ namespace LED {
     switch (queue)
     {   
       case SETCOLQ_CC:  //COLOR SET AND MANUAL FADE
-          writeToLED(fdr1, fdr2, fdr3);               
+          ArduinoPins::writeToLED(fdr1, fdr2, fdr3);               
         break;
         
       case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
         {
-          if (melody1Act == true || melody2Act == true)
+          if (Flags::melodyOneAct()|| Flags::melodyOneAct())
           {
-            if (noteIsOn == true)
+            if (Flags::noteOn())
             {
-              int32_t random_color = HSVtoRGB(random(0,360), 1, 1);
+              RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
             
-              float xr = colorJitter * r(random_color) + ((1 - colorJitter) * fdr1);
-              float xg = colorJitter * g(random_color) + ((1 - colorJitter) * fdr2);
-              float xb = colorJitter * b(random_color) + ((1 - colorJitter) * fdr3);
+              float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
+              float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
+              float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
 
-              LEDcolor = Color(max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0)); //excerpted from ministage code
+              RGBColor temp_color = { max(min(xr,255),0), max(min(xg, 255),0), max(min(xb, 255), 0) }; //excerpted from ministage code
               brightness = 1;
 
-              AdjustBrightness(LEDcolor, brightness); 
-              byte r = (LEDcolor & 0xFF0000) >> 16; //is this code necessary? I don't think it's doing what I think it's doing...TEST AND FIND OUT
-              byte g = (LEDcolor & 0xFF00) >> 8;
-              byte b = (LEDcolor & 0xFF);
-      
-              writeToLED(r, g, b);
+              myLEDColor = adjustBrightness(temp_color, brightness); 
+              ArduinoPins::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
             }
 
             else
             {
-              writeToLED(0, 0, 0);
+              ArduinoPins::writeToLED(0, 0, 0);
             }
 
           }
@@ -603,14 +591,16 @@ namespace LED {
           
             if(timeElapsed > (colorRate / 8)) //check if we need to advance the state of the animation
             { 
-              int32_t random_color = HSVtoRGB(random(0,360), 1, 1);
+              RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
             
-              float xr = colorJitter * r(random_color) + ((1 - colorJitter) * fdr1);
-              float xg = colorJitter * g(random_color) + ((1 - colorJitter) * fdr2);
-              float xb = colorJitter * b(random_color) + ((1 - colorJitter) * fdr3);
+              float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
+              float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
+              float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
             
-              LEDcolor = Color(max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0)); //excerpted from ministage code
+              RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
               brightness = 1;
+
+              myLEDColor = temp_color;
             
               altFlash();
             //go to the first state
@@ -658,7 +648,11 @@ namespace LED {
           //if (fdr4 >= 55 && fdr4 <= 62) {brightness = .2;}
           //if (fdr4 >= 47 && fdr4 <= 54) {brightness = .1;}
           
-          LEDcolor = Color(fdr1, fdr2, fdr3);
+
+          myLEDColor.r = fdr1;
+          myLEDColor.g = fdr2;
+          myLEDColor.b = fdr3;
+
           dynamicPulse();     
           previousMillis = currentMillis;
           
@@ -666,8 +660,11 @@ namespace LED {
         break;
         
       default:
-        if (setColorAct == true) {queue = SETCOLQ_CC;}
-        else {writeToLED(0, 0, 0);} 
+        if (setColorAct == true) {
+          queue = SETCOLQ_CC;
+        } else {
+          ArduinoPins::writeToLED(0, 0, 0);
+        } 
     }
 
   }

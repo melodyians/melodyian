@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "melodyian.h"
-#include "midicc.h"
 
 namespace Battery {
 

@@ -1,7 +1,7 @@
 #pragma once
 
-// Allow libraries to use arduino type
-typedef unsigned char byte;
+#include "arduinotypes.h"
+#include "midicc.h"
 
 namespace Battery {
 
