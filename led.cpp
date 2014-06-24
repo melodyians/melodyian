@@ -79,13 +79,14 @@ namespace LED {
 
   int* getLightPresetPtr(int i)
   {
-    return lightPreset1 + (i-1)*3;
+    return lightPresetArray[i - 1];
   }
 
-  int* getActiveLightPreset()
+  int* getActiveLightPresetPtr()
   {
-     if(activeLightPreset > 8)
+     if (activeLightPreset > 8) {
         activeLightPreset = 8;
+     }
     
      return getLightPresetPtr(activeLightPreset); 
   }
@@ -479,7 +480,7 @@ namespace LED {
               activeLightPreset = 1;
             }
             
-            if(fadeTo(transColor, getActiveLightPreset()))
+            if(fadeTo(transColor, getActiveLightPresetPtr()))
             {            
               activeLightPreset++;
             }
@@ -527,7 +528,7 @@ namespace LED {
   }
 
 
-  // TODO: Refactor out
+  // TODO: Factor out
   void saveToEEPROM(int lightPresetVal)
   {
       int a = 0;
