@@ -64,12 +64,12 @@ namespace Melodies {
       if (timeElapsed <= noteDuration)
       {
         noteIsOn = true;
-        ArduinoPins::playTone(melody1[notePosition]);       
+        ArduinoInterface::playTone(melody1[notePosition]);       
       }  
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         noteIsOn = false;
-        ArduinoPins::toneOff(); //silence for pause time 
+        ArduinoInterface::toneOff(); //silence for pause time 
         //tone(tonePin, 0, pauseBetweenNotes);  
       }    
       else
@@ -117,13 +117,13 @@ namespace Melodies {
       if (timeElapsed <= noteDuration)
       {
         noteIsOn = true;
-        ArduinoPins::playTone(melody1[notePosition]);       
+        ArduinoInterface::playTone(melody1[notePosition]);       
       }  
       
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         noteIsOn = false;
-        ArduinoPins::toneOff(); //silence for pause time 
+        ArduinoInterface::toneOff(); //silence for pause time 
         //tone(tonePin, 0, pauseBetweenNotes);  
       }    
       
@@ -168,12 +168,12 @@ namespace Melodies {
       if (timeElapsed <= noteDuration)
       {
         noteIsOn = true;
-        ArduinoPins::playTone(melody2[notePosition]);       
+        ArduinoInterface::playTone(melody2[notePosition]);       
       }  
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         noteIsOn = false;
-        ArduinoPins::toneOff();       
+        ArduinoInterface::toneOff();       
         //tone(tonePin, 0, pauseBetweenNotes);  
 
       }    
@@ -207,13 +207,13 @@ namespace Melodies {
       if (timeElapsed <= noteDuration)
       {
         noteIsOn = true;
-        ArduinoPins::playTone(melody2[notePosition]);       
+        ArduinoInterface::playTone(melody2[notePosition]);       
       }  
       
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         noteIsOn = false;
-        ArduinoPins::toneOff(); //silence for pause time 
+        ArduinoInterface::toneOff(); //silence for pause time 
       }    
       
       else
@@ -232,14 +232,14 @@ namespace Melodies {
 
 
   void turnOffPowerIfOn() {
-    if (ArduinoPins::ampIsOn()) {
-      ArduinoPins::setAmpPower(false);
+    if (ArduinoInterface::ampIsOn()) {
+      ArduinoInterface::setAmpPower(false);
     } 
   }
 
   void turnOnPowerIfOff() {
-    if (!ArduinoPins::ampIsOn()) {
-      ArduinoPins::setAmpPower(true);
+    if (!ArduinoInterface::ampIsOn()) {
+      ArduinoInterface::setAmpPower(true);
     }
   }
 
@@ -248,7 +248,7 @@ namespace Melodies {
 
     if (melody1Act == false && melody2Act == false && keyModeAct == false)
     {
-      ArduinoPins::toneOff();
+      ArduinoInterface::toneOff();
       turnOffPowerIfOn();
     }
 
@@ -276,10 +276,10 @@ namespace Melodies {
       if (NoteControl::anyActingNotes())
       //if (keyStatus > 0) //if the keyStatus matrix has any value other than 0 in any of its addresses......
       {
-        ArduinoPins::playTone(NoteControl::lastNote());
+        ArduinoInterface::playTone(NoteControl::lastNote());
       }
       else {
-        ArduinoPins::toneOff();
+        ArduinoInterface::toneOff();
       }
     }
 

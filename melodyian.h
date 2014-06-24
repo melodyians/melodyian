@@ -7,7 +7,7 @@ namespace Battery {
   void pingBatVoltage(bool midi_read);
 }
 
-namespace ArduinoPins {
+namespace ArduinoInterface {
 
   void setupPins();
 

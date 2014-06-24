@@ -25,11 +25,11 @@ void setup()  {
   // Only needed if receiving MIDI Note Off messages from controller device to stop notes
   MIDI.setHandleNoteOff(noteOffControl); 
   
-  ArduinoPins::setupPins();
+  ArduinoInterface::setupPins();
   
   LED::readFromEEPROM();
   
-  ArduinoPins::stopMotors();
+  ArduinoInterface::stopMotors();
 } 
 
 

@@ -97,7 +97,7 @@ namespace LED {
   void crossFade(int color1[3], int color2[3])
   {
     //writeToLED....SHOW color1 first!
-    ArduinoPins::writeToLED(color1[0], color1[1], color1[2]);
+    ArduinoInterface::writeToLED(color1[0], color1[1], color1[2]);
     
     //then calculate distance between color1 and color2  
     int stepR = Easing::calculateStep(color1[0], color2[0]);
@@ -204,9 +204,9 @@ namespace LED {
   {
     if (lightOnState == true) {
       myLEDColor = adjustBrightness(myLEDColor, brightness); 
-      ArduinoPins::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+      ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
     } else {
-      ArduinoPins::writeToLED(0, 0, 0);
+      ArduinoInterface::writeToLED(0, 0, 0);
     }
     
     lightOnState = !lightOnState;
@@ -216,7 +216,7 @@ namespace LED {
   void dynamicPulse()
   {       
       RGBColor thisLEDColor = adjustBrightness(myLEDColor, brightness);
-      ArduinoPins::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
+      ArduinoInterface::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
   }
 
 
@@ -412,7 +412,7 @@ namespace LED {
     switch (queue)
     {   
       case SETCOLQ_CC:  //COLOR SET AND MANUAL FADE
-          ArduinoPins::writeToLED(fdr1, fdr2, fdr3);               
+          ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);               
         break;
         
       case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
@@ -431,12 +431,12 @@ namespace LED {
               brightness = 1;
 
               myLEDColor = adjustBrightness(temp_color, brightness); 
-              ArduinoPins::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+              ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
             }
 
             else
             {
-              ArduinoPins::writeToLED(0, 0, 0);
+              ArduinoInterface::writeToLED(0, 0, 0);
             }
 
           }
@@ -520,7 +520,7 @@ namespace LED {
         if (setColorAct == true) {
           queue = SETCOLQ_CC;
         } else {
-          ArduinoPins::writeToLED(0, 0, 0);
+          ArduinoInterface::writeToLED(0, 0, 0);
         } 
     }
 

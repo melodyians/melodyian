@@ -141,15 +141,15 @@ namespace Motor {
 
     // MOTOR A
     if (motorAon == true) {
-      ArduinoPins::moveMotor(0, motorAspeed, motorAdirection);
+      ArduinoInterface::moveMotor(0, motorAspeed, motorAdirection);
     } else {
-      ArduinoPins::moveMotor(0, 0, motorAdirection);
+      ArduinoInterface::moveMotor(0, 0, motorAdirection);
     }
     // MOTOR B
     if (motorBon == true) {
-      ArduinoPins::moveMotor(1, motorBspeed, motorBdirection);
+      ArduinoInterface::moveMotor(1, motorBspeed, motorBdirection);
     } else {
-      ArduinoPins::moveMotor(1, 0, motorBdirection);
+      ArduinoInterface::moveMotor(1, 0, motorBdirection);
     }
     
   }

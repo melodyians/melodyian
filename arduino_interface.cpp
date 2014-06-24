@@ -1,7 +1,7 @@
 #include "melodyian.h"
 #include "Arduino.h"
 
-namespace ArduinoPins {
+namespace ArduinoInterface {
   // Pins
   int redPin = 9; //LED 'Red' connected to pin 9
   int greenPin = 10; //LED 'Green' connected to pin 10

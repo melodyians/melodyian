@@ -26,7 +26,7 @@ namespace Battery {
 
       if (timeElapsed >= 5000 && midi_read == false) {
         //Read voltage at analog pins....
-        bat1MonPinVal = ArduinoPins::readBattery();  // read the voltage on battery 1 divider
+        bat1MonPinVal = ArduinoInterface::readBattery();  // read the voltage on battery 1 divider
         //bat2MonPinVal = analogRead(bat2MonPin);  // read the voltage on battery 2 divider  
         
         //Calculate and convert voltage to measure actual battery voltage...
