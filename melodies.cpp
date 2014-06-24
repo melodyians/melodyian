@@ -1,10 +1,9 @@
 #include <Arduino.h>
+
 #include "melodyian.h"
 #include "easing.h"
-
 #include "pitches.h"
 #include "midicc.h"
-#include "flags.h"
 
 namespace Melodies {
 
@@ -63,12 +62,12 @@ namespace Melodies {
 
       if (timeElapsed <= noteDuration)
       {
-        noteIsOn = true;
+        Flags::setNoteOn(true);
         ArduinoInterface::playTone(melody1[notePosition]);       
       }  
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
-        noteIsOn = false;
+        Flags::setNoteOn(false);
         ArduinoInterface::toneOff(); //silence for pause time 
         //tone(tonePin, 0, pauseBetweenNotes);  
       }    
@@ -116,13 +115,13 @@ namespace Melodies {
       
       if (timeElapsed <= noteDuration)
       {
-        noteIsOn = true;
+        Flags::setNoteOn(true);
         ArduinoInterface::playTone(melody1[notePosition]);       
       }  
       
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
-        noteIsOn = false;
+        Flags::setNoteOn(false);
         ArduinoInterface::toneOff(); //silence for pause time 
         //tone(tonePin, 0, pauseBetweenNotes);  
       }    
@@ -167,12 +166,12 @@ namespace Melodies {
       
       if (timeElapsed <= noteDuration)
       {
-        noteIsOn = true;
+        Flags::setNoteOn(true);
         ArduinoInterface::playTone(melody2[notePosition]);       
       }  
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
-        noteIsOn = false;
+        Flags::setNoteOn(false);
         ArduinoInterface::toneOff();       
         //tone(tonePin, 0, pauseBetweenNotes);  
 
@@ -206,13 +205,13 @@ namespace Melodies {
       
       if (timeElapsed <= noteDuration)
       {
-        noteIsOn = true;
+        Flags::setNoteOn(true);
         ArduinoInterface::playTone(melody2[notePosition]);       
       }  
       
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
-        noteIsOn = false;
+        Flags::setNoteOn(false);
         ArduinoInterface::toneOff(); //silence for pause time 
       }    
       
@@ -246,23 +245,23 @@ namespace Melodies {
   // TODO: Pass in Note Control stuff
   void processMelodyTriggers() {
 
-    if (melody1Act == false && melody2Act == false && keyModeAct == false)
+    if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() && keyModeAct == false)
     {
       ArduinoInterface::toneOff();
       turnOffPowerIfOn();
     }
 
-    else if (melody1Act == true)
+    else if (Flags::melodyOneAct() )
     {
       turnOnPowerIfOff();
-      melody2Act = false; //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
+      Flags::setMelodyTwo(false); //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
       keyModeAct = false;
       playMelody1();
     }
-    else if (melody2Act == true)
+    else if (Flags::melodyTwoAct() )
     {
       turnOnPowerIfOff();
-      melody1Act = false;
+      Flags::setMelodyOne(false);
       keyModeAct = false;
       playMelody2();
     }
@@ -270,9 +269,9 @@ namespace Melodies {
     {
       //Serial.println(keyStatus);
       turnOnPowerIfOff();
-      melody1Act = false;
-      melody2Act = false;
-
+      Flags::setMelodyOne(false);
+      Flags::setMelodyTwo(false);
+      
       if (NoteControl::anyActingNotes())
       //if (keyStatus > 0) //if the keyStatus matrix has any value other than 0 in any of its addresses......
       {
@@ -301,28 +300,31 @@ namespace Melodies {
     
     if (number == MEL1TRIG_CC)
     {
-      if (value == 127) {melody1Act = true;}
-      else
-      {
-        melody1Act = false;
+      if (value == 127) {
+        Flags::setMelodyOne(true);
+      } else {
+        Flags::setMelodyOne(false);
         notePosition = 0;
       } 
     }
     
     if(number == MEL2TRIG_CC)
     {
-       if (value == 127) {melody2Act = true;}
-       else
-       {
-        melody2Act = false;
+      if (value == 127) {
+        Flags::setMelodyTwo(true);
+      } else {
+        Flags::setMelodyTwo(false);
         notePosition = 0;
       } 
     }
 
     if (number == KEYACT_CC)
     {
-      if (value == 127) {keyModeAct = true;}
-      else {keyModeAct = false;}
+      if (value == 127) {
+        keyModeAct = true;
+      } else {
+        keyModeAct = false;
+      }
     }
   }
 }

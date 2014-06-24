@@ -1,6 +1,6 @@
 #pragma once
 
-#include "byte.h"
+#include "arduinotypes.h"
 
 #define RED_CC 20  //CC controlling 'Red' amount of LED (0 = red LED off, 127 = red LED at 100% brightness)
 #define GREEN_CC 21 //CC controlling 'Green' amount of LED
