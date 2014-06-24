@@ -3,7 +3,6 @@
 #include "easing.h"
 
 #include "pitches.h"
-#include "notecontrol.h"
 #include "midicc.h"
 #include "flags.h"
 
@@ -274,24 +273,10 @@ namespace Melodies {
       melody1Act = false;
       melody2Act = false;
 
-      if (
-          noteC3act  ||
-          noteCS3act ||
-          noteD3act  ||
-          noteDS3act ||
-          noteE3act  ||
-          noteF3act  ||
-          noteFS3act ||
-          noteG3act  ||
-          noteGS3act ||
-          noteA3act  ||
-          noteAS3act ||
-          noteB3act  ||
-          noteC4act
-         )
+      if (NoteControl::anyActingNotes())
       //if (keyStatus > 0) //if the keyStatus matrix has any value other than 0 in any of its addresses......
       {
-        ArduinoPins::playTone(lastNoteOn);
+        ArduinoPins::playTone(NoteControl::lastNote());
       }
       else {
         ArduinoPins::toneOff();

@@ -18,10 +18,6 @@
 #include "melodies.h"
 
 
-
-
-
-//=================ARDUINO SETUP FUNCTION=====================
 void setup()  {
   
   MIDI.begin();
@@ -32,10 +28,10 @@ void setup()  {
   MIDI.setInputChannel(MIDI_CHANNEL_OMNI); 
   
   MIDI.setHandleControlChange(handleControlChange);
-  MIDI.setHandleNoteOn(NoteOnControl);
+  MIDI.setHandleNoteOn(noteOnControl);
 
   // Only needed if receiving MIDI Note Off messages from controller device to stop notes
-  MIDI.setHandleNoteOff(NoteOffControl); 
+  MIDI.setHandleNoteOff(noteOffControl); 
   
   ArduinoPins::setupPins();
   
@@ -63,7 +59,13 @@ void handleControlChange (byte channel, byte number, byte value)
   Melodies::processMelodyCC(channel, number, value);     
 }
 
+void noteOnControl (byte channel, byte note, byte velocity) {
+  NoteControl::noteOnControl(channel, note, velocity);
+}
 
+void noteOffControl(byte channel, byte note, byte velocity) {
+  NoteControl::noteOffControl(channel, note, velocity);
+}
 
 
 

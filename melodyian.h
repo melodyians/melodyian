@@ -4,9 +4,7 @@
 #include "midicc.h"
 
 namespace Battery {
-
   void pingBatVoltage(bool midi_read);
-
 }
 
 namespace ArduinoPins {
@@ -48,4 +46,11 @@ namespace Flags {
   void setMelodyOne(bool);
   void setMelodyTwo(bool);
   void setNoteOn(bool);
+}
+
+namespace NoteControl {
+  void noteOnControl(byte channel, byte note, byte velocity);
+  void noteOffControl(byte channel, byte note, byte velocity);
+  bool anyActingNotes();
+  int lastNote();
 }
