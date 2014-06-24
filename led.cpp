@@ -55,6 +55,20 @@ namespace LED {
   int* lightPreset7 = lightPresetData + 3*6;
   int* lightPreset8 = lightPresetData + 3*7;
 
+  int *lightPresetArray[8] = {
+    lightPreset1,
+    lightPreset2,
+    lightPreset3,
+    lightPreset4,
+    lightPreset5,
+    lightPreset6,
+    lightPreset7,
+    lightPreset8
+  };
+
+
+
+
   int lightPresetSelect = 1; //variable for storing last selected lightPreset value (1-8)
   int fadeSpeed = 0;  //will be used by 'DYNAMICQCC' light pattern, but not actively used now. Ask Scott if you're curious for more details....
   float colorJitter = 0;  //variable used to randomize LED color
@@ -203,6 +217,38 @@ namespace LED {
       ArduinoPins::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
   }
 
+
+  void triggerLightPreset(int preset_number) {
+
+    int* lightPresetPtr = lightPresetArray[preset_number - 1];
+
+    lightPresetVal = preset_number;
+    lightPresetSelect = preset_number;
+        
+    if (pShift == false)
+    {
+    fdr1 = lightPresetPtr[0];
+    fdr2 = lightPresetPtr[1];
+    fdr3 = lightPresetPtr[2];
+    }
+    else
+    {
+    lightPresetPtr[0] = fdr1;
+    lightPresetPtr[1] = fdr2;
+    lightPresetPtr[2] = fdr3; 
+    }
+    
+    transColor[0] = lightPresetPtr[0];
+    transColor[1] = lightPresetPtr[1];
+    transColor[2] = lightPresetPtr[2];
+    
+    colorStore[0] = lightPresetPtr[0];
+    colorStore[1] = lightPresetPtr[1];
+    colorStore[2] = lightPresetPtr[2];
+
+  }
+
+
   void processLEDCC(byte channel, byte number, byte value) 
   {
 
@@ -219,232 +265,41 @@ namespace LED {
 
     if (number == WRITECOLOR_CC) //=====USED TO BE PITCH SHIFT WHEEL WHEN WORKING W/ MINI STAGE=====
     {
-      if (value > 120) {pShift = true;}
-      else if (value < 26)
-      {
+      if (value > 120) {
+      
+        pShift = true;
+      
+      } else if (value < 26) {
+      
        fdr1 = 0;
        fdr2 = 0;
        fdr3 = 0;
        pShift = false; 
+      
+      } else {
+      
+        pShift = false;
+      
       }
-      else {pShift = false;}
     }
 
-    //==========PRESSURE PADS======
-    if (number == TRIGLP1_CC) 
-    { 
-      lightPresetVal = 1;
-      lightPresetSelect = 1;
-          
-      if (pShift == false)
-      {
-      fdr1 = lightPreset1[0];
-      fdr2 = lightPreset1[1];
-      fdr3 = lightPreset1[2];
-      }
-      else
-      {
-      lightPreset1[0] = fdr1;
-      lightPreset1[1] = fdr2;
-      lightPreset1[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset1[0];
-      transColor[1] = lightPreset1[1];
-      transColor[2] = lightPreset1[2];
-      
-      colorStore[0] = lightPreset1[0];
-      colorStore[1] = lightPreset1[1];
-      colorStore[2] = lightPreset1[2];
-    }
-    
-    if (number == TRIGLP2_CC) 
-    { 
-      lightPresetVal = 2;
-      lightPresetSelect = 2;
-       
-      if (pShift == false)
-      {
-      fdr1 = lightPreset2[0];
-      fdr2 = lightPreset2[1];
-      fdr3 = lightPreset2[2];
-      }
-      else
-      {
-      lightPreset2[0] = fdr1;
-      lightPreset2[1] = fdr2;
-      lightPreset2[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset2[0];
-      transColor[1] = lightPreset2[1];
-      transColor[2] = lightPreset2[2];
-      
-      colorStore[0] = lightPreset2[0];
-      colorStore[1] = lightPreset2[1];
-      colorStore[2] = lightPreset2[2];
-    }
-    
-    if (number == TRIGLP3_CC) 
-    { 
-      lightPresetVal = 3;
-      lightPresetSelect = 3;
-        
-      if (pShift == false)
-      {
-      fdr1 = lightPreset3[0];
-      fdr2 = lightPreset3[1];
-      fdr3 = lightPreset3[2];
-      }
-      else
-      {
-      lightPreset3[0] = fdr1;
-      lightPreset3[1] = fdr2;
-      lightPreset3[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset3[0];
-      transColor[1] = lightPreset3[1];
-      transColor[2] = lightPreset3[2];
-      
-      colorStore[0] = lightPreset3[0];
-      colorStore[1] = lightPreset3[1];
-      colorStore[2] = lightPreset3[2];
-    }
-    
-    if (number == TRIGLP4_CC) 
-    { 
-      lightPresetVal = 4;
-      lightPresetSelect = 4;
-          
-      if (pShift == false)
-      {
-      fdr1 = lightPreset4[0];
-      fdr2 = lightPreset4[1];
-      fdr3 = lightPreset4[2];
-      }
-      else
-      {
-      lightPreset4[0] = fdr1;
-      lightPreset4[1] = fdr2;
-      lightPreset4[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset4[0];
-      transColor[1] = lightPreset4[1];
-      transColor[2] = lightPreset4[2];
-      
-      colorStore[0] = lightPreset4[0];
-      colorStore[1] = lightPreset4[1];
-      colorStore[2] = lightPreset4[2];
-    }
-    
-    if (number == TRIGLP5_CC) 
-    { 
-      lightPresetVal = 5;
-      lightPresetSelect = 5;
-          
-      if (pShift == false)
-      {
-      fdr1 = lightPreset5[0];
-      fdr2 = lightPreset5[1];
-      fdr3 = lightPreset5[2];
-      }
-      else
-      {
-      lightPreset5[0] = fdr1;
-      lightPreset5[1] = fdr2;
-      lightPreset5[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset5[0];
-      transColor[1] = lightPreset5[1];
-      transColor[2] = lightPreset5[2];
-      
-      colorStore[0] = lightPreset5[0];
-      colorStore[1] = lightPreset5[1];
-      colorStore[2] = lightPreset5[2];
-    }
-    
-    if (number == TRIGLP6_CC)
-    { 
-      lightPresetVal = 6;
-      lightPresetSelect = 6;
-         
-      if (pShift == false)
-      {
-      fdr1 = lightPreset6[0];
-      fdr2 = lightPreset6[1];
-      fdr3 = lightPreset6[2];
-      }
-      else
-      {
-      lightPreset6[0] = fdr1;
-      lightPreset6[1] = fdr2;
-      lightPreset6[2] = fdr3;
-      }
-      
-      transColor[0] = lightPreset6[0];
-      transColor[1] = lightPreset6[1];
-      transColor[2] = lightPreset6[2];
-      
-      colorStore[0] = lightPreset6[0];
-      colorStore[1] = lightPreset6[1];
-      colorStore[2] = lightPreset6[2];
-    }
-    
-    if (number == TRIGLP7_CC) 
-    { 
-      lightPresetVal = 7;
-      lightPresetSelect = 7;
-      
-      if (pShift == false)
-      {
-      fdr1 = lightPreset7[0];
-      fdr2 = lightPreset7[1];
-      fdr3 = lightPreset7[2];
-      }
-      else
-      {
-      lightPreset7[0] = fdr1;
-      lightPreset7[1] = fdr2;
-      lightPreset7[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset7[0];
-      transColor[1] = lightPreset7[1];
-      transColor[2] = lightPreset7[2];
-      
-      colorStore[0] = lightPreset7[0];
-      colorStore[1] = lightPreset7[1];
-      colorStore[2] = lightPreset7[2];
-    }
-    
-    if (number == TRIGLP8_CC) 
-    { 
-      lightPresetVal = 8;
-      lightPresetSelect = 8;
-          
-      if (pShift == false)
-      {
-      fdr1 = lightPreset8[0];
-      fdr2 = lightPreset8[1];
-      fdr3 = lightPreset8[2];
-      }
-      else
-      {
-      lightPreset8[0] = fdr1;
-      lightPreset8[1] = fdr2;
-      lightPreset8[2] = fdr3; 
-      }
-      
-      transColor[0] = lightPreset8[0];
-      transColor[1] = lightPreset8[1];
-      transColor[2] = lightPreset8[2];
-      
-      colorStore[0] = lightPreset8[0];
-      colorStore[1] = lightPreset8[1];
-      colorStore[2] = lightPreset8[2];
+    // Preset Triggers
+    if (number == TRIGLP1_CC) { 
+      triggerLightPreset(1);
+    } else if (number == TRIGLP2_CC) {
+      triggerLightPreset(2);
+    } else if (number == TRIGLP3_CC) {
+     triggerLightPreset(3);
+    } else if (number == TRIGLP4_CC) {
+      triggerLightPreset(4);
+    } else if (number == TRIGLP5_CC) { 
+      triggerLightPreset(5);
+    } else if (number == TRIGLP6_CC) { 
+      triggerLightPreset(6);
+    } else if (number == TRIGLP7_CC) { 
+      triggerLightPreset(7);
+    } else if (number == TRIGLP8_CC) { 
+      triggerLightPreset(8);
     }
     
     //==================LIGHT FADERS & QUEUE TOGGLE BUTTONS
