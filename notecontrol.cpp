@@ -1,4 +1,5 @@
 #include "melodyian.h"
+#include "pitches.h"
 
 namespace NoteControl {
   bool noteC3act = false;
