@@ -20,10 +20,8 @@ namespace Motor {
   boolean motorBdirection = 0;
 
 
+  void printDebug(int value) {
 
-  void steerControl(int value)
-  {
-    /*
     Serial.print("MotorASpd: ");
     Serial.print(motorAspeed);
     Serial.print(" / MotorBSpd: ");
@@ -34,63 +32,81 @@ namespace Motor {
     Serial.print(motorAdirection);
     Serial.print(" / MtrBDr: ");
     Serial.println(motorBdirection);
-    */
-    
-   //Straight Ahead
-      if ( value >= 59 && value <= 69)
-      {
-        motorAspeed = motorSpdVal;
-        motorBspeed = motorSpdVal;
-        motorAdirection = motorBdirection;
-      }
-      
-      //Turning to the right
-      else if (value >= 70 && value <= 122)
-      {
-       motorBdirection = motorAdirection;
+
+  }
+
+  bool straightAhead(int value) {
+    return value >= 59 && value <= 69;
+  }
+
+  bool turningRight(int value) {
+    return value >= 70 && value <= 122;
+  }
+
+  bool hardRight(int value) {
+    return value >= 123;
+  }
+
+  bool turningLeft(int value) {
+    return value >= 5 && value <= 58;
+  }
+
+  void steerControl(int value)
+  {
+    /* printDebug(value) */
+
+    if (straightAhead(value)) {
+
+      motorAspeed = motorSpdVal;
+      motorBspeed = motorSpdVal;
+      motorAdirection = motorBdirection;
+
+    } else if (turningRight(value)) {
+
+     motorBdirection = motorAdirection;
+     
+     int rightWheelScalingRightT = map(value, 70, 122, 1, motorAspeed);
+     
+     motorAspeed = motorSpdVal;  //Left wheel
+     
+     motorBspeed = motorAspeed - rightWheelScalingRightT; //Right wheel...NOTE: may want to #define or create 'lowSpeedThres' variable for 4th parameter in preceding map function
+
+     if (motorBspeed <= 0) {
+      motorBspeed = 0;
+    } //lowest speed control threshold, motorBspeed will never be less than 0     
+
+  } else if (hardRight(value)) {
+
+      motorAspeed = motorSpdVal;
+      motorBdirection = !motorAdirection; //will this cause issues when trying to adjust the motorSpdVal while spinning? Try and find out...
+      motorBspeed = motorSpdVal;      
+
+    } else if (turningLeft(value)) {
+      motorAdirection = motorBdirection; 
+
+      int leftWheelScalingLeftT = map(value, 58, 5, 1, motorBspeed);
+
+      motorBspeed = motorSpdVal;  //Right wheel..NOT WORKING
        
-       int rightWheelScalingRightT = map(value, 70, 122, 1, motorAspeed);
+      motorAspeed = motorBspeed - leftWheelScalingLeftT; //Left wheel...NOTE: may want to #define or create 'lowSpeedThres' variable for 4th parameter in preceding map function
        
-       motorAspeed = motorSpdVal;  //Left wheel
-       
-       motorBspeed = motorAspeed - rightWheelScalingRightT; //Right wheel...NOTE: may want to #define or create 'lowSpeedThres' variable for 4th parameter in preceding map function
-       if (motorBspeed <= 0) {motorBspeed = 0;} //lowest speed control threshold, motorBspeed will never be less than 0     
-      }
-      
-      //Hard right / Clockwise spinning
-      else if (value >= 123)
-      {
-        motorAspeed = motorSpdVal;
-        motorBdirection = !motorAdirection; //will this cause issues when trying to adjust the motorSpdVal while spinning? Try and find out...
-        motorBspeed = motorSpdVal;      
-      }
-      
-      //Turning to the left
-      else if(value >= 5 && value <= 58)
-      {
-       motorAdirection = motorBdirection; 
-        
-       int leftWheelScalingLeftT = map(value, 58, 5, 1, motorBspeed);
-        
-       motorBspeed = motorSpdVal;  //Right wheel..NOT WORKING
-       
-       motorAspeed = motorBspeed - leftWheelScalingLeftT; //Left wheel...NOTE: may want to #define or create 'lowSpeedThres' variable for 4th parameter in preceding map function
-       if (motorAspeed <= 0) {motorAspeed = 0;} //lowest speed control threshold, motorAspeed will never be less than 0 
-      }
-      
+      if (motorAspeed <= 0) {
+        motorAspeed = 0;
+      } //lowest speed control threshold, motorAspeed will never be less than 0 
+
+    } else  { //(value <=4)
+
       //Hard left / Counter-Clockwise spinning
-      else //(value <=4)
-      {
-        motorBspeed = motorSpdVal;
-        motorAdirection = !motorBdirection; //will this cause issues when trying to adjust the motorSpdVal while spinning? Try and find out...
-        motorAspeed = motorSpdVal;      
-      } 
+      motorBspeed = motorSpdVal;
+      motorAdirection = !motorBdirection; //will this cause issues when trying to adjust the motorSpdVal while spinning? Try and find out...
+      motorAspeed = motorSpdVal;      
+    } 
   }
 
   void processMotorCC (byte channel, byte number, byte value)
   {
        //============MOTOR FADERS & TOGGLE BUTTONS
-    
+
     if (number == MSTRMTRSPD_CC) //Master Motor Speed Control for new steering system (D16 fader)
     {
       motorSpdVal = Easing::motorFader(value);
@@ -108,8 +124,8 @@ namespace Motor {
     
     if (number == MTRDIRREV_CC) //ALL MOTORS DIRECTION REVERSE TOGGLE
     {
-        motorAdirection = !motorAdirection;
-        motorBdirection = !motorBdirection;
+      motorAdirection = !motorAdirection;
+      motorBdirection = !motorBdirection;
     }
     
     if (number == MTRACT_CC) //MOTOR ACTIVATE TOGGLE (both motors on/off)
@@ -140,13 +156,13 @@ namespace Motor {
     steerControl(steerDirection);
 
     // MOTOR A
-    if (motorAon == true) {
+    if (motorAon) {
       ArduinoInterface::moveMotor(0, motorAspeed, motorAdirection);
     } else {
       ArduinoInterface::moveMotor(0, 0, motorAdirection);
     }
     // MOTOR B
-    if (motorBon == true) {
+    if (motorBon) {
       ArduinoInterface::moveMotor(1, motorBspeed, motorBdirection);
     } else {
       ArduinoInterface::moveMotor(1, 0, motorBdirection);
