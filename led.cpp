@@ -228,17 +228,14 @@ namespace LED {
     lightPresetVal = preset_number;
     lightPresetSelect = preset_number;
         
-    if (pShift == false)
-    {
-    fdr1 = lightPresetPtr[0];
-    fdr2 = lightPresetPtr[1];
-    fdr3 = lightPresetPtr[2];
-    }
-    else
-    {
-    lightPresetPtr[0] = fdr1;
-    lightPresetPtr[1] = fdr2;
-    lightPresetPtr[2] = fdr3; 
+    if (pShift == false) {
+      fdr1 = lightPresetPtr[0];
+      fdr2 = lightPresetPtr[1];
+      fdr3 = lightPresetPtr[2];
+      } else {
+      lightPresetPtr[0] = fdr1;
+      lightPresetPtr[1] = fdr2;
+      lightPresetPtr[2] = fdr3; 
     }
     
     transColor[0] = lightPresetPtr[0];
@@ -550,7 +547,7 @@ namespace LED {
 
   void writeEEPROMValues() {
 
-        //EEPROM Write functionality
+    //EEPROM Write functionality
     if (armEEPROMwrite == true && pShift == true) { 
         saveToEEPROM(lightPresetVal);
         armEEPROMwrite = false;
