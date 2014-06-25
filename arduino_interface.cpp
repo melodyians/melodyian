@@ -4,28 +4,28 @@
 
 namespace ArduinoInterface {
   // Pins
-  int redPin = 9; //LED 'Red' connected to pin 9
-  int greenPin = 10; //LED 'Green' connected to pin 10
-  int bluePin = 11; //LED 'Blue' connected to pin 11
+  const int redPin = 9; //LED 'Red' connected to pin 9
+  const int greenPin = 10; //LED 'Green' connected to pin 10
+  const int bluePin = 11; //LED 'Blue' connected to pin 11
 
   // Motor Pins
-  byte STBY = 4; //standby pin
+  const byte STBY = 4; //standby pin
 
   // Motor A
-  byte PWMA = 6; //Speed control of motor A
-  byte AIN1 = 7; //Direction pin
-  byte AIN2 = 8; //Direction pin
+  const byte PWMA = 6; //Speed control of motor A
+  const byte AIN1 = 7; //Direction pin
+  const byte AIN2 = 8; //Direction pin
 
   // Motor B
-  byte PWMB = 5; //Speed control of motor B
-  byte BIN1 = 3; //Direction - moved to 3 from 6 
-  byte BIN2 = 2; //Direction pin
+  const byte PWMB = 5; //Speed control of motor B
+  const byte BIN1 = 3; //Direction - moved to 3 from 6 
+  const byte BIN2 = 2; //Direction pin
 
   // Tone and Amplitude
-  byte tonePin = 12;
-  byte ampSDNpin = 13;
+  const byte tonePin = 12;
+  const byte ampSDNpin = 13;
 
-  byte bat1MonPin = 0;    // input pin for battery 1 divider
+  const byte bat1MonPin = 0;    // input pin for battery 1 divider
   //byte bat2MonPin = 1;  //input pin for battery 2 divider
 
 
