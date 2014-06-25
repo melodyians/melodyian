@@ -79,7 +79,7 @@ namespace LED {
 
   int* getLightPresetPtr(int i)
   {
-    return lightPresetArray[i - 1];
+    return lightPreset1 + (i-1)*3;
   }
 
   int* getActiveLightPresetPtr()
@@ -232,7 +232,7 @@ namespace LED {
       fdr1 = lightPresetPtr[0];
       fdr2 = lightPresetPtr[1];
       fdr3 = lightPresetPtr[2];
-      } else {
+    } else {
       lightPresetPtr[0] = fdr1;
       lightPresetPtr[1] = fdr2;
       lightPresetPtr[2] = fdr3; 
@@ -415,7 +415,7 @@ namespace LED {
     } else if (number == TRIGLP2_CC) {
       triggerLightPreset(2);
     } else if (number == TRIGLP3_CC) {
-     triggerLightPreset(3);
+      triggerLightPreset(3);
     } else if (number == TRIGLP4_CC) {
       triggerLightPreset(4);
     } else if (number == TRIGLP5_CC) { 
