@@ -249,6 +249,132 @@ namespace LED {
   }
 
 
+  void processQueue() {
+
+  //===========LED LIGHT QUEUES==========   
+    switch (queue)
+    {   
+      case SETCOLQ_CC:
+      {
+        //COLOR SET AND MANUAL FADE
+        ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);               
+        break;
+      }  
+      case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
+      {
+        if (Flags::melodyOneAct()|| Flags::melodyOneAct())
+        {
+          if (Flags::noteOn())
+          {
+            RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
+            
+            float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
+            float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
+            float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
+
+              RGBColor temp_color = { max(min(xr,255),0), max(min(xg, 255),0), max(min(xb, 255), 0) }; //excerpted from ministage code
+              brightness = 1;
+
+              myLEDColor = adjustBrightness(temp_color, brightness); 
+              ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+            }
+
+            else
+            {
+              ArduinoInterface::writeToLED(0, 0, 0);
+            }
+
+        } 
+        else 
+        {
+
+          currentMillis = millis(); //get the current time
+          unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
+
+          if(timeElapsed > (colorRate / 8)) //check if we need to advance the state of the animation
+          { 
+            RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
+
+            float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
+            float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
+            float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
+
+            RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
+            brightness = 1;
+
+            myLEDColor = temp_color;
+
+            altFlash();
+          //go to the first state
+            previousMillis = currentMillis; //set the last time we advanced the state of the animation
+          }
+        } 
+        break;
+      }
+        
+        
+      case AUTOFADEQ_CC: //Color Fade Over Time
+      {
+        currentMillis = millis(); //get the current time
+        unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
+        
+        if(timeElapsed > colorRate / 16) //rate1 represents how much time must pass between updates of the animation - we divide it by 16 to get it in a good range
+        {
+          if(activeLightPreset >= lightPresetSelect + 1)
+          {
+            activeLightPreset = 1;
+          }
+          
+          if(fadeTo(transColor, getActiveLightPresetPtr()))
+          {            
+            activeLightPreset++;
+          }
+          //was working for 2 colors
+          //fadeBetween(colorStore, transColor, lightPreset1); //original fadeBetween test
+          previousMillis = currentMillis; //set the last time we advanced the state of the animation          
+        }  
+        break;
+ 
+      }       
+        
+        
+      case DYNAMICQ_CC: //Dynamic Pulse Control
+      {        
+        currentMillis = millis(); //get the current time
+        unsigned int timeElapsedSinceLastDim = currentMillis - previousMillis;
+
+        decay(timeElapsedSinceLastDim, fadeSpeed);    
+        
+        if (fdr4 >= 111) {brightness = 1;}
+        if (fdr4 >= 95 && fdr4 <= 110) {brightness = .75;}               
+        if (fdr4 >= 79 && fdr4 <= 94) {brightness = .6;}
+        if (fdr4 >= 63 && fdr4 <= 78) {brightness = .5;}
+        //if (fdr4 >= 55 && fdr4 <= 62) {brightness = .2;}
+        //if (fdr4 >= 47 && fdr4 <= 54) {brightness = .1;}
+        
+
+        myLEDColor.r = fdr1;
+        myLEDColor.g = fdr2;
+        myLEDColor.b = fdr3;
+
+        dynamicPulse();     
+        previousMillis = currentMillis;
+        break;
+      }      
+        
+      default:
+      {
+        if (setColorAct == true) {
+          queue = SETCOLQ_CC;
+        } else {
+          ArduinoInterface::writeToLED(0, 0, 0);
+        }
+      } 
+    }
+
+  } 
+
+
   void processLEDCC(byte channel, byte number, byte value) 
   {
 
@@ -406,121 +532,6 @@ namespace LED {
      else {modWheel = 1;} 
     }
 
-    //===========LED LIGHT QUEUES==========   
-    switch (queue)
-    {   
-      case SETCOLQ_CC:  //COLOR SET AND MANUAL FADE
-          ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);               
-        break;
-        
-      case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
-        {
-          if (Flags::melodyOneAct()|| Flags::melodyOneAct())
-          {
-            if (Flags::noteOn())
-            {
-              RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
-            
-              float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
-              float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
-              float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
-
-              RGBColor temp_color = { max(min(xr,255),0), max(min(xg, 255),0), max(min(xb, 255), 0) }; //excerpted from ministage code
-              brightness = 1;
-
-              myLEDColor = adjustBrightness(temp_color, brightness); 
-              ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
-            }
-
-            else
-            {
-              ArduinoInterface::writeToLED(0, 0, 0);
-            }
-
-          }
-
-          else
-          {
-            currentMillis = millis(); //get the current time
-            unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
-          
-            if(timeElapsed > (colorRate / 8)) //check if we need to advance the state of the animation
-            { 
-              RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
-            
-              float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
-              float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
-              float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
-            
-              RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
-              brightness = 1;
-
-              myLEDColor = temp_color;
-            
-              altFlash();
-            //go to the first state
-              previousMillis = currentMillis; //set the last time we advanced the state of the animation
-            }
-          } 
-        }
-        break;
-        
-      case AUTOFADEQ_CC: //Color Fade Over Time
-        {
-          currentMillis = millis(); //get the current time
-          unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
-          
-          if(timeElapsed > colorRate / 16) //rate1 represents how much time must pass between updates of the animation - we divide it by 16 to get it in a good range
-          {
-            if(activeLightPreset >= lightPresetSelect + 1)
-            {
-              activeLightPreset = 1;
-            }
-            
-            if(fadeTo(transColor, getActiveLightPresetPtr()))
-            {            
-              activeLightPreset++;
-            }
-            //was working for 2 colors
-            //fadeBetween(colorStore, transColor, lightPreset1); //original fadeBetween test
-            previousMillis = currentMillis; //set the last time we advanced the state of the animation          
-          }   
-        }       
-        break;
-        
-        
-      case DYNAMICQ_CC: //Dynamic Pulse Control
-        {        
-          currentMillis = millis(); //get the current time
-          unsigned int timeElapsedSinceLastDim = currentMillis - previousMillis;
-               
-          decay(timeElapsedSinceLastDim, fadeSpeed);    
-          
-          if (fdr4 >= 111) {brightness = 1;}
-          if (fdr4 >= 95 && fdr4 <= 110) {brightness = .75;}               
-          if (fdr4 >= 79 && fdr4 <= 94) {brightness = .6;}
-          if (fdr4 >= 63 && fdr4 <= 78) {brightness = .5;}
-          //if (fdr4 >= 55 && fdr4 <= 62) {brightness = .2;}
-          //if (fdr4 >= 47 && fdr4 <= 54) {brightness = .1;}
-          
-
-          myLEDColor.r = fdr1;
-          myLEDColor.g = fdr2;
-          myLEDColor.b = fdr3;
-
-          dynamicPulse();     
-          previousMillis = currentMillis;
-          
-        }      
-        break;
-        
-      default:
-        if (setColorAct == true) {
-          queue = SETCOLQ_CC;
-        } else {
-          ArduinoInterface::writeToLED(0, 0, 0);
-        } 
-    }
 
   }
 

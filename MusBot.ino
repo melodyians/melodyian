@@ -40,6 +40,7 @@ void loop()
 
   LED::writeEEPROMValues();
   Melodies::processMelodyTriggers();
+  LED::processQueue();
   Motor::actuateMotors();
  
 }

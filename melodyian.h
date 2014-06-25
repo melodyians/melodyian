@@ -29,6 +29,7 @@ namespace LED {
   void processLEDCC(byte channel, byte number, byte value);
   void readFromEEPROM();
   void writeEEPROMValues();
+  void processQueue();
 }
 
 
