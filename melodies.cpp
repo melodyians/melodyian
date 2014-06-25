@@ -245,7 +245,7 @@ namespace Melodies {
   // TODO: Pass in Note Control stuff
   void processMelodyTriggers() {
 
-    if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() && keyModeAct == false)
+    if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && keyModeAct == false)
     {
       ArduinoInterface::toneOff();
       turnOffPowerIfOn();
