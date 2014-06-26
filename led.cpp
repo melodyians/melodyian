@@ -272,7 +272,12 @@ namespace LED {
             float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
             float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
 
-              RGBColor temp_color = { max(min(xr,255),0), max(min(xg, 255),0), max(min(xb, 255), 0) }; //excerpted from ministage code
+              // excerpted from ministage code
+              RGBColor temp_color = { 
+                                      max(min(xr,255),0), 
+                                      max(min(xg, 255),0), 
+                                      max(min(xb, 255), 0) 
+                                    }; 
               brightness = 1;
 
               myLEDColor = adjustBrightness(temp_color, brightness); 

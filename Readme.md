@@ -1,4 +1,22 @@
-Mini Model Code and CC Reference Notes:
+
+# TODOS
+
+- Refactor NoteControl.cpp to accept all notes
+- Get Lemur, test it out
+    + See if I can get it talking to Node
+    + Scott send a copy of the Lemur Template
+- Abstract out EEPROM
+    + Think about saving arbitrary melodies - 4x16
+- Leave Melodies alone -- eventually we'll just record melodies
+- Make Flags Abstract, use a map
+
+Future:
+
+- Start looking at modeling things in software
+
+
+
+# Mini Model Code and CC Reference Notes:
 
 MIDI CC | Functionality | Associated Variable Name(s)
 ------------- | ------------- | ------------- 
