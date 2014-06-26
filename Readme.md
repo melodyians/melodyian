@@ -1,14 +1,24 @@
 
 # TODOS
 
+Jim
+
 - Refactor NoteControl.cpp to accept all notes
 - Get Lemur, test it out
     + See if I can get it talking to Node
     + Scott send a copy of the Lemur Template
+    + Hairless Midi
 - Abstract out EEPROM
     + Think about saving arbitrary melodies - 4x16
 - Leave Melodies alone -- eventually we'll just record melodies
 - Make Flags Abstract, use a map
+
+Scott:
+
+- Working on board stuff
+- Looking into sequencer template
+    + Programming a melody -- how to represent?
+- Looking at pre-programmed sequences in Max
 
 Future:
 
