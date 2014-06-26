@@ -19,6 +19,8 @@ namespace Motor {
   boolean motorAdirection = 0;
   boolean motorBdirection = 0;
 
+  bool test = false;
+
 
   void printDebug(int value) {
 
