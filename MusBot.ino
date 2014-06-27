@@ -39,7 +39,7 @@ void loop()
   Battery::pingBatVoltage(midi_read); 
 
   LED::writeEEPROMValues();
-  Melodies::processMelodyTriggers();
+  Sound::processSoundTriggers();
   LED::processQueue();
   Motor::actuateMotors();
  
@@ -49,7 +49,7 @@ void handleControlChange (byte channel, byte number, byte value)
 {
   LED::processLEDCC(channel, number, value);
   Motor::processMotorCC(channel, number, value);
-  Melodies::processMelodyCC(channel, number, value);     
+  Sound::processSoundCC(channel, number, value);     
 }
 
 void noteOnControl (byte channel, byte note, byte velocity) {

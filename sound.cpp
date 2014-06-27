@@ -5,7 +5,7 @@
 #include "pitches.h"
 #include "midicc.h"
 
-namespace Melodies {
+namespace Sound {
 
   byte notePosition = 0;
 
@@ -243,7 +243,7 @@ namespace Melodies {
   }
 
   // TODO: Pass in Note Control stuff
-  void processMelodyTriggers() {
+  void processSoundTriggers() {
 
     if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && keyModeAct == false)
     {
@@ -267,17 +267,13 @@ namespace Melodies {
     }
     else  //MANUAL MIDI NOTE PERFORMANCE
     {
-      //Serial.println(keyStatus);
       turnOnPowerIfOff();
       Flags::setMelodyOne(false);
       Flags::setMelodyTwo(false);
       
-      if (NoteControl::anyActingNotes())
-      //if (keyStatus > 0) //if the keyStatus matrix has any value other than 0 in any of its addresses......
-      {
-        ArduinoInterface::playTone(NoteControl::lastNote());
-      }
-      else {
+      if (NoteControl::anyActingNotes()) {
+        ArduinoInterface::playTone(NoteControl::currentHz());
+      } else {
         ArduinoInterface::toneOff();
       }
     }
@@ -285,7 +281,7 @@ namespace Melodies {
   }
 
 
-  void processMelodyCC(byte channel, byte number, byte value) {
+  void processSoundCC(byte channel, byte number, byte value) {
      //========MUSIC RELATED
 
     if(number == RATE1_CC) //RATE #1  (knob pot 'B5' on axiom)

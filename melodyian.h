@@ -33,9 +33,9 @@ namespace LED {
 }
 
 
-namespace Melodies {
-  void processMelodyTriggers();
-  void processMelodyCC(byte channel, byte number, byte value);
+namespace Sound {
+  void processSoundTriggers();
+  void processSoundCC(byte channel, byte number, byte value);
 }
 
 namespace Motor {
@@ -58,5 +58,5 @@ namespace NoteControl {
   void noteOnControl(byte channel, byte note, byte velocity);
   void noteOffControl(byte channel, byte note, byte velocity);
   bool anyActingNotes();
-  int lastNote();
+  unsigned int currentHz();
 }
