@@ -13,8 +13,8 @@ namespace NoteControl {
   bool acting_notes[NUM_NOTES] = { false };
 
   // http://www.phys.unsw.edu.au/jw/notes.html
-  unsigned int frequencyFromMidiNote (int note) {
-    return (unsigned int) pow(2, (note - 69) / 12) * 440;
+  unsigned int frequencyFromMidiNote (float note) {
+    return (unsigned int) (pow(2, (note - 69.0) / 12.0) * 440.0);
   };
 
   bool anyActingNotes() {
