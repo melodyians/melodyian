@@ -12,6 +12,7 @@ Jim
     + Think about saving arbitrary melodies - 4x16
 - Leave Melodies alone -- eventually we'll just record melodies
 - Make Flags Abstract, use a map
+- Bluetooth Speed?????
 
 Scott:
 

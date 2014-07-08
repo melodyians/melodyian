@@ -433,14 +433,17 @@ namespace LED {
     
     if (number == DYNAMIC_CC) // Dynamic Pulse light control
     {
+      color_pulse = (value);
+      new_pulse = true;
+    }
+
+    if (number == DYNAMICQ_CC)
+    {
       if (value == 127) {
         queue = DYNAMIC_CC;
       } else {
         queue = 0;
       }  
-
-      color_pulse = (value);
-      new_pulse = true;
     }
     
     if (number == SETCOLQ_CC) //'SET COLOR' Light queue toggle button
