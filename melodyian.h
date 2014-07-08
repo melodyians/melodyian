@@ -29,12 +29,12 @@ namespace LED {
   void processLEDCC(byte channel, byte number, byte value);
   void readFromEEPROM();
   void writeEEPROMValues();
-  void processQueue();
+  void processQueue(unsigned long dt);
 }
 
 
 namespace Sound {
-  void processSoundTriggers();
+  void processSoundTriggers(unsigned long dt);
   void processSoundCC(byte channel, byte number, byte value);
 }
 

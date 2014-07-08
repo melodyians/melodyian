@@ -26,7 +26,7 @@ namespace Sound {
 
   unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
-  void playMelody1()
+  void playMelody1(unsigned long dt)
   { 
     //tone(tonePin, melody1[notePosition]); //for debugging
      
@@ -150,7 +150,7 @@ namespace Sound {
 
 
 
-  void playMelody2()
+  void playMelody2(unsigned long dt)
   { 
     currentMillisTone = millis();
 
@@ -243,7 +243,7 @@ namespace Sound {
   }
 
   // TODO: Pass in Note Control stuff
-  void processSoundTriggers() {
+  void processSoundTriggers(unsigned long dt) {
 
     if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && keyModeAct == false)
     {
@@ -256,14 +256,14 @@ namespace Sound {
       turnOnPowerIfOff();
       Flags::setMelodyTwo(false); //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
       keyModeAct = false;
-      playMelody1();
+      playMelody1(dt);
     }
     else if (Flags::melodyTwoAct() )
     {
       turnOnPowerIfOff();
       Flags::setMelodyOne(false);
       keyModeAct = false;
-      playMelody2();
+      playMelody2(dt);
     }
     else  //MANUAL MIDI NOTE PERFORMANCE
     {

@@ -17,4 +17,6 @@ namespace ColorHelper {
   // Create a 24 bit color value from R,G,B
   RGBColor HSVtoRGB(int h, double s, double v);
 
+  RGBColor colorWithAdjustedBrightness(RGBColor color, float brightness);
+
 }

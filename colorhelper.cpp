@@ -64,6 +64,24 @@ namespace ColorHelper {
 
   }
 
+  
+  RGBColor colorWithAdjustedBrightness(RGBColor color, float brightness)
+  {
+     if (brightness < 0) {
+      brightness = 0;
+     }
+
+     byte r = color.r * brightness;
+     byte g = color.g * brightness;
+     byte b = color.b * brightness;
+
+     RGBColor newcolor;
+     newcolor.r = r;
+     newcolor.g = g;
+     newcolor.b = b;
+     return newcolor;
+  }
+
 }
 
 

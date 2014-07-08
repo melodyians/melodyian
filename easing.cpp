@@ -28,6 +28,15 @@ namespace Easing {
     }
 
 
+    #define MIN_FADE_TIME_TIMES_ONE_HUNDRED 10
+    #define MAX_FADE_TIME_TIMES_ONE_HUNDRED 150
+
+    float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed) {
+      float delta_t = (elapsed_millis / 1000.0f) / (map(fadeSpeed,0,127,MIN_FADE_TIME_TIMES_ONE_HUNDRED,MAX_FADE_TIME_TIMES_ONE_HUNDRED) / 100.0f);
+      return brightness - delta_t;
+    }
+
+
     int calculateStep(int prevValue, int endValue)
     {
       int stepSize = endValue - prevValue;
@@ -38,12 +47,20 @@ namespace Easing {
     {
       if (stepSize) // If step is non-zero
       { 
-        if (stepSize > 0) {val += 1;}  //increment the value if step is positive...             
-        else if (stepSize < 0) {val -= 1;}  //...or decrement it if step is negative           
+        if (stepSize > 0) {
+          val += 1; //increment the value if step is positive... 
+        } else if (stepSize < 0) {
+          val -= 1;
+        }  //...or decrement it if step is negative           
       }
+
       // Defensive driving: make sure val stays in the range 0-255
-      if (val > 255) {val = 255;} 
-      else if (val < 0) {val = 0;}
+      if (val > 255) {
+        val = 255;
+      } else if (val < 0) {
+        val = 0;
+      }
+
       return val;
     }
 

@@ -7,8 +7,11 @@
 
 #include "melodyian.h"
 #include "midicc.h"
+#include "time.h"
 
 MIDI_CREATE_DEFAULT_INSTANCE();
+
+Timer * timer;
 
 void setup()  {
   
@@ -30,17 +33,21 @@ void setup()  {
   LED::readFromEEPROM();
   
   ArduinoInterface::stopMotors();
+
+  timer = new Timer();
 } 
 
 
 void loop()
 {
+  unsigned long dt = timer->step();
+
   bool midi_read = MIDI.read();
-  Battery::pingBatVoltage(midi_read); 
+  Battery::pingBatVoltage(midi_read);
 
   LED::writeEEPROMValues();
-  Sound::processSoundTriggers();
-  LED::processQueue();
+  Sound::processSoundTriggers(dt);
+  LED::processQueue(dt);
   Motor::actuateMotors();
  
 }

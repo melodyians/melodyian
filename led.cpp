@@ -12,7 +12,13 @@ namespace LED {
   byte fdr1; //currently used to store 'Red' value of LED
   byte fdr2; //currently used to store 'Green' value of LED
   byte fdr3; //currently used to store 'Blue' value of LED
-  byte fdr4; //currently used to store CC value of 'DYNAMICQCC' (a light queue which will pulse the LED when receiving an external CC message derived from live audio. Not actively used right now, but will in the future. Ask Scott if you're curious for more details about this.
+  float brightness = 1;
+  RGBColor myLEDColor;
+
+  // Used to store CC value of 'DYNAMICQCC' (a light queue which will pulse the 
+  // LED when receiving an external CC message derived from live audio.
+
+  byte color_pulse; 
 
   boolean lightOnState = false;
   boolean setColorAct = false;
@@ -20,8 +26,6 @@ namespace LED {
   boolean colorStoreReached = true;  //*****ONLY BEING USED IN INACTIVE fadeBetween() FUNCTION ******//
   int colorStore[3]; //*****ONLY BEING USED IN INACTIVE fadeBetween() FUNCTION ******//
 
-  float brightness = 1;
-  RGBColor myLEDColor;
   int queue; //the value of this variable determines which "light queues/patterns" are triggered in the loop() function below
 
   float xr;
@@ -42,6 +46,8 @@ namespace LED {
 
   // Formerly Rate1
   unsigned int colorRate = 1000;
+
+  bool new_pulse = false;
 
 
   int lightPresetData[24];
@@ -141,24 +147,6 @@ namespace LED {
   }
   */
 
-  //vvvvvv=======Functions Matt wrote...used for fading from mini stage code========vvvvv
-
-  RGBColor adjustBrightness(RGBColor color, float brightness)
-  {
-     if (brightness < 0) {
-      brightness = 0;
-     }
-
-     byte r = color.r * brightness;
-     byte g = color.g * brightness;
-     byte b = color.b * brightness;
-
-     RGBColor newcolor;
-     newcolor.r = r;
-     newcolor.g = g;
-     newcolor.b = b;
-     return newcolor;
-  }
 
   float getBrightness(float Time, float ActivationTime, float FadeTime)
   {
@@ -189,14 +177,6 @@ namespace LED {
   */
 
 
-  #define MIN_FADE_TIME_TIMES_ONE_HUNDRED 10
-  #define MAX_FADE_TIME_TIMES_ONE_HUNDRED 150
-
-  void decay(int elapsed_millis, int fadeSpeed) {
-    float delta_t = (elapsed_millis / 1000.0f) / (map(fadeSpeed,0,127,MIN_FADE_TIME_TIMES_ONE_HUNDRED,MAX_FADE_TIME_TIMES_ONE_HUNDRED) / 100.0f);
-    brightness = brightness - delta_t;
-  }
-
 
 
 
@@ -204,7 +184,7 @@ namespace LED {
   void altFlash()
   {
     if (lightOnState == true) {
-      myLEDColor = adjustBrightness(myLEDColor, brightness); 
+      myLEDColor = colorWithAdjustedBrightness(myLEDColor, brightness); 
       ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
     } else {
       ArduinoInterface::writeToLED(0, 0, 0);
@@ -213,13 +193,6 @@ namespace LED {
     lightOnState = !lightOnState;
     
   }
-
-  void dynamicPulse()
-  {       
-      RGBColor thisLEDColor = adjustBrightness(myLEDColor, brightness);
-      ArduinoInterface::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
-  }
-
 
   void triggerLightPreset(int preset_number) {
 
@@ -248,8 +221,31 @@ namespace LED {
 
   }
 
+  void setRandomColor() {
+    RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
+            
+    float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
+    float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
+    float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
 
-  void processQueue() {
+    // excerpted from ministage code
+    RGBColor temp_color = { 
+                            max(min(xr,255),0), 
+                            max(min(xg, 255),0), 
+                            max(min(xb, 255), 0) 
+                          }; 
+    brightness = 1;
+
+    myLEDColor = colorWithAdjustedBrightness(temp_color, brightness); 
+    ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+
+  }
+
+  void setLEDBlack() {
+    ArduinoInterface::writeToLED(0, 0, 0);
+  }
+
+  void processQueue(unsigned long dt) {
 
   //===========LED LIGHT QUEUES==========   
     switch (queue)
@@ -262,36 +258,13 @@ namespace LED {
       }  
       case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
       {
-        if (Flags::melodyOneAct()|| Flags::melodyOneAct())
-        {
-          if (Flags::noteOn())
-          {
-            RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
-            
-            float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
-            float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
-            float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
-
-              // excerpted from ministage code
-              RGBColor temp_color = { 
-                                      max(min(xr,255),0), 
-                                      max(min(xg, 255),0), 
-                                      max(min(xb, 255), 0) 
-                                    }; 
-              brightness = 1;
-
-              myLEDColor = adjustBrightness(temp_color, brightness); 
-              ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
-            }
-
-            else
-            {
-              ArduinoInterface::writeToLED(0, 0, 0);
-            }
-
-        } 
-        else 
-        {
+        if (Flags::melodyOneAct() || Flags::melodyTwoAct()) {
+          if (Flags::noteOn()) {
+            setRandomColor();
+          } else {
+            setLEDBlack();
+          }
+        } else {
 
           currentMillis = millis(); //get the current time
           unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
@@ -345,25 +318,33 @@ namespace LED {
         
       case DYNAMICQ_CC: //Dynamic Pulse Control
       {        
-        currentMillis = millis(); //get the current time
-        unsigned int timeElapsedSinceLastDim = currentMillis - previousMillis;
 
-        decay(timeElapsedSinceLastDim, fadeSpeed);    
-        
-        if (fdr4 >= 111) {brightness = 1;}
-        if (fdr4 >= 95 && fdr4 <= 110) {brightness = .75;}               
-        if (fdr4 >= 79 && fdr4 <= 94) {brightness = .6;}
-        if (fdr4 >= 63 && fdr4 <= 78) {brightness = .5;}
-        //if (fdr4 >= 55 && fdr4 <= 62) {brightness = .2;}
-        //if (fdr4 >= 47 && fdr4 <= 54) {brightness = .1;}
-        
+        /*
+        if the 'colorPulse' value has changed && colorPulse >= 63)
+        { scale the 'brightness' variable from .5 to 1 based on the value of 'colorPulse' from 63-127;
+        write to LED using the most recent R, G, B color values and 'brightness' value;
+        }
+        else {decrement brightness towards 0 by an amount as scaled by the 'fadeSpeed' value;}  
+        */
+
+        if (new_pulse && color_pulse >= 63) {
+          brightness = 0.01 * map (color_pulse, 63, 111, 50, 100);
+          if (brightness > 1.0) {
+            brightness = 1.0;
+          }
+        } else {
+          brightness = Easing::brightnessDecay(brightness, dt, fadeSpeed);  
+        }
+
+        new_pulse = false;        
 
         myLEDColor.r = fdr1;
         myLEDColor.g = fdr2;
         myLEDColor.b = fdr3;
 
-        dynamicPulse();     
-        previousMillis = currentMillis;
+        RGBColor thisLEDColor = colorWithAdjustedBrightness(myLEDColor, brightness);
+        ArduinoInterface::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
+
         break;
       }      
         
@@ -388,10 +369,11 @@ namespace LED {
     {
       if (value == 127) {
         armEEPROMwrite = true;
-      }
-      else {
+      } else {
         armEEPROMwrite = false;
       }
+
+      return;
     }
 
     if (number == WRITECOLOR_CC) //=====USED TO BE PITCH SHIFT WHEEL WHEN WORKING W/ MINI STAGE=====
@@ -449,9 +431,16 @@ namespace LED {
       fdr3 = Easing::smoothFade(value);
     }
     
-    if (number == DYNAMIC_CC) //test signal for Dynamic Pulse light control
+    if (number == DYNAMIC_CC) // Dynamic Pulse light control
     {
-      fdr4 = (value);
+      if (value == 127) {
+        queue = DYNAMIC_CC;
+      } else {
+        queue = 0;
+      }  
+
+      color_pulse = (value);
+      new_pulse = true;
     }
     
     if (number == SETCOLQ_CC) //'SET COLOR' Light queue toggle button
@@ -494,12 +483,6 @@ namespace LED {
 
       }
 
-    }
-
-    if (number == DYNAMICQ_CC) //Light queue toggle buttons
-    {
-      if (value == 127) {queue = number;}
-      else {queue = 0;}  
     }
 
       //============ ENCODERS ============
