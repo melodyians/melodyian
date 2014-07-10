@@ -440,7 +440,7 @@ namespace LED {
     if (number == DYNAMICQ_CC)
     {
       if (value == 127) {
-        queue = DYNAMIC_CC;
+        queue = DYNAMICQ_CC;
       } else {
         queue = 0;
       }  
