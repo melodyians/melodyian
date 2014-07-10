@@ -307,8 +307,7 @@ namespace LED {
           {            
             activeLightPreset++;
           }
-          //was working for 2 colors
-          //fadeBetween(colorStore, transColor, lightPreset1); //original fadeBetween test
+
           previousMillis = currentMillis; //set the last time we advanced the state of the animation          
         }  
         break;
@@ -319,24 +318,13 @@ namespace LED {
       case DYNAMICQ_CC: //Dynamic Pulse Control
       {        
 
-        /*
-        if the 'colorPulse' value has changed && colorPulse >= 63)
-        { scale the 'brightness' variable from .5 to 1 based on the value of 'colorPulse' from 63-127;
-        write to LED using the most recent R, G, B color values and 'brightness' value;
-        }
-        else {decrement brightness towards 0 by an amount as scaled by the 'fadeSpeed' value;}  
-        */
-
-        if (new_pulse && color_pulse >= 63) {
-          brightness = 0.01 * map (color_pulse, 63, 111, 50, 100);
-          if (brightness > 1.0) {
-            brightness = 1.0;
-          }
-        } else {
-          brightness = Easing::brightnessDecay(brightness, dt, fadeSpeed);  
+        if (new_pulse == true && color_pulse >= 1) //if Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, turn LED on using most recent color value and scale brightness based on CC value
+        {
+          brightness = 0.01 * map (color_pulse, 1, 127, 10, 100);
+          if (brightness > 1.0) {brightness = 1.0;}
         }
 
-        new_pulse = false;        
+        else {brightness = Easing::brightnessDecay(brightness, dt, fadeSpeed);}  //when Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading the LED brightness to 0 incrementally based on fadeSpeed value     
 
         myLEDColor.r = fdr1;
         myLEDColor.g = fdr2;
@@ -434,7 +422,8 @@ namespace LED {
     if (number == DYNAMIC_CC) // Dynamic Pulse light control
     {
       color_pulse = (value);
-      new_pulse = true;
+      if(value > 0) {new_pulse = true;}
+      else {new_pulse = false;}
     }
 
     if (number == DYNAMICQ_CC)

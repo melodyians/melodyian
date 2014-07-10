@@ -29,7 +29,7 @@ namespace Easing {
 
 
     #define MIN_FADE_TIME_TIMES_ONE_HUNDRED 10
-    #define MAX_FADE_TIME_TIMES_ONE_HUNDRED 150
+    #define MAX_FADE_TIME_TIMES_ONE_HUNDRED 80
 
     float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed) {
       float delta_t = (elapsed_millis / 1000.0f) / (map(fadeSpeed,0,127,MIN_FADE_TIME_TIMES_ONE_HUNDRED,MAX_FADE_TIME_TIMES_ONE_HUNDRED) / 100.0f);
