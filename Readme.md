@@ -1,4 +1,3 @@
-
 # TODOS
 
 Jim
@@ -63,3 +62,5 @@ MIDI CC | Functionality | Associated Variable Name(s)
 28 | trigger melody 1 | melody1Act
 29 | trigger melody 2 | melody2Act
 35 | activate keyboard control mode | keyModeAct
+40 | activate random color bypass mode | COLORJITTERBYPASS_CC
+41 | activate random note bypass mode | NOTEJITTERBYPASS_CC
