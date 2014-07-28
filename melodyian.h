@@ -1,7 +1,8 @@
 #pragma once
 
-#include "arduinotypes.h"
+#include "types.h"
 #include "midicc.h"
+#include "input.h"
 
 namespace Battery {
   void pingBatVoltage(bool midi_read);
@@ -29,12 +30,12 @@ namespace LED {
   void processLEDCC(byte channel, byte number, byte value);
   void readFromEEPROM();
   void writeEEPROMValues();
-  void processQueue(unsigned long dt);
+  void processQueue(unsigned long dt, InputValues * input_values);
 }
 
 
 namespace Sound {
-  void processSoundTriggers(unsigned long dt);
+  void processSoundTriggers(unsigned long dt, InputValues * input_values);
   void processSoundCC(byte channel, byte number, byte value);
 }
 

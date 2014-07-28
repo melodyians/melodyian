@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include "melodyian.h"
-#include "arduinotypes.h"
+#include "types.h"
 
 namespace ArduinoInterface {
   // Pins

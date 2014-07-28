@@ -1,5 +1,5 @@
 #pragma once
-#include "arduinotypes.h"
+#include "types.h"
 
 namespace Easing {
 

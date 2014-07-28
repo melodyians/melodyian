@@ -4,6 +4,7 @@
 #include "easing.h"
 #include "pitches.h"
 #include "midicc.h"
+#include "input.h"
 
 namespace Sound {
 
@@ -20,14 +21,20 @@ namespace Sound {
   //general rate value used by altFlash() & playMelody() functions and AUTOFADE light queue pattern 
   int toneRate = 1000; 
 
-  int noteJitter = 0; //'randomness' value of melody sequence playback (0 = 100% chance next note in melody sequence is played after the current note, 127 = equal probability of any other note from the sequence being played after the current note)
+  int randomness = 0; //'randomness' value of melody sequence playback (0 = 100% chance next note in melody sequence is played after the current note, 127 = equal probability of any other note from the sequence being played after the current note)
 
   int melody1[] = {NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0 /*rest*/, NOTE_B3, NOTE_C4};
 
   unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
-  void playMelody1(unsigned long dt)
+  void playMelody1(unsigned long dt, InputValues * input_values)
   { 
+
+    int noteJitter = 0;
+
+    if (*(input_values->bypass_random_note) == false) {
+      noteJitter = randomness;
+    }
     //tone(tonePin, melody1[notePosition]); //for debugging
      
     currentMillisTone = millis(); 
@@ -150,8 +157,15 @@ namespace Sound {
 
 
 
-  void playMelody2(unsigned long dt)
+  void playMelody2(unsigned long dt, InputValues * input_values)
   { 
+
+    int noteJitter = 0;
+
+    if (*(input_values->bypass_random_note) == false) {
+      noteJitter = randomness;
+    }
+
     currentMillisTone = millis();
 
     if (notePosition == melody2NoteLength) 
@@ -243,7 +257,7 @@ namespace Sound {
   }
 
   // TODO: Pass in Note Control stuff
-  void processSoundTriggers(unsigned long dt) {
+  void processSoundTriggers(unsigned long dt, InputValues * input_values) {
 
     if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && keyModeAct == false)
     {
@@ -256,14 +270,14 @@ namespace Sound {
       turnOnPowerIfOff();
       Flags::setMelodyTwo(false); //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
       keyModeAct = false;
-      playMelody1(dt);
+      playMelody1(dt, input_values);
     }
     else if (Flags::melodyTwoAct() )
     {
       turnOnPowerIfOff();
       Flags::setMelodyOne(false);
       keyModeAct = false;
-      playMelody2(dt);
+      playMelody2(dt, input_values);
     }
     else  //MANUAL MIDI NOTE PERFORMANCE
     {
@@ -291,7 +305,7 @@ namespace Sound {
 
     if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)
     {
-      noteJitter = value;
+      randomness = value;
     }
     
     if (number == MEL1TRIG_CC)

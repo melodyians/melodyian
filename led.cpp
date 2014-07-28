@@ -79,7 +79,8 @@ namespace LED {
   int lightPresetVal;
 
   int fadeSpeed = 0;  //will be used by 'DYNAMICQCC' light pattern, but not actively used now. Ask Scott if you're curious for more details....
-  float colorJitter = 0;  //variable used to randomize LED color
+  
+  float randomness = 0;  //variable used to randomize LED color
 
   int activeLightPreset = 1;
 
@@ -221,7 +222,7 @@ namespace LED {
 
   }
 
-  void setRandomColor() {
+  void setRandomColor(float colorJitter) {
     RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
             
     float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
@@ -245,7 +246,13 @@ namespace LED {
     ArduinoInterface::writeToLED(0, 0, 0);
   }
 
-  void processQueue(unsigned long dt) {
+  void processQueue(unsigned long dt, InputValues * input_values) {
+
+  float colorJitter = 0;
+
+  if (*(input_values->bypass_random_color) == false) {
+      colorJitter = randomness;
+  }
 
   //===========LED LIGHT QUEUES==========   
     switch (queue)
@@ -260,7 +267,12 @@ namespace LED {
       {
         if (Flags::melodyOneAct() || Flags::melodyTwoAct()) {
           if (Flags::noteOn()) {
-            setRandomColor();
+
+            if (*(input_values->bypass_random_color)) {
+              ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);
+            } else {
+              setRandomColor(colorJitter);
+            }
           } else {
             setLEDBlack();
           }
@@ -499,7 +511,7 @@ namespace LED {
     
     if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)
     {
-      colorJitter = map(value,0,127,0,1000)/1000.f;
+      randomness = map(value,0,127,0,1000)/1000.f;
     }
 
 

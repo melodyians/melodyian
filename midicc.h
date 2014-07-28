@@ -1,6 +1,6 @@
 #pragma once
 
-#include "arduinotypes.h"
+#include "types.h"
 
 #define RED_CC 20  //CC controlling 'Red' amount of LED (0 = red LED off, 127 = red LED at 100% brightness)
 #define GREEN_CC 21 //CC controlling 'Green' amount of LED
@@ -20,6 +20,9 @@
 #define KEYACT_CC 35 //CC activates manual 'keyboard' style note control (0 = off, 127 = active)
 
 #define BAT1VOLTREAD_CC 30 //CC number whose value (0-127) represents a scaled reading of the robots battery level
+
+#define COLORJITTERBYPASS_CC 40
+#define NOTEJITTERBYPASS_CC 41
 
 #define SETCOLQ_CC 52 //CC activates basic 'Set Color' light queue (static LED color control) (0 = inactive, 127 = active)
 #define FLASHQ_CC 53 //CC activates the 'Flash' light queue (0 = inactive, 127 = active)
