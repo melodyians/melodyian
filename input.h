@@ -28,6 +28,8 @@ public:
 
     bool * melody_one;
     bool * melody_two;
+    //bool * key_mode_act; //I didn't put this here originally, but the keyModeAct CC button seems to work just like melody_one and melody_two triggers...why?
+    //bool * MIDI_Panic; //do I need this too?
 
     bool * bypass_random_color;
     bool * bypass_random_note;

@@ -48,16 +48,21 @@ namespace Motor {
 namespace Flags {
   bool melodyOneAct();
   bool melodyTwoAct();
+  bool keyModeAct(); //*********added for new Flash when keyModeAct functionality********
   bool noteOn();
+  bool MIDInotePanic(); //****added for new MIDI note stop command****
 
   void setMelodyOne(bool);
   void setMelodyTwo(bool);
+  void setKeyMode(bool); //*********added for new Flash when keyModeAct functionality********
   void setNoteOn(bool);
+  void setMIDInotePanic(bool); //****added for new MIDI note stop command****
 }
 
 namespace NoteControl {
   void noteOnControl(byte channel, byte note, byte velocity);
   void noteOffControl(byte channel, byte note, byte velocity);
+  void allNoteOffControl();
   bool anyActingNotes();
   unsigned int currentHz();
 }

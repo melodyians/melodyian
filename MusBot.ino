@@ -8,7 +8,7 @@
 #include "melodyian.h"
 #include "midicc.h"
 #include "time.h"
-#include "input.h"
+#include "input.h" 
 #include "controlhandler.h"
 #include "smoothing.h"
 

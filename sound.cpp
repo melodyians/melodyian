@@ -14,7 +14,8 @@ namespace Sound {
   unsigned long lastNoteOnMillis = 0;
 
   //int keyStatus[] = {noteC3act, noteG3act, noteA3act};
-  bool keyModeAct = false;
+  //bool keyModeAct = false;   *******remove after enabling below setKeyMode() function********
+  //Flags::setKeyMode(false); //********adding for new FLASH queue functionality when keyModeAct() == true**********
   byte melody1NoteLength = 7; //Number of notes in a melody - 1 (the highest number address of matrix addresses in an 8x1 matrix (0-7))
 
 
@@ -259,7 +260,7 @@ namespace Sound {
   // TODO: Pass in Note Control stuff
   void processSoundTriggers(unsigned long dt, InputValues * input_values) {
 
-    if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && keyModeAct == false)
+    if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && /*keyModeAct == false*/Flags::keyModeAct() == false) //<-----**********uncomment for new FLASH when keyModeAct FUNCTIONALITY *********
     {
       ArduinoInterface::toneOff();
       turnOffPowerIfOn();
@@ -269,14 +270,16 @@ namespace Sound {
     {
       turnOnPowerIfOff();
       Flags::setMelodyTwo(false); //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
-      keyModeAct = false;
+      //keyModeAct = false;  //remove if below line enabled
+      Flags::setKeyMode(false);  //********Add for new FLASH - keyModeAct flag Functionality******
       playMelody1(dt, input_values);
     }
     else if (Flags::melodyTwoAct() )
     {
       turnOnPowerIfOff();
       Flags::setMelodyOne(false);
-      keyModeAct = false;
+      //keyModeAct = false;  //remove if below line enabled
+      Flags::setKeyMode(false);  //********Add for new FLASH - keyModeAct flag Functionality******
       playMelody2(dt, input_values);
     }
     else  //MANUAL MIDI NOTE PERFORMANCE
@@ -284,12 +287,22 @@ namespace Sound {
       turnOnPowerIfOff();
       Flags::setMelodyOne(false);
       Flags::setMelodyTwo(false);
-      
-      if (NoteControl::anyActingNotes()) {
+      if (NoteControl::anyActingNotes()){
+        Flags::setNoteOn(true);  //********Add for new FLASH - keyModeAct flag Functionality******
         ArduinoInterface::playTone(NoteControl::currentHz());
-      } else {
+      }
+      else {
+        Flags::setNoteOn(false);  //********Add for new FLASH - keyModeAct flag Functionality******
         ArduinoInterface::toneOff();
       }
+
+      if (Flags::MIDInotePanic() ) {
+          ArduinoInterface::toneOff();
+          NoteControl::allNoteOffControl();
+          Flags::setNoteOn(false);
+          Flags::setMIDInotePanic(false);
+      }
+
     }
 
   }
@@ -331,10 +344,18 @@ namespace Sound {
     if (number == KEYACT_CC)
     {
       if (value == 127) {
-        keyModeAct = true;
+        //keyModeAct = true;  // remove if below line is enabled
+        Flags::setKeyMode(true); //********Add if new FLASH - keyModeAct flag Functionality******
       } else {
-        keyModeAct = false;
+        //keyModeAct = false;  // remove if below line is enabled
+        Flags::setKeyMode(false); //********Add if new FLASH - keyModeAct flag Functionality******
       }
+    }
+
+    if (number == MIDIPANIC_CC)
+    {
+      if (value == 127) {Flags::setMIDInotePanic(true);}
+      else {Flags::setMIDInotePanic(false);}
     }
   }
 }

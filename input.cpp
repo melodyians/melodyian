@@ -20,7 +20,9 @@ InputValues::InputValues(int num_presets) {
     initInputPtr<bool>(melody_one);
     initInputPtr<bool>(melody_two);
 
-    initInputPtr<bool>(melody_one);
+    initInputPtr<bool>(melody_one); // is this necessary?
+    //initInputPtr<bool>(key_mode_act); //does this need to be here?
+    //initInputPtr<bool>(MIDI_Panic); //does this need to be here?
 
     initInputPtr<bool>(bypass_random_color);
     initInputPtr<bool>(bypass_random_note);   

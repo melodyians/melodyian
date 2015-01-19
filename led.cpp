@@ -265,7 +265,7 @@ namespace LED {
       }  
       case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
       {
-        if (Flags::melodyOneAct() || Flags::melodyTwoAct()) {
+        if (Flags::melodyOneAct() || Flags::melodyTwoAct() || Flags::keyModeAct()) { //<-------********uncomment for new FLASH when keyModeAct functionality**************
           if (Flags::noteOn()) {
 
             if (*(input_values->bypass_random_color)) {

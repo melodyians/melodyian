@@ -4,7 +4,7 @@ namespace MidiCC {
 
     void writeMidiCC(byte CC, byte value) {
       Serial.flush();
-      byte MIDICCmessage[3] = {176, CC, value}; //try changing byte to int
+      byte MIDICCmessage[3] = {176, CC, value}; 
         
       Serial.write(MIDICCmessage, 3);
       

@@ -18,7 +18,7 @@ namespace NoteControl {
   };
 
   bool anyActingNotes() {
-    for (int i = 0; i < NUM_NOTES; i++) {
+    for (int i = 0; i <= NUM_NOTES; i++) {
       if (acting_notes[i]) {
         return true;
       }
@@ -45,6 +45,12 @@ namespace NoteControl {
   //  w/ a 0 velocity value to turn notes off)
   void noteOffControl(byte channel, byte note, byte velocity) {
     acting_notes[note] = false;
+  }
+
+  //**********adding for new MIDInotePanic control functionality...
+  void allNoteOffControl() { 
+    for (int i = 0; i <= NUM_NOTES; i++)
+      {acting_notes[i] = false;}
   }
 
 }

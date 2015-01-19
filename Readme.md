@@ -59,8 +59,9 @@ MIDI CC | Functionality | Associated Variable Name(s)
 78 | randomness encoder value | colorJitter, noteJitter, JITTER_CC
 30 | battery 1 (arduino battery) voltage reading |
 31 | battery 2 (motor battery) voltage reading | no longer using 2nd battery, CC currently unused
-28 | trigger melody 1 | melody1Act
-29 | trigger melody 2 | melody2Act
+28 | trigger melody 1 | melody1Act, MEL1TRIG_CC
+29 | trigger melody 2 | melody2Act, MEL2TRIG_CC
 35 | activate keyboard control mode | keyModeAct
+123 | stop all playing MIDI notes (stuck notes) | MIDInotePanic, MIDIPANIC_CC
 40 | activate random color bypass mode | COLORJITTERBYPASS_CC
 41 | activate random note bypass mode | NOTEJITTERBYPASS_CC

@@ -18,6 +18,7 @@
 #define MEL1TRIG_CC 28 //CC triggers melody1 loop (0 = off, 127 = active)
 #define MEL2TRIG_CC 29 //CC triggers melody2 loop (0 = off, 127 = active)
 #define KEYACT_CC 35 //CC activates manual 'keyboard' style note control (0 = off, 127 = active)
+#define MIDIPANIC_CC 123//CC causes all playing/stuck MIDI notes to turn off (0 = not activated, 127 = active)
 
 #define BAT1VOLTREAD_CC 30 //CC number whose value (0-127) represents a scaled reading of the robots battery level
 
