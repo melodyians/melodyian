@@ -1,4 +1,55 @@
-# TODOS
+# Melodyian Arduino Code
+
+## Melodyian Architecture
+
+### Rough Architectural vision
+
+When first starting the Melodyian, we run a setup function that initializes the hardware, a class that represents the internals of the Robot's state (such as LED colors, motor inputs, what notes to play), and set up a mapping between input events to a set of single-purpose functions that handle updating the Robot's state based on input values.
+
+After the setup phase, when the Robot is running, we concurrently run two loops:
+
+* An event loop that runs in the background, accepting inputs and updating the Robot's state
+* A main loop that triggers on a regular basis, that processes any timed actions, and takes the Robot's internal state that we've stored and updated based on events and translates that to the hardware interface (to actuate the robot, change the LED colors, play sounds, etc.)
+
+In this vision: 
+
+* When each event that gets triggered (I.E. a MIDI note or control change), we consult a table that links from the particular event to the function that should be called to react to that event. Each function should contain only the logic necessary to update the Robot's state based on that input. In this way, we isolate the behavior changes based on each input.
+* The class representing the Robot's state provides an abstraction layer over any particular hardware. Input events should only ever write to this state, they should never directly write to hardware.
+* When we update the robot hardware, we always read from only the Robot state. All information about what the Robot should be a combination of what is stored in this state, and any timed actions we have set up.
+
+![High-Level Architecture](doc/architecture.png)
+
+### Running The Melodyian
+
+During Setup, we:
+
+* Initialize Hardware and Robot State
+* Set up Event Listener
+
+When we run, we:
+
+- Run an event loop that listens for input, and routes inputs to the functions that process the input. 
+    - In the current robot, events are handled by the MIDI interface
+    - We trigger responses to events by looking up the mapping from input to response in the ControlChangeHandler. In the future, this should have a full set of atomic mappings between inputs (MIDI notes) and changes to the robot's state. Right now, this is only implemented for a few bits of functionality -- most of the processing of the events is still done in the large process[LED/Motor/Sound]CC and note[On/Off]Control functions.
+- Run a main loop that once every X milliseconds -- the loop() function in arduino:
+    - Runs any timed processes -- such as updating the note in a melody, or processing the most recent queue value.
+    - Checks on the current values we have stored in our Robot State (Currently "InputValues"), and updates the hardware to reflect this 
+
+
+### Current State
+
+Currently we have some work to realize this vision.
+
+* We currently have the basis for a Robot State class in the InputValues class. This should be expanded to encapsulate the state values that exist within the LED, Motor, and Sound namespaces -- each of these can be stored within a specialized state component. 
+* We currently have the framework for the Event Handler in the ControlChangeHandler class. Right now only two of the newest functions live here -- next step is to port the logic out of the large processLEDCC, processMotorCC, and processSoundCC classes in to smaller functions that get registered against individual events, and write to the Robot State.
+* Right now logic to read from the Input/Robot state, and write to the hardware is distributed in the LED, Sound, and Motor namespaces. This should be centralized in one class or function that takes as an argument the time since the last update, the robot state, and the hardware interface, and writes ot the hardware.
+
+
+
+<!--
+# Old
+
+## TODOS
 
 Jim
 
@@ -26,7 +77,7 @@ Future:
 
 
 
-# Mini Model Code and CC Reference Notes:
+## Mini Model Code and CC Reference Notes:
 
 MIDI CC | Functionality | Associated Variable Name(s)
 ------------- | ------------- | ------------- 
@@ -65,3 +116,4 @@ MIDI CC | Functionality | Associated Variable Name(s)
 123 | stop all playing MIDI notes (stuck notes) | MIDInotePanic, MIDIPANIC_CC
 40 | activate random color bypass mode | COLORJITTERBYPASS_CC
 41 | activate random note bypass mode | NOTEJITTERBYPASS_CC
+-->
