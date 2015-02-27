@@ -4,7 +4,7 @@
 #include "easing.h"
 #include "pitches.h"
 #include "midicc.h"
-#include "input.h"
+#include "state.h"
 
 namespace Sound {
 
@@ -28,12 +28,12 @@ namespace Sound {
 
   unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
-  void playMelody1(unsigned long dt, InputValues * input_values)
+  void playMelody1(unsigned long dt, RobotState * robot_state)
   { 
 
     int noteJitter = 0;
 
-    if (*(input_values->bypass_random_note) == false) {
+    if (*(robot_state->bypass_random_note) == false) {
       noteJitter = randomness;
     }
     //tone(tonePin, melody1[notePosition]); //for debugging
@@ -158,12 +158,12 @@ namespace Sound {
 
 
 
-  void playMelody2(unsigned long dt, InputValues * input_values)
+  void playMelody2(unsigned long dt, RobotState * robot_state)
   { 
 
     int noteJitter = 0;
 
-    if (*(input_values->bypass_random_note) == false) {
+    if (*(robot_state->bypass_random_note) == false) {
       noteJitter = randomness;
     }
 
@@ -258,7 +258,7 @@ namespace Sound {
   }
 
   // TODO: Pass in Note Control stuff
-  void processSoundTriggers(unsigned long dt, InputValues * input_values) {
+  void processSoundTriggers(unsigned long dt, RobotState * robot_state) {
 
     if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && /*keyModeAct == false*/Flags::keyModeAct() == false) //<-----**********uncomment for new FLASH when keyModeAct FUNCTIONALITY *********
     {
@@ -272,7 +272,7 @@ namespace Sound {
       Flags::setMelodyTwo(false); //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
       //keyModeAct = false;  //remove if below line enabled
       Flags::setKeyMode(false);  //********Add for new FLASH - keyModeAct flag Functionality******
-      playMelody1(dt, input_values);
+      playMelody1(dt, robot_state);
     }
     else if (Flags::melodyTwoAct() )
     {
@@ -280,7 +280,7 @@ namespace Sound {
       Flags::setMelodyOne(false);
       //keyModeAct = false;  //remove if below line enabled
       Flags::setKeyMode(false);  //********Add for new FLASH - keyModeAct flag Functionality******
-      playMelody2(dt, input_values);
+      playMelody2(dt, robot_state);
     }
     else  //MANUAL MIDI NOTE PERFORMANCE
     {

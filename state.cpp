@@ -1,7 +1,7 @@
-#include "input.h"
+#include "state.h"
 #include "types.h"
 
-InputValues::InputValues(int num_presets) {
+RobotState::RobotState(int num_presets) {
 
     initInputPtr<byte>(red_slider);
     initInputPtr<byte>(green_slider);

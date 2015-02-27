@@ -8,10 +8,10 @@ void initInputPtr(T * ptr) {
 }
 
 
-class InputValues {
+class RobotState {
 
 public:
-    InputValues(int num_presets);
+    RobotState(int num_presets);
 
     byte * red_slider;
     byte * green_slider;

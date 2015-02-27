@@ -8,8 +8,8 @@
 #include "melodyian.h"
 #include "midicc.h"
 #include "time.h"
-#include "input.h" 
-#include "controlhandler.h"
+#include "state.h" 
+#include "inputhandler.h"
 #include "smoothing.h"
 
 MIDI_CREATE_DEFAULT_INSTANCE();
@@ -17,14 +17,14 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 #define NUM_LIGHT_PRESETS 8
 
 Timer * timer;
-InputValues * input_values;
-ControlChangeHandler * cc_handler;
+RobotState * robot_state;
+InputHandler * input_handler;
 
 void setup()  {
 
   timer = new Timer();
-  input_values = new InputValues(NUM_LIGHT_PRESETS);
-  cc_handler = new ControlChangeHandler(127);
+  robot_state = new RobotState(NUM_LIGHT_PRESETS);
+  input_handler = new InputHandler(127);
 
   
   MIDI.begin();
@@ -46,11 +46,11 @@ void setup()  {
   
   ArduinoInterface::stopMotors();
 
+  input_handler->registerInput(COLORJITTERBYPASS_CC, 
+      new StoreInputValue<bool>(robot_state->bypass_random_color, Smoothing::booleanButton));
   
-  cc_handler->addCommand(COLORJITTERBYPASS_CC, 
-      new StoreInputValue<bool>(input_values->bypass_random_color, Smoothing::booleanButton));
-  cc_handler->addCommand(NOTEJITTERBYPASS_CC, 
-      new StoreInputValue<bool>(input_values->bypass_random_note, Smoothing::booleanButton));
+  input_handler->registerInput(NOTEJITTERBYPASS_CC, 
+      new StoreInputValue<bool>(robot_state->bypass_random_note, Smoothing::booleanButton));
   
 } 
 
@@ -63,15 +63,15 @@ void loop()
   Battery::pingBatVoltage(midi_read);
 
   LED::writeEEPROMValues();
-  Sound::processSoundTriggers(dt, input_values);
-  LED::processQueue(dt, input_values);
+  Sound::processSoundTriggers(dt, robot_state);
+  LED::processQueue(dt, robot_state);
   Motor::actuateMotors();
  
 }
 
 void handleControlChange (byte channel, byte number, byte value)
 {
-  cc_handler->processMessage(channel, number, value);
+  input_handler->processInput(channel, number, value);
 
   LED::processLEDCC(channel, number, value);
   Motor::processMotorCC(channel, number, value);

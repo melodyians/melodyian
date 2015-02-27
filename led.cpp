@@ -246,11 +246,11 @@ namespace LED {
     ArduinoInterface::writeToLED(0, 0, 0);
   }
 
-  void processQueue(unsigned long dt, InputValues * input_values) {
+  void processQueue(unsigned long dt, RobotState * robot_state) {
 
   float colorJitter = 0;
 
-  if (*(input_values->bypass_random_color) == false) {
+  if (*(robot_state->bypass_random_color) == false) {
       colorJitter = randomness;
   }
 
@@ -268,7 +268,7 @@ namespace LED {
         if (Flags::melodyOneAct() || Flags::melodyTwoAct() || Flags::keyModeAct()) { //<-------********uncomment for new FLASH when keyModeAct functionality**************
           if (Flags::noteOn()) {
 
-            if (*(input_values->bypass_random_color)) {
+            if (*(robot_state->bypass_random_color)) {
               ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);
             } else {
               setRandomColor(colorJitter);

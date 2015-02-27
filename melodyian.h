@@ -2,7 +2,7 @@
 
 #include "types.h"
 #include "midicc.h"
-#include "input.h"
+#include "state.h"
 
 namespace Battery {
   void pingBatVoltage(bool midi_read);
@@ -30,12 +30,12 @@ namespace LED {
   void processLEDCC(byte channel, byte number, byte value);
   void readFromEEPROM();
   void writeEEPROMValues();
-  void processQueue(unsigned long dt, InputValues * input_values);
+  void processQueue(unsigned long dt, RobotState * robot_state);
 }
 
 
 namespace Sound {
-  void processSoundTriggers(unsigned long dt, InputValues * input_values);
+  void processSoundTriggers(unsigned long dt, RobotState * robot_state);
   void processSoundCC(byte channel, byte number, byte value);
 }
 
