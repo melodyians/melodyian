@@ -22,7 +22,7 @@ namespace Sound {
   //general rate value used by altFlash() & playMelody() functions and AUTOFADE light queue pattern 
   int toneRate = 1000; 
 
-  int randomness = 0; //'randomness' value of melody sequence playback (0 = 100% chance next note in melody sequence is played after the current note, 127 = equal probability of any other note from the sequence being played after the current note)
+  // int randomness = 0; //'randomness' value of melody sequence playback (0 = 100% chance next note in melody sequence is played after the current note, 127 = equal probability of any other note from the sequence being played after the current note)
 
   int melody1[] = {NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0 /*rest*/, NOTE_B3, NOTE_C4};
 
@@ -34,7 +34,7 @@ namespace Sound {
     int noteJitter = 0;
 
     if (*(robot_state->bypass_random_note) == false) {
-      noteJitter = randomness;
+      noteJitter = *(robot_state->randomness);
     }
     //tone(tonePin, melody1[notePosition]); //for debugging
      
@@ -164,7 +164,7 @@ namespace Sound {
     int noteJitter = 0;
 
     if (*(robot_state->bypass_random_note) == false) {
-      noteJitter = randomness;
+      noteJitter = *(robot_state->randomness);
     }
 
     currentMillisTone = millis();
@@ -316,11 +316,13 @@ namespace Sound {
       toneRate = Easing::mapRate1(value) * 2;
     }
 
+    /*
     if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)
     {
       randomness = value;
     }
-    
+    */
+
     if (number == MEL1TRIG_CC)
     {
       if (value == 127) {

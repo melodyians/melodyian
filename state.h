@@ -24,6 +24,7 @@ public:
 
     int * rate ;
     unsigned int * decay;
+
     float * randomness;
 
     bool * melody_one;

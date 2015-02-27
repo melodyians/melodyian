@@ -80,7 +80,7 @@ namespace LED {
 
   int fadeSpeed = 0;  //will be used by 'DYNAMICQCC' light pattern, but not actively used now. Ask Scott if you're curious for more details....
   
-  float randomness = 0;  //variable used to randomize LED color
+  // float randomness = 0;  //variable used to randomize LED color
 
   int activeLightPreset = 1;
 
@@ -251,7 +251,7 @@ namespace LED {
   float colorJitter = 0;
 
   if (*(robot_state->bypass_random_color) == false) {
-      colorJitter = randomness;
+      colorJitter = *(robot_state->randomness);
   }
 
   //===========LED LIGHT QUEUES==========   
@@ -509,10 +509,12 @@ namespace LED {
       fadeSpeed = (value);
     } 
     
+    /*
     if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)
     {
       randomness = map(value,0,127,0,1000)/1000.f;
     }
+    */
 
 
     //======Mod Wheel - Light Queue switcher

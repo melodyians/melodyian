@@ -9,6 +9,8 @@ namespace Smoothing {
 
   bool booleanButton(byte value);
 
+  float mapByteToThousand(byte value);
+
 }
 
 

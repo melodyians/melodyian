@@ -32,7 +32,7 @@ When we run, we:
     - In the current robot, events are handled by the MIDI interface
     - We trigger responses to events by looking up the mapping from input to response in the ControlChangeHandler. In the future, this should have a full set of atomic mappings between inputs (MIDI notes) and changes to the robot's state. Right now, this is only implemented for a few bits of functionality -- most of the processing of the events is still done in the large process[LED/Motor/Sound]CC and note[On/Off]Control functions.
 - Run a main loop that once every X milliseconds -- the loop() function in arduino:
-    - Runs any timed processes -- such as updating the note in a melody, or processing the most recent queue value.
+    - Runs any timed processes -- such as updating the note in a melody.
     - Checks on the current values we have stored in our Robot State (Currently "InputValues"), and updates the hardware to reflect this 
 
 
