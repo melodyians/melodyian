@@ -36,7 +36,6 @@ void initializeState() {
 }
 
 void initializeHardware() {
-  Serial.begin(57600);
   ArduinoInterface::setupPins();
   ArduinoInterface::stopMotors();
 }
@@ -45,6 +44,7 @@ void initializeInputs() {
   input_handler = new InputHandler(127);
 
   MIDI.begin();
+  Serial.begin(57600);
   MIDI.turnThruOff();
   
   // Think I need to do this so Arduino can work w/ any MIDI message Max will be sending it

@@ -1,5 +1,14 @@
 # Melodyian Arduino Code
 
+
+Pro Mini 3.3 =- 328
+
+Get FTDI Drivers
+http://www.ftdichip.com/FTDrivers.htm
+
+https://learn.sparkfun.com/tutorials/how-to-install-ftdi-drivers/mac#yosemite
+
+
 ## Melodyian Architecture
 
 ### Rough Architectural vision
