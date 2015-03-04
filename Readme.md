@@ -53,37 +53,25 @@ Currently we have some work to realize this vision.
 * We currently have the framework for the Event Handler in the ControlChangeHandler class. Right now only two of the newest functions live here -- next step is to port the logic out of the large processLEDCC, processMotorCC, and processSoundCC classes in to smaller functions that get registered against individual events, and write to the Robot State.
 * Right now logic to read from the Input/Robot state, and write to the hardware is distributed in the LED, Sound, and Motor namespaces. This should be centralized in one class or function that takes as an argument the time since the last update, the robot state, and the hardware interface, and writes ot the hardware.
 
+Music Bot Pinout:
 
-
-<!--
-# Old
-
-## TODOS
-
-Jim
-
-- Refactor NoteControl.cpp to accept all notes
-- Get Lemur, test it out
-    + See if I can get it talking to Node
-    + Scott send a copy of the Lemur Template
-    + Hairless Midi
-- Abstract out EEPROM
-    + Think about saving arbitrary melodies - 4x16
-- Leave Melodies alone -- eventually we'll just record melodies
-- Make Flags Abstract, use a map
-- Bluetooth Speed?????
-
-Scott:
-
-- Working on board stuff
-- Looking into sequencer template
-    + Programming a melody -- how to represent?
-- Looking at pre-programmed sequences in Max
-
-Future:
-
-- Start looking at modeling things in software
-
+Notes:
+• PWM Pins on Arduino Pro Mini are: 3, 5, 6, 9, 10, and 11
+• calling tone() on any pin will interfere w/ PWM output on pins 3 and 11 (on boards other than the Mega)
+• Based on MiniRobotCircuitDesign v2.1 (for PCB)
+STBY 4
+PWMA 5
+AIN1 3
+AIN2 2
+PWMB 6
+BIN1 7
+BIN2 8
+redPin 9
+greenPin 11
+bluePin 10
+tonePin 12
+ampSDNpin(amp shutdown pin) 13
+bat1MonPin A0
 
 
 ## Mini Model Code and CC Reference Notes:
