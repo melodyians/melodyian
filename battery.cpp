@@ -20,14 +20,14 @@ namespace Battery {
     // This seems like it might be causing issues with dropped messages, 
     // not sure if Arduino is able to send and receive MIDI messages at same time
     // comment this out to ensure smoother operation for now...
-    void pingBatVoltage(bool midi_read) {
+    void pingBatVoltage(bool midi_read, HardwareInterface * hardware) {
 
       currentMillis = millis();
       unsigned int timeElapsed = currentMillis - previousMillis;
 
       if (timeElapsed >= 5000 && midi_read == false) {
         //Read voltage at analog pins....
-        bat1MonPinVal = ArduinoInterface::readBattery();  // read the voltage on battery 1 divider
+        bat1MonPinVal = hardware->readBattery();  // read the voltage on battery 1 divider
         //bat2MonPinVal = analogRead(bat2MonPin);  // read the voltage on battery 2 divider  
         
         //Calculate and convert voltage to measure actual battery voltage...

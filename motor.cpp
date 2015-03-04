@@ -152,22 +152,22 @@ namespace Motor {
   }
 
 
-  void actuateMotors() {
+  void actuateMotors(HardwareInterface * hardware) {
 
     //============MOTOR CONTROLS===========
     steerControl(steerDirection);
 
     // MOTOR A
     if (motorAon) {
-      ArduinoInterface::moveMotor(0, motorAspeed, motorAdirection);
+      hardware->moveMotor(0, motorAspeed, motorAdirection);
     } else {
-      ArduinoInterface::moveMotor(0, 0, motorAdirection);
+      hardware->moveMotor(0, 0, motorAdirection);
     }
     // MOTOR B
     if (motorBon) {
-      ArduinoInterface::moveMotor(1, motorBspeed, motorBdirection);
+      hardware->moveMotor(1, motorBspeed, motorBdirection);
     } else {
-      ArduinoInterface::moveMotor(1, 0, motorBdirection);
+      hardware->moveMotor(1, 0, motorBdirection);
     }
     
   }

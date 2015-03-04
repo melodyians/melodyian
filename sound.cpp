@@ -28,7 +28,7 @@ namespace Sound {
 
   unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
-  void playMelody1(unsigned long dt, RobotState * robot_state)
+  void playMelody1(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware)
   { 
 
     int noteJitter = 0;
@@ -71,12 +71,12 @@ namespace Sound {
       if (timeElapsed <= noteDuration)
       {
         Flags::setNoteOn(true);
-        ArduinoInterface::playTone(melody1[notePosition]);       
+        hardware->playTone(melody1[notePosition]);       
       }  
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         Flags::setNoteOn(false);
-        ArduinoInterface::toneOff(); //silence for pause time 
+        hardware->toneOff(); //silence for pause time 
         //tone(tonePin, 0, pauseBetweenNotes);  
       }    
       else
@@ -124,13 +124,13 @@ namespace Sound {
       if (timeElapsed <= noteDuration)
       {
         Flags::setNoteOn(true);
-        ArduinoInterface::playTone(melody1[notePosition]);       
+        hardware->playTone(melody1[notePosition]);       
       }  
       
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         Flags::setNoteOn(false);
-        ArduinoInterface::toneOff(); //silence for pause time 
+        hardware->toneOff(); //silence for pause time 
         //tone(tonePin, 0, pauseBetweenNotes);  
       }    
       
@@ -158,7 +158,7 @@ namespace Sound {
 
 
 
-  void playMelody2(unsigned long dt, RobotState * robot_state)
+  void playMelody2(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware)
   { 
 
     int noteJitter = 0;
@@ -182,12 +182,12 @@ namespace Sound {
       if (timeElapsed <= noteDuration)
       {
         Flags::setNoteOn(true);
-        ArduinoInterface::playTone(melody2[notePosition]);       
+        hardware->playTone(melody2[notePosition]);       
       }  
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         Flags::setNoteOn(false);
-        ArduinoInterface::toneOff();       
+        hardware->toneOff();       
         //tone(tonePin, 0, pauseBetweenNotes);  
 
       }    
@@ -221,13 +221,13 @@ namespace Sound {
       if (timeElapsed <= noteDuration)
       {
         Flags::setNoteOn(true);
-        ArduinoInterface::playTone(melody2[notePosition]);       
+        hardware->playTone(melody2[notePosition]);       
       }  
       
       else if (timeElapsed > noteDuration && timeElapsed <= maxNoteEventLength)
       {
         Flags::setNoteOn(false);
-        ArduinoInterface::toneOff(); //silence for pause time 
+        hardware->toneOff(); //silence for pause time 
       }    
       
       else
@@ -245,59 +245,59 @@ namespace Sound {
   }
 
 
-  void turnOffPowerIfOn() {
-    if (ArduinoInterface::ampIsOn()) {
-      ArduinoInterface::setAmpPower(false);
+  void turnOffPowerIfOn(HardwareInterface * hardware) {
+    if (hardware->ampIsOn()) {
+      hardware->setAmpPower(false);
     } 
   }
 
-  void turnOnPowerIfOff() {
-    if (!ArduinoInterface::ampIsOn()) {
-      ArduinoInterface::setAmpPower(true);
+  void turnOnPowerIfOff(HardwareInterface * hardware) {
+    if (!hardware->ampIsOn()) {
+      hardware->setAmpPower(true);
     }
   }
 
   // TODO: Pass in Note Control stuff
-  void processSoundTriggers(unsigned long dt, RobotState * robot_state) {
+  void processSoundTriggers(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware) {
 
     if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && /*keyModeAct == false*/Flags::keyModeAct() == false) //<-----**********uncomment for new FLASH when keyModeAct FUNCTIONALITY *********
     {
-      ArduinoInterface::toneOff();
-      turnOffPowerIfOn();
+      hardware->toneOff();
+      turnOffPowerIfOn(hardware);
     }
 
     else if (Flags::melodyOneAct() )
     {
-      turnOnPowerIfOff();
+      turnOnPowerIfOff(hardware);
       Flags::setMelodyTwo(false); //I think this is needed to prevent melody performance conflicts if both melody trigger buttons are toggled 'on' at the same time...but will 1 loop of lag be audible?
       //keyModeAct = false;  //remove if below line enabled
       Flags::setKeyMode(false);  //********Add for new FLASH - keyModeAct flag Functionality******
-      playMelody1(dt, robot_state);
+      playMelody1(dt, robot_state, hardware);
     }
     else if (Flags::melodyTwoAct() )
     {
-      turnOnPowerIfOff();
+      turnOnPowerIfOff(hardware);
       Flags::setMelodyOne(false);
       //keyModeAct = false;  //remove if below line enabled
       Flags::setKeyMode(false);  //********Add for new FLASH - keyModeAct flag Functionality******
-      playMelody2(dt, robot_state);
+      playMelody2(dt, robot_state, hardware);
     }
     else  //MANUAL MIDI NOTE PERFORMANCE
     {
-      turnOnPowerIfOff();
+      turnOnPowerIfOff(hardware);
       Flags::setMelodyOne(false);
       Flags::setMelodyTwo(false);
       if (NoteControl::anyActingNotes()){
         Flags::setNoteOn(true);  //********Add for new FLASH - keyModeAct flag Functionality******
-        ArduinoInterface::playTone(NoteControl::currentHz());
+        hardware->playTone(NoteControl::currentHz());
       }
       else {
         Flags::setNoteOn(false);  //********Add for new FLASH - keyModeAct flag Functionality******
-        ArduinoInterface::toneOff();
+        hardware->toneOff();
       }
 
       if (Flags::MIDInotePanic() ) {
-          ArduinoInterface::toneOff();
+          hardware->toneOff();
           NoteControl::allNoteOffControl();
           Flags::setNoteOn(false);
           Flags::setMIDInotePanic(false);

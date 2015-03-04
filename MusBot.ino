@@ -18,13 +18,15 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 Timer * timer;
 RobotState * robot_state;
 InputHandler * input_handler;
+HardwareInterface * hardware_interface;
 
 void setup()  {
 
   timer = new Timer();
 
+  hardware_interface = new ArduinoInterface();
+
   initializeState();
-  initializeHardware();
   initializeInputs();
   
 } 
@@ -36,10 +38,6 @@ void initializeState() {
   robot_state = new RobotState(led_storage);
 }
 
-void initializeHardware() {
-  ArduinoInterface::setupPins();
-  ArduinoInterface::stopMotors();
-}
 
 void initializeInputs() {
   input_handler = new InputHandler(127);
@@ -120,6 +118,8 @@ void initializeInputs() {
 }
 
 
+
+
 void loop()
 {
   // Move our clock forward
@@ -130,16 +130,34 @@ void loop()
 
   // Disabled -- this seems to unpredictbly impact 
   // the state of the LED, and I have no idea why.
-  //Battery::pingBatVoltage(midi_read);
+  //Battery::pingBatVoltage(midi_read, hardware_interface);
   
   // TODO: Pull out to behavior
   // LED::writeEEPROMValues();
 
   // Update our Robot from our current state
-  Sound::processSoundTriggers(dt, robot_state);
-  LED::updateLEDBehavior(robot_state, dt);
-  Motor::actuateMotors();
- 
+  //Sound::processSoundTriggers(dt, robot_state, hardware_interface);
+  LED::updateLEDBehavior(robot_state, hardware_interface, dt);
+  //Motor::actuateMotors(hardware_interface);
+
+  debug(dt);
+}
+
+
+unsigned long debug_every = 3000;
+unsigned long debug_timer = 0;
+
+void debug(unsigned long dt) {
+
+    debug_timer = debug_timer + dt;
+    if (debug_timer > debug_every) {
+      debug_timer = 0;
+      MidiCC::writeMidiCC(RED_CC, *(robot_state->red_slider));
+      MidiCC::writeMidiCC(GREEN_CC, *(robot_state->green_slider));
+      MidiCC::writeMidiCC(BLUE_CC, *(robot_state->blue_slider));
+    }
+
+
 }
 
 void handleControlChange (byte channel, byte number, byte value)

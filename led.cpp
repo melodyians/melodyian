@@ -76,6 +76,8 @@ namespace LED {
   */
 
 
+  /*
+
   void setRandomColor(float colorJitter, RobotState * robot_state) {
     RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
             
@@ -99,8 +101,9 @@ namespace LED {
   void setLEDBlack() {
     ArduinoInterface::writeToLED(0, 0, 0);
   }
+  */
 
-  void updateLEDBehavior(RobotState * robot_state, unsigned long dt) {
+  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned long dt) {
 
     float colorJitter = 0;
 
@@ -114,9 +117,9 @@ namespace LED {
       case SETCOLQ_CC:
       {
         //COLOR SET AND MANUAL FADE
-        ArduinoInterface::writeToLED(*(robot_state->red_slider), 
-                                     *(robot_state->green_slider), 
-                                     *(robot_state->blue_slider));               
+        hardware->writeToLED(*(robot_state->red_slider), 
+                             *(robot_state->green_slider), 
+                             *(robot_state->blue_slider));               
         break;
       }
 
@@ -188,6 +191,7 @@ namespace LED {
       }
       */       
         
+      /*
       case DYNAMICQ_CC: //Dynamic Pulse Control
       {                
         if (*(robot_state->new_pulse) == true && *(robot_state->color_pulse) >= 1) //if Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, turn LED on using most recent color value and scale brightness based on CC value
@@ -213,13 +217,14 @@ namespace LED {
 
         break;
       }
+      */
         
       default:
       {
         if (setColorAct == true) {
           queue = SETCOLQ_CC;
         } else {
-          ArduinoInterface::writeToLED(0, 0, 0);
+          hardware->writeToLED(0, 0, 0);
         }
       } 
     }

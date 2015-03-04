@@ -5,7 +5,7 @@
 template<typename T>
 void initInputPtr(T * ptr) {
     ptr = new T;
-    *ptr = 0;
+    //*ptr = 0;
 }
 
 
