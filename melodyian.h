@@ -3,6 +3,7 @@
 #include "types.h"
 #include "midicc.h"
 #include "state.h"
+#include "colorhelper.h"
 
 namespace Battery {
   void pingBatVoltage(bool midi_read);
@@ -13,6 +14,7 @@ namespace ArduinoInterface {
   void setupPins();
 
   void writeToLED(byte red, byte green, byte blue);
+  void writeToLED(RGBColor color);
 
   void moveMotor(int motor, int motorSpeed, int motorDirection);
   void stopMotors();
@@ -28,9 +30,7 @@ namespace ArduinoInterface {
 
 namespace LED {
   void processLEDCC(byte channel, byte number, byte value);
-  void readFromEEPROM();
-  void writeEEPROMValues();
-  void processQueue(unsigned long dt, RobotState * robot_state);
+  void updateLEDBehavior(RobotState * robot_state, unsigned long dt);
 }
 
 

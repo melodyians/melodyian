@@ -25,7 +25,7 @@ namespace ArduinoInterface {
   const byte tonePin = 12;
   const byte ampSDNpin = 13;
 
-  const byte bat1MonPin = 0;    // input pin for battery 1 divider
+  //const byte bat1MonPin = A0;    // input pin for battery 1 divider
   //byte bat2MonPin = 1;  //input pin for battery 2 divider
 
 
@@ -56,6 +56,13 @@ namespace ArduinoInterface {
     analogWrite(redPin, red);
     analogWrite(greenPin, green);
     analogWrite(bluePin, blue);
+  }
+
+  void writeToLED(RGBColor color)
+  { 
+    analogWrite(redPin, color.r);
+    analogWrite(greenPin, color.g);
+    analogWrite(bluePin, color.b);
   }
 
   /**************DC MOTOR CONTROL FUNCTIONS***************/
@@ -100,7 +107,7 @@ namespace ArduinoInterface {
 
   int readBattery()
   { 
-    return analogRead(bat1MonPin);
+    return analogRead(A0);
   }
 
   void playTone(unsigned int freq) {
@@ -124,6 +131,3 @@ namespace ArduinoInterface {
   }
 
 }
-
-
-

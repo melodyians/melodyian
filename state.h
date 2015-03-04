@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "colorhelper.h"
 
 template<typename T>
 void initInputPtr(T * ptr) {
@@ -8,38 +9,73 @@ void initInputPtr(T * ptr) {
 }
 
 
-class RobotState {
+class LEDStorage {
+
+private:
+    int * lightPresetData;
 
 public:
-    RobotState(int num_presets);
+
+    LEDStorage();
+
+    int ** lightPresetArray;
+
+    int* getLightPresetPtr(int i);
+
+    void readFromEEPROM();
+    void saveToEEPROM(int lightPresetVal);
+};
+
+
+class RobotState {
+
+
+public:
+    RobotState(LEDStorage * led_storage);
+
+    RGBColor robot_led_color;
+    LEDStorage * led_storage;
 
     byte * red_slider;
     byte * green_slider;
     byte * blue_slider;
 
-    bool * set_color_button;
-    bool * flash_button;
-    bool * auto_fade_button;
-    bool * dynamic_pulse_button;
-
-    int * rate ;
+    int * rate;
     unsigned int * decay;
-
     float * randomness;
-
-    bool * melody_one;
-    bool * melody_two;
-    //bool * key_mode_act; //I didn't put this here originally, but the keyModeAct CC button seems to work just like melody_one and melody_two triggers...why?
-    //bool * MIDI_Panic; //do I need this too?
 
     bool * bypass_random_color;
     bool * bypass_random_note;
 
-    bool * clear_light_preset;
-    bool * save_light_preset;
-
-    bool * arm_storage;
-
     bool ** light_preset_buttons;
 
+    // variable for storing last selected lightPreset value (1-8)
+    int * lightPresetSelect;
+
+    int * activeLightPreset;
+
+    bool * arm_rec;
+    bool * save_color; 
+
+    int transColor[3];
+
+    unsigned int * color_pulse;
+    bool * new_pulse;
+
+    int* getActiveLightPresetPtr();
+
+
+    bool * color_on;
+    unsigned int * current_light_behavior;
+
+
 };
+
+/*
+class RobotBehavior {
+    public:
+        virtual void update(RobotState * robot_state, unsigned long dt) = 0;
+}
+*/
+
+

@@ -22,7 +22,6 @@ void InputHandler::registerInput(byte control_number, Command * command) {
 
     int cn = control_number;
 
-    // 
     CommandList * this_command = new CommandList(command, NULL);
 
     if (this->commands[cn] != 0) {
@@ -49,12 +48,13 @@ void InputHandler::processInput(byte channel, byte control_number, byte value) {
     if (this->commands[cn] != 0) {
 
         // Get the list of handlers we have registered for this number
-        CommandList * list = this->commands[control_number];
+        CommandList * list_node = this->commands[control_number];
 
         // Execute all of them
         do {
-            list->command->execute(control_number, value);
-        } while (list->next != NULL);
+            list_node->command->execute(control_number, value);
+            list_node = list_node->next;
+        } while (list_node != NULL);
 
     }
     

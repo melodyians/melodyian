@@ -21,6 +21,7 @@ namespace Battery {
     // not sure if Arduino is able to send and receive MIDI messages at same time
     // comment this out to ensure smoother operation for now...
     void pingBatVoltage(bool midi_read) {
+
       currentMillis = millis();
       unsigned int timeElapsed = currentMillis - previousMillis;
 
@@ -53,8 +54,12 @@ namespace Battery {
         //Scale readings...
         byte bat1VoltageCCVal = map(bat1VoltageIntConv, 330, 420, 0, 127);
         //byte bat2VoltageCCVal = map(bat2VoltageIntConv, 330, 420, 0, 127);
-            
+        
+        // TODO re-enable    
         MidiCC::writeMidiCC(BAT1VOLTREAD_CC, bat1VoltageCCVal);
+
+
+
         //MIDICC_TX(31, bat2VoltageCCVal);
            
         /*

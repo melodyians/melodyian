@@ -43,7 +43,7 @@ namespace Smoothing {
         encdrVal = map(value, 85, 127, 1001, 5000);
       }
 
-      return encdrVal;
+      return encdrVal * 2;
     } 
 
     bool booleanButton(byte value) {

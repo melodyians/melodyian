@@ -1,107 +1,37 @@
 #include <Arduino.h>
-#include <EEPROM.h>
 
 #include "melodyian.h"
 #include "easing.h"
 #include "colorhelper.h"
 
-using namespace ColorHelper;
-
 namespace LED {
 
-  byte fdr1; //currently used to store 'Red' value of LED
-  byte fdr2; //currently used to store 'Green' value of LED
-  byte fdr3; //currently used to store 'Blue' value of LED
+
   float brightness = 1;
-  RGBColor myLEDColor;
+
+  //RGBColor myLEDColor;
 
   // Used to store CC value of 'DYNAMICQCC' (a light queue which will pulse the 
   // LED when receiving an external CC message derived from live audio.
 
-  byte color_pulse; 
 
   boolean lightOnState = false;
   boolean setColorAct = false;
 
-  boolean colorStoreReached = true;  //*****ONLY BEING USED IN INACTIVE fadeBetween() FUNCTION ******//
-  int colorStore[3]; //*****ONLY BEING USED IN INACTIVE fadeBetween() FUNCTION ******//
 
   int queue; //the value of this variable determines which "light queues/patterns" are triggered in the loop() function below
-
-  float xr;
-  float xg;
-  float xb;
-
-  int transColor[3] = {0, 0, 0}; //starts off as 'black' (no light)
-  int modWheel = 1; //**********THIS IS NOT BEING USED FOR ANYTHING RIGHT NOW*******//
-
-  boolean armEEPROMwrite = false;
-  // would like to rename, will eventually be a virtual button to toggle the arming of EEPROMwrite...
-  boolean pShift = false; 
 
 
   unsigned long currentMillis = 0;
   unsigned long previousMillis = 0;
 
 
-  // Formerly Rate1
-  unsigned int colorRate = 1000;
-
-  bool new_pulse = false;
-
-
-  int lightPresetData[24];
-
-  // Pointers to position in the int array.
-  // Each pointer advances 3 indexes in the array, representing 3 bytes.
-  int* lightPreset1 = lightPresetData;
-  int* lightPreset2 = lightPresetData + 3*1; //3 4 5
-  int* lightPreset3 = lightPresetData + 3*2;
-  int* lightPreset4 = lightPresetData + 3*3;
-  int* lightPreset5 = lightPresetData + 3*4;
-  int* lightPreset6 = lightPresetData + 3*5;
-  int* lightPreset7 = lightPresetData + 3*6;
-  int* lightPreset8 = lightPresetData + 3*7;
-
-  int *lightPresetArray[8] = {
-    lightPreset1,
-    lightPreset2,
-    lightPreset3,
-    lightPreset4,
-    lightPreset5,
-    lightPreset6,
-    lightPreset7,
-    lightPreset8
-  };
-
-
-  int lightPresetSelect = 1; //variable for storing last selected lightPreset value (1-8)
-  int lightPresetVal;
-
-  int fadeSpeed = 0;  //will be used by 'DYNAMICQCC' light pattern, but not actively used now. Ask Scott if you're curious for more details....
-  
-  // float randomness = 0;  //variable used to randomize LED color
-
-  int activeLightPreset = 1;
-
-  int* getLightPresetPtr(int i)
-  {
-    return lightPreset1 + (i-1)*3;
-  }
-
-  int* getActiveLightPresetPtr()
-  {
-     if (activeLightPreset > 8) {
-        activeLightPreset = 8;
-     }
-    
-     return getLightPresetPtr(activeLightPreset); 
-  }
 
 
   //================LED COLOR PRESET STORAGE & RECALL FUNCTIONS================
 
 
+  /*
   void crossFade(int color1[3], int color2[3])
   {
     //writeToLED....SHOW color1 first!
@@ -131,62 +61,11 @@ namespace LED {
   }
 
 
-  /*
-  void fadeBetween(int colorStore[3], int transColor[3], int color2[3]) // ***NOT USING THIS FUNCTION CURRENTLY...BUT MAY LIKE TO IN FUTURE** ORIGINAL fadeBetween function that works w/ lightPreset array input for third parameter
-  {
-   
-   int thisColorStore = Color(colorStore[0], colorStore[1], colorStore[2]);
-   int thisTransColor = Color(transColor[0], transColor[1], transColor[2]);
-   int thisColor2 = Color(color2[0], color2[1], color2[2]);
-   
-   if (thisTransColor == thisColorStore) {colorStoreReached = true;}
-   if (thisTransColor == thisColor2) {colorStoreReached = false;}
-    
-   if (colorStoreReached == true) {crossFade(transColor, color2);}
-   else {crossFade(transColor, colorStore);}
-
-  }
-  */
-
-
-  float getBrightness(float Time, float ActivationTime, float FadeTime)
-  {
-    if(Time < ActivationTime)
-      return 0.0f;
-    if(Time > ActivationTime + FadeTime)
-      return 0.0f;
-    float b = 1 - ((Time - ActivationTime) / (FadeTime)); 
-    if(b < 0)
-      b = 0;
-    return b;
-  }
-
-  float getActivateTime(int pixelIndex, float secondsPerCycle, int numberOfPixels)
-  {  
-    return pixelIndex * (secondsPerCycle / ((float)numberOfPixels));
-  }
-
-
-  /*
-  void flash(byte redBrightness, byte greenBrightness, byte blueBrightness)
-  {  
-    if (lightOnState == true) {writeToLED(redBrightness, greenBrightness, blueBrightness);}  
-    else {writeToLED(0, 0, 0);}
-    
-    lightOnState = !lightOnState;   
-  }
-  */
-
-
-
-
-
-
-  void altFlash()
+  void altFlash(RobotState * robot_state)
   {
     if (lightOnState == true) {
-      myLEDColor = colorWithAdjustedBrightness(myLEDColor, brightness); 
-      ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+      robot_state->robot_led_color = colorWithAdjustedBrightness(robot_state->robot_led_color, brightness); 
+      ArduinoInterface::writeToLED(robot_state->robot_led_color);
     } else {
       ArduinoInterface::writeToLED(0, 0, 0);
     }
@@ -194,40 +73,15 @@ namespace LED {
     lightOnState = !lightOnState;
     
   }
+  */
 
-  void triggerLightPreset(int preset_number) {
 
-    int* lightPresetPtr = lightPresetArray[preset_number - 1];
-
-    lightPresetVal = preset_number;
-    lightPresetSelect = preset_number;
-        
-    if (pShift == false) {
-      fdr1 = lightPresetPtr[0];
-      fdr2 = lightPresetPtr[1];
-      fdr3 = lightPresetPtr[2];
-    } else {
-      lightPresetPtr[0] = fdr1;
-      lightPresetPtr[1] = fdr2;
-      lightPresetPtr[2] = fdr3; 
-    }
-    
-    transColor[0] = lightPresetPtr[0];
-    transColor[1] = lightPresetPtr[1];
-    transColor[2] = lightPresetPtr[2];
-    
-    colorStore[0] = lightPresetPtr[0];
-    colorStore[1] = lightPresetPtr[1];
-    colorStore[2] = lightPresetPtr[2];
-
-  }
-
-  void setRandomColor(float colorJitter) {
+  void setRandomColor(float colorJitter, RobotState * robot_state) {
     RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
             
-    float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
-    float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
-    float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
+    float xr = colorJitter * random_color.r + ((1 - colorJitter) * *(robot_state->red_slider));
+    float xg = colorJitter * random_color.g + ((1 - colorJitter) * *(robot_state->green_slider));
+    float xb = colorJitter * random_color.b + ((1 - colorJitter) * *(robot_state->blue_slider));
 
     // excerpted from ministage code
     RGBColor temp_color = { 
@@ -237,8 +91,8 @@ namespace LED {
                           }; 
     brightness = 1;
 
-    myLEDColor = colorWithAdjustedBrightness(temp_color, brightness); 
-    ArduinoInterface::writeToLED(myLEDColor.r, myLEDColor.g, myLEDColor.b);
+    robot_state->robot_led_color = colorWithAdjustedBrightness(temp_color, brightness); 
+    ArduinoInterface::writeToLED(robot_state->robot_led_color);
 
   }
 
@@ -246,32 +100,39 @@ namespace LED {
     ArduinoInterface::writeToLED(0, 0, 0);
   }
 
-  void processQueue(unsigned long dt, RobotState * robot_state) {
+  void updateLEDBehavior(RobotState * robot_state, unsigned long dt) {
 
-  float colorJitter = 0;
+    float colorJitter = 0;
 
-  if (*(robot_state->bypass_random_color) == false) {
-      colorJitter = *(robot_state->randomness);
-  }
+    if (*(robot_state->bypass_random_color) == false) {
+        colorJitter = *(robot_state->randomness);
+    }
 
-  //===========LED LIGHT QUEUES==========   
+    //===========LED LIGHT QUEUES==========   
     switch (queue)
     {   
       case SETCOLQ_CC:
       {
         //COLOR SET AND MANUAL FADE
-        ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);               
+        ArduinoInterface::writeToLED(*(robot_state->red_slider), 
+                                     *(robot_state->green_slider), 
+                                     *(robot_state->blue_slider));               
         break;
-      }  
+      }
+
+      /*
       case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
       {
         if (Flags::melodyOneAct() || Flags::melodyTwoAct() || Flags::keyModeAct()) { //<-------********uncomment for new FLASH when keyModeAct functionality**************
           if (Flags::noteOn()) {
 
             if (*(robot_state->bypass_random_color)) {
-              ArduinoInterface::writeToLED(fdr1, fdr2, fdr3);
+                ArduinoInterface::writeToLED(*(robot_state->red_slider), 
+                                     *(robot_state->green_slider), 
+                                     *(robot_state->blue_slider));   
+
             } else {
-              setRandomColor(colorJitter);
+              setRandomColor(colorJitter, robot_state);
             }
           } else {
             setLEDBlack();
@@ -281,21 +142,21 @@ namespace LED {
           currentMillis = millis(); //get the current time
           unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
 
-          if(timeElapsed > (colorRate / 8)) //check if we need to advance the state of the animation
+          if(timeElapsed > (*(robot_state->rate) / 8)) //check if we need to advance the state of the animation
           { 
             RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
 
-            float xr = colorJitter * random_color.r + ((1 - colorJitter) * fdr1);
-            float xg = colorJitter * random_color.g + ((1 - colorJitter) * fdr2);
-            float xb = colorJitter * random_color.b + ((1 - colorJitter) * fdr3);
+            float xr = colorJitter * random_color.r + ((1 - colorJitter) * *(robot_state->red_slider));
+            float xg = colorJitter * random_color.g + ((1 - colorJitter) * *(robot_state->green_slider));
+            float xb = colorJitter * random_color.b + ((1 - colorJitter) * *(robot_state->blue_slider));
 
             RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
             brightness = 1;
 
-            myLEDColor = temp_color;
+            robot_state->robot_led_color = temp_color;
 
-            altFlash();
-          //go to the first state
+            altFlash(robot_state);
+            //go to the first state
             previousMillis = currentMillis; //set the last time we advanced the state of the animation
           }
         } 
@@ -308,7 +169,7 @@ namespace LED {
         currentMillis = millis(); //get the current time
         unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
         
-        if(timeElapsed > colorRate / 16) //rate1 represents how much time must pass between updates of the animation - we divide it by 16 to get it in a good range
+        if(timeElapsed > *(robot_state->rate) / 16) //rate1 represents how much time must pass between updates of the animation - we divide it by 16 to get it in a good range
         {
           if(activeLightPreset >= lightPresetSelect + 1)
           {
@@ -324,29 +185,34 @@ namespace LED {
         }  
         break;
  
-      }       
-        
+      }
+      */       
         
       case DYNAMICQ_CC: //Dynamic Pulse Control
-      {        
-
-        if (new_pulse == true && color_pulse >= 1) //if Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, turn LED on using most recent color value and scale brightness based on CC value
+      {                
+        if (*(robot_state->new_pulse) == true && *(robot_state->color_pulse) >= 1) //if Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, turn LED on using most recent color value and scale brightness based on CC value
         {
-          brightness = 0.01 * map (color_pulse, 1, 127, 10, 100);
-          if (brightness > 1.0) {brightness = 1.0;}
+          brightness = 0.01 * map (*(robot_state->color_pulse), 1, 127, 10, 100);
+          if (brightness > 1.0) {
+            brightness = 1.0;
+          }
         }
 
-        else {brightness = Easing::brightnessDecay(brightness, dt, fadeSpeed);}  //when Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading the LED brightness to 0 incrementally based on fadeSpeed value     
+        else {
 
-        myLEDColor.r = fdr1;
-        myLEDColor.g = fdr2;
-        myLEDColor.b = fdr3;
+          brightness = Easing::brightnessDecay(brightness, dt, *(robot_state->decay));
+        }  //when Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading the LED brightness to 0 incrementally based on fadeSpeed value     
 
-        RGBColor thisLEDColor = colorWithAdjustedBrightness(myLEDColor, brightness);
-        ArduinoInterface::writeToLED(thisLEDColor.r, thisLEDColor.g, thisLEDColor.b);
+        // Probably a common function
+        robot_state->robot_led_color.r = *(robot_state->red_slider);
+        robot_state->robot_led_color.g = *(robot_state->blue_slider);
+        robot_state->robot_led_color.b = *(robot_state->green_slider);
+
+        robot_state->robot_led_color = colorWithAdjustedBrightness(robot_state->robot_led_color, brightness);
+        ArduinoInterface::writeToLED(robot_state->robot_led_color);
 
         break;
-      }      
+      }
         
       default:
       {
@@ -364,80 +230,9 @@ namespace LED {
   void processLEDCC(byte channel, byte number, byte value) 
   {
 
-    // ===EEPROM ARM BUTTON TOGGLE
-    if (number == ARMEEPROM_CC)
-    {
-      if (value == 127) {
-        armEEPROMwrite = true;
-      } else {
-        armEEPROMwrite = false;
-      }
+    //  QUEUE TOGGLE BUTTONS
 
-      return;
-    }
-
-    if (number == WRITECOLOR_CC) //=====USED TO BE PITCH SHIFT WHEEL WHEN WORKING W/ MINI STAGE=====
-    {
-      if (value > 120) {
-      
-        pShift = true;
-      
-      } else if (value < 26) {
-      
-       fdr1 = 0;
-       fdr2 = 0;
-       fdr3 = 0;
-       pShift = false; 
-      
-      } else {
-      
-        pShift = false;
-      
-      }
-    }
-
-    // Preset Triggers
-    if (number == TRIGLP1_CC) { 
-      triggerLightPreset(1);
-    } else if (number == TRIGLP2_CC) {
-      triggerLightPreset(2);
-    } else if (number == TRIGLP3_CC) {
-      triggerLightPreset(3);
-    } else if (number == TRIGLP4_CC) {
-      triggerLightPreset(4);
-    } else if (number == TRIGLP5_CC) { 
-      triggerLightPreset(5);
-    } else if (number == TRIGLP6_CC) { 
-      triggerLightPreset(6);
-    } else if (number == TRIGLP7_CC) { 
-      triggerLightPreset(7);
-    } else if (number == TRIGLP8_CC) { 
-      triggerLightPreset(8);
-    }
-    
-    //==================LIGHT FADERS & QUEUE TOGGLE BUTTONS
-    if (number == RED_CC)
-    {
-      fdr1 = Easing::smoothFade(value);
-    }
-    
-    if (number == GREEN_CC)
-    {
-      fdr2 = Easing::smoothFade(value);
-    }
-    
-    if (number == BLUE_CC)
-    {
-      fdr3 = Easing::smoothFade(value);
-    }
-    
-    if (number == DYNAMIC_CC) // Dynamic Pulse light control
-    {
-      color_pulse = (value);
-      if(value > 0) {new_pulse = true;}
-      else {new_pulse = false;}
-    }
-
+    /*
     if (number == DYNAMICQ_CC)
     {
       if (value == 127) {
@@ -446,6 +241,7 @@ namespace LED {
         queue = 0;
       }  
     }
+    */
     
     if (number == SETCOLQ_CC) //'SET COLOR' Light queue toggle button
     {
@@ -461,12 +257,12 @@ namespace LED {
       }
     }
 
+    /*
     if (number == FLASHQ_CC)
     {
-      if (value == 127) {queue = number;}
-      
-      else
-      {
+      if (value == 127) {
+        queue = number;
+      } else {
         lightOnState = true;
         queue = 0;
       }
@@ -484,79 +280,11 @@ namespace LED {
         transColor[2] = getLightPresetPtr(lightPresetSelect)[2]; //causes the LED color to always pickup where it left off when starting and stopping the autoFade sequence w/out selecting a new lightPreset
         activeLightPreset = lightPresetSelect;                   //Now, multiple robots being commanded to initiate the autoFade function at the same time should remain in sync and always start at the same lightPreset
 
-
       }
 
     }
-
-      //============ ENCODERS ============
-    
-    if(number == RATE1_CC) //RATE #1  (knob pot 'B5' on axiom)
-    {
-      colorRate = Easing::mapRate1(value) * 2;
-    }
-    
-    /*
-    if (number == 76) //LIGHT PRESET SELECTOR (***REPLACE W/ RATE2 CONTROL, OR SOMETHING ELSE, OR DELETE OUTRIGHT***)
-    { 
-      byte thisValue = value + 1;
-      lightPresetSelect = constrain(thisValue, 1, 8);
-    }
-    */
-    
-    if (number == FADESPD_CC) //PIXEL FADE/DECAY TIME
-    {
-      fadeSpeed = (value);
-    } 
-    
-    /*
-    if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)
-    {
-      randomness = map(value,0,127,0,1000)/1000.f;
-    }
     */
 
-
-    //======Mod Wheel - Light Queue switcher
-    
-    if (number == 1) 
-    {
-     if (value >= 30 && value <= 115) {modWheel = 2;}
-     else if (value >= 116) {modWheel = 3;}
-     else {modWheel = 1;} 
-    }
-
-
-  }
-
-
-  // TODO: Factor out
-  void saveToEEPROM(int lightPresetVal)
-  {
-      int a = 0;
-      int adrs = (lightPresetVal - 1) * 3;
-      for (int i = adrs; i <= (adrs+2); i++)
-      {
-        EEPROM.write(i, getLightPresetPtr(lightPresetVal)[a]);
-        a++;    
-      } 
-  }
-
-  void readFromEEPROM()
-  {  
-    for (int i=0; i<=23; i++)
-    { 
-      lightPresetData[i] = EEPROM.read(i);
-    }
-  }
-
-  void writeEEPROMValues() {
-
-    //EEPROM Write functionality
-    if (armEEPROMwrite == true && pShift == true) { 
-        saveToEEPROM(lightPresetVal);
-        armEEPROMwrite = false;
-    }
   }
 
 }
