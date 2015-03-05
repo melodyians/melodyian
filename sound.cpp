@@ -50,24 +50,6 @@ namespace Sound {
       byte randomNoteVal = map(noteJitter, 0, 127, 0, melody1NoteLength);
       byte randomNote = 1 + random(0, randomNoteVal);
 
-      /////////
-      /*
-      if (debugCntr % 100 == 0)
-      {
-        Serial.print("notePosition = ");
-        Serial.print(notePosition);
-        Serial.print(" | currentMillisTone = ");
-        Serial.print(currentMillisTone);
-        Serial.print(" | lastNoteOnMillis = ");
-        Serial.print(lastNoteOnMillis);
-        Serial.print(" | timeElapsed = ");
-        Serial.print(timeElapsed);
-        Serial.print(" | randomNote = ");
-        Serial.println(randomNote);
-      }
-      */
-      /////////
-
       if (timeElapsed <= noteDuration)
       {
         Flags::setNoteOn(true);
@@ -77,7 +59,6 @@ namespace Sound {
       {
         Flags::setNoteOn(false);
         hardware->toneOff(); //silence for pause time 
-        //tone(tonePin, 0, pauseBetweenNotes);  
       }    
       else
       {
@@ -103,24 +84,7 @@ namespace Sound {
       byte randomNoteVal = map(noteJitter, 0, 127, 0, melody1NoteLength);
       byte randomNote = 1 + random(0, randomNoteVal);
 
-      ///////
-      /*
-      if (debugCntr % 100 == 0)
-      {
-        Serial.print("notePosition = ");
-        Serial.print(notePosition);
-        Serial.print(" | currentMillisTone = ");
-        Serial.print(currentMillisTone);
-        Serial.print(" | lastNoteOnMillis = ");
-        Serial.print(lastNoteOnMillis);
-        Serial.print(" | timeElapsed = ");
-        Serial.print(timeElapsed);
-        Serial.print(" | randomNote = ");
-        Serial.println(randomNote);
-      }
-      */
-      ///////
-      
+
       if (timeElapsed <= noteDuration)
       {
         Flags::setNoteOn(true);
@@ -131,13 +95,11 @@ namespace Sound {
       {
         Flags::setNoteOn(false);
         hardware->toneOff(); //silence for pause time 
-        //tone(tonePin, 0, pauseBetweenNotes);  
       }    
       
       else
       {
         lastNoteOnMillis = currentMillisTone;
-        //notePosition++; //advance to the next note of the melody...
         notePosition = notePosition + (1 * randomNote);
         if (notePosition > melody1NoteLength)
         {
@@ -188,7 +150,6 @@ namespace Sound {
       {
         Flags::setNoteOn(false);
         hardware->toneOff();       
-        //tone(tonePin, 0, pauseBetweenNotes);  
 
       }    
       else

@@ -22,21 +22,6 @@ namespace Motor {
   bool test = false;
 
 
-  void printDebug(int value) {
-
-    Serial.print("MotorASpd: ");
-    Serial.print(motorAspeed);
-    Serial.print(" / MotorBSpd: ");
-    Serial.print(motorBspeed);
-    Serial.print(" / Steer Val: ");
-    Serial.print(value);
-    Serial.print(" / MtrADr: ");
-    Serial.print(motorAdirection);
-    Serial.print(" / MtrBDr: ");
-    Serial.println(motorBdirection);
-
-  }
-
   bool straightAhead(int value) {
     return value >= 59 && value <= 69;
   }
@@ -55,7 +40,6 @@ namespace Motor {
 
   void steerControl(int value)
   {
-    /* printDebug(value) */
 
     if (straightAhead(value)) {
 
