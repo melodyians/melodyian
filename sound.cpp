@@ -28,13 +28,13 @@ namespace Sound {
 
   unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
-  void playMelody1(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware)
+  void playMelody1(unsigned short dt, RobotState * robot_state, HardwareInterface * hardware)
   { 
 
     int noteJitter = 0;
 
-    if (*(robot_state->bypass_random_note) == false) {
-      noteJitter = *(robot_state->randomness);
+    if (robot_state->bypassRandomNote() == false) {
+      noteJitter = robot_state->randomness();
     }
     //tone(tonePin, melody1[notePosition]); //for debugging
      
@@ -158,13 +158,13 @@ namespace Sound {
 
 
 
-  void playMelody2(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware)
+  void playMelody2(unsigned short dt, RobotState * robot_state, HardwareInterface * hardware)
   { 
 
     int noteJitter = 0;
 
-    if (*(robot_state->bypass_random_note) == false) {
-      noteJitter = *(robot_state->randomness);
+    if (robot_state->bypassRandomNote() == false) {
+      noteJitter = robot_state->randomness();
     }
 
     currentMillisTone = millis();

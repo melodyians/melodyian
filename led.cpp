@@ -103,12 +103,12 @@ namespace LED {
   }
   */
 
-  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned long dt) {
+  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned short dt) {
 
     float colorJitter = 0;
 
-    if (*(robot_state->bypass_random_color) == false) {
-        colorJitter = *(robot_state->randomness);
+    if (robot_state->bypassRandomColor() == false) {
+        colorJitter = robot_state->randomness();
     }
 
     //===========LED LIGHT QUEUES==========   
@@ -117,9 +117,9 @@ namespace LED {
       case SETCOLQ_CC:
       {
         //COLOR SET AND MANUAL FADE
-        hardware->writeToLED(*(robot_state->red_slider), 
-                             *(robot_state->green_slider), 
-                             *(robot_state->blue_slider));               
+        hardware->writeToLED(robot_state->ledRedValue(),
+                            robot_state->ledGreenValue(),
+                            robot_state->ledBlueValue());               
         break;
       }
 

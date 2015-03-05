@@ -4,6 +4,8 @@
 #include "midicc.h"
 #include "state.h"
 #include "colorhelper.h"
+#include "state.h"
+
 
 namespace Battery {
   void pingBatVoltage(bool midi_read);
@@ -32,9 +34,9 @@ class ArduinoInterface : public HardwareInterface {
 private:
   void setupPins();
   // Pins
-  static const int redPin = 9; //LED 'Red' connected to pin 9
-  static const int greenPin = 11; //LED 'Green' connected to pin 10
-  static const int bluePin = 10; //LED 'Blue' connected to pin 11
+  static const byte redPin = 9; //LED 'Red' connected to pin 9
+  static const byte greenPin = 11; //LED 'Green' connected to pin 10
+  static const byte bluePin = 10; //LED 'Blue' connected to pin 11
 
   // Motor Pins
   static const byte STBY = 4; //standby pin
@@ -74,10 +76,24 @@ public:
 };
 
 
+class Robot {
+
+public:
+  Robot();
+  RobotState * state;
+  HardwareInterface * hardware;
+
+  void handleInput(byte control_number, byte value);
+  void updateBehavior(unsigned short dt);
+  void updateHardware();
+
+};
+
+
 
 namespace LED {
   void processLEDCC(byte channel, byte number, byte value);
-  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned long dt);
+  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned short dt);
 }
 
 
