@@ -89,13 +89,13 @@ public:
 class Behavior {
 
 protected:
-    unsigned short currentMillis;
-    unsigned short previousMillis;
+    unsigned short timer;
     byte behavior_key;
     void setCurrentBehavior(byte behavior_key);
     void clearCurrentBehavior();
     void resetTimer();
     void incrementTimer(unsigned short dt);
+    void decrementTimer(unsigned short dt);
 
 public:
     Behavior();
@@ -109,10 +109,9 @@ public:
 class LEDBehavior : public Behavior {
 
 private:
-  RGBColor trans_color;
-  float brightness;
-  boolean lightOnState;
-  boolean setColorAct;
+  //RGBColor trans_color;
+  boolean flashOnFlag;
+
   void flashBehavior(RobotState * state, RobotOutput * output);
   void fadeBehavior(RobotState * state, RobotOutput * output);
   void pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output);

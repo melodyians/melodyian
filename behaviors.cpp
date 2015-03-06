@@ -16,8 +16,7 @@ byte Behavior::getCurrentBehavior() {
 }
 
 void Behavior::resetTimer() {
-    currentMillis = 0;
-    previousMillis = 0;
+    timer = 0;
 }
 
 void Behavior::clearCurrentBehavior() {
@@ -25,7 +24,9 @@ void Behavior::clearCurrentBehavior() {
 }
 
 void Behavior::incrementTimer(unsigned short dt) {
-    currentMillis =  currentMillis + dt;
+    timer =  timer + dt;
 }
 
-
+void Behavior::decrementTimer(unsigned short dt) {
+    timer =  timer - dt;
+}

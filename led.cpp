@@ -26,35 +26,12 @@ void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
   output->b = state->ledBlueValue();
 }
 
-/*
-void setRandomColor(float colorJitter, byte r, byte g, byte b, RobotOutput * output) {
-  RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
-          
-  float xr = colorJitter * random_color.r + ((1 - colorJitter) * r);
-  float xg = colorJitter * random_color.g + ((1 - colorJitter) * g);
-  float xb = colorJitter * random_color.b + ((1 - colorJitter) * b);
 
-  // excerpted from ministage code
-  RGBColor temp_color = { 
-                          max(min(xr,255),0), 
-                          max(min(xg, 255),0), 
-                          max(min(xb, 255), 0) 
-                        }; 
-  brightness = 1;
-
-  temp_color = colorWithAdjustedBrightness(temp_color, brightness); 
-  setOuputColor(output, temp_color);
-}
-*/
 
 LEDBehavior::LEDBehavior() 
   : Behavior()
 {
-
-  brightness = 0;
-  lightOnState = false;
-  setColorAct = false;
-
+  flashOnFlag = false;
 }
 
 void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
@@ -63,7 +40,6 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
 
   switch(behavior_key)
   {
-
     case(SETCOLQ_CC):
     {
       copyLEDStateToOutput(state, output); 
@@ -87,7 +63,8 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
     default:
       {
 
-        // TODO: More intelligent handling of buttons.
+        // TODO: More intelligent handling of buttons. 
+        // Have priority over button states.
         if (state->colorOn()) {
           behavior_key = SETCOLQ_CC;
         } else {
@@ -124,7 +101,7 @@ void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
       if (value == 127) {
         setCurrentBehavior(control_number);
       } else {
-        lightOnState = true;
+        flashOnFlag = true;
         clearCurrentBehavior();
        }
     }
@@ -173,28 +150,28 @@ void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
     }
   } else {
 
-    /*
-    currentMillis = millis(); //get the current time
-    unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
+    float rate_interval = state->rate() / 8;
 
-    if(timeElapsed > (*(robot_state->rate) / 8)) //check if we need to advance the state of the animation
+    // Check if we need to advance the state of the animation
+    if (timer > rate_interval)
     { 
-      RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
+      RGBColor adjusted_color = getRandomColor(colorJitter, 
+                                               state->ledRedValue(),
+                                               state->ledGreenValue(),
+                                               state->ledBlueValue());
 
-      float xr = colorJitter * random_color.r + ((1 - colorJitter) * *(robot_state->red_slider));
-      float xg = colorJitter * random_color.g + ((1 - colorJitter) * *(robot_state->green_slider));
-      float xb = colorJitter * random_color.b + ((1 - colorJitter) * *(robot_state->blue_slider));
-
-      RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
-      brightness = 1;
-
-      robot_state->robot_led_color = temp_color;
-
-      altFlash(robot_state);
-      //go to the first state
-      previousMillis = currentMillis; //set the last time we advanced the state of the animation
+      if (flashOnFlag == true) {
+        setOuputColor(output, adjusted_color.r, adjusted_color.g, adjusted_color.b);
+      } else {
+        setOuputLEDBlack(output);
+      }
+      
+      // Flip the on/off flag
+      flashOnFlag = !flashOnFlag;
+     
+      // Reset the timer to time - how far we've come
+      decrementTimer(rate_interval);
     }
-    */
   }
 
 }
@@ -209,6 +186,8 @@ void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutp
   // turn LED on using most recent color value and scale brightness based on CC value.
   // When Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading 
   // the LED brightness to 0 incrementally based on decat value
+
+  float brightness;
 
   if (state->pulseValue() >= 1) {
     brightness = 0.01 * map(state->pulseValue(), 1, 127, 10, 100);
