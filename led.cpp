@@ -4,6 +4,106 @@
 #include "easing.h"
 #include "colorhelper.h"
 
+
+void setOuputLEDBlack(RobotOutput * output) {
+  output->r = 0;
+  output->g = 0;
+  output->b = 0;
+}
+
+void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
+  output->r = state->ledRedValue();
+  output->g = state->ledGreenValue();
+  output->b = state->ledBlueValue();
+}
+
+LEDBehavior::LEDBehavior() 
+  : Behavior()
+{
+
+  brightness = 0;
+  lightOnState = false;
+  setColorAct = false;
+
+}
+
+void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
+
+
+  switch(behavior_key)
+  {
+
+    case(SETCOLQ_CC):
+    {
+        //COLOR SET AND MANUAL FADE
+        copyLEDStateToOutput(state, output);
+             
+        break;
+    }
+
+    default:
+      {
+        if (state->colorOn()) {
+          behavior_key = SETCOLQ_CC;
+        } else {
+          setOuputLEDBlack(output);
+        }
+      } 
+  }
+
+}
+
+
+void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
+
+    if (control_number == SETCOLQ_CC)
+    {
+      if (value == 127) {
+        setCurrentBehavior(control_number);
+      } else {
+        clearCurrentBehavior();
+      }
+    }
+
+    if (control_number == DYNAMICQ_CC)
+    {
+      if (value == 127) {
+        setCurrentBehavior(control_number);
+      } else {
+        clearCurrentBehavior();
+      }  
+    }
+
+    if (control_number == FLASHQ_CC)
+    {
+      if (value == 127) {
+        setCurrentBehavior(control_number);
+      } else {
+        lightOnState = true;
+        clearCurrentBehavior();
+       }
+    }
+
+    /*
+    if (number == AUTOFADEQ_CC)
+    {
+      if (value == 127) {queue = number;}
+      else
+      {
+        queue = 0;
+
+        transColor[0] = getLightPresetPtr(lightPresetSelect)[0]; //this causes LED to always start at the last selected lightPreset color when starting up
+        transColor[1] = getLightPresetPtr(lightPresetSelect)[1]; //the autoFade function. Otherwise the transColor never resets unless a new lightPreset is selected, which
+        transColor[2] = getLightPresetPtr(lightPresetSelect)[2]; //causes the LED color to always pickup where it left off when starting and stopping the autoFade sequence w/out selecting a new lightPreset
+        activeLightPreset = lightPresetSelect;                   //Now, multiple robots being commanded to initiate the autoFade function at the same time should remain in sync and always start at the same lightPreset
+
+      }
+
+    }
+    */
+}
+
+
 namespace LED {
 
 

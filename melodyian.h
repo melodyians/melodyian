@@ -75,6 +75,48 @@ public:
 
 };
 
+class RobotOutput {
+
+public:
+  RobotOutput();
+  byte r;
+  byte g;
+  byte b;
+};
+
+
+class Behavior {
+
+protected:
+    unsigned short currentMillis;
+    unsigned short previousMillis;
+    byte behavior_key;
+
+public:
+    Behavior();
+    void setCurrentBehavior(byte behavior_key);
+    byte getCurrentBehavior();
+    void clearCurrentBehavior();
+    void resetTimer();
+    virtual void updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) = 0;
+    virtual void updateBehaviorKey(byte control_number, byte value) = 0;
+};
+
+
+class LEDBehavior : public Behavior {
+
+private:
+  RGBColor trans_color;
+  float brightness;
+  boolean lightOnState;
+  boolean setColorAct;
+
+public:
+  LEDBehavior();
+  void updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output);
+  void updateBehaviorKey(byte control_number, byte value);
+
+};
 
 class Robot {
 
@@ -83,12 +125,14 @@ public:
   RobotState * state;
   HardwareInterface * hardware;
 
+  RobotOutput * output;
+  LEDBehavior * led_behavior;
+  
   void handleInput(byte control_number, byte value);
   void updateBehavior(unsigned short dt);
   void updateHardware();
 
 };
-
 
 
 namespace LED {

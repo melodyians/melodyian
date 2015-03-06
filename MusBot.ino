@@ -50,11 +50,13 @@ void initializeInputs() {
 
 void loop()
 {
+  // Read midi from input. Triggers callbacks.
+  bool midi_read = MIDI.read();
+
   // Move our clock forward
   unsigned long dt = timer->step();
 
   // Battery and Memory housekeeping
-  bool midi_read = MIDI.read();
 
   // Disabled -- this seems to unpredictbly impact 
   // the state of the LED, and I have no idea why.
@@ -65,8 +67,11 @@ void loop()
 
   // Update our Robot from our current state
   Sound::processSoundTriggers(dt, robot->state, robot->hardware);
-  LED::updateLEDBehavior(robot->state, robot->hardware, dt);
+  // LED::updateLEDBehavior(robot->state, robot->hardware, dt);
   Motor::actuateMotors(robot->hardware);
+
+  robot->updateBehavior(dt);
+  robot->updateHardware();
 
   debug(dt);
 }
@@ -83,8 +88,8 @@ void debug(unsigned short dt) {
       MidiCC::writeMidiCC(RED_CC, robot->state->ledRedValue());
       MidiCC::writeMidiCC(GREEN_CC, robot->state->ledGreenValue());
       MidiCC::writeMidiCC(BLUE_CC, robot->state->ledBlueValue());
+      MidiCC::writeMidiCC(66, robot->led_behavior->getCurrentBehavior());
     }
-
 
 }
 
@@ -94,7 +99,7 @@ void handleControlChange (byte channel, byte number, byte value)
   robot->handleInput(number, value);
 
   // Legacy input handling
-  LED::processLEDCC(channel, number, value);
+  // LED::processLEDCC(channel, number, value);
   Motor::processMotorCC(channel, number, value);
   Sound::processSoundCC(channel, number, value);     
 }
