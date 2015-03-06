@@ -3,7 +3,14 @@
 #include "melodyian.h"
 #include "easing.h"
 #include "colorhelper.h"
+#include "smoothing.h"
 
+
+void setOuputColor(RobotOutput * output, byte r, byte g, byte b) {
+  output->r = r;
+  output->g = g;
+  output->b = b;
+}
 
 void setOuputLEDBlack(RobotOutput * output) {
   output->r = 0;
@@ -11,11 +18,34 @@ void setOuputLEDBlack(RobotOutput * output) {
   output->b = 0;
 }
 
+
+
 void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
   output->r = state->ledRedValue();
   output->g = state->ledGreenValue();
   output->b = state->ledBlueValue();
 }
+
+/*
+void setRandomColor(float colorJitter, byte r, byte g, byte b, RobotOutput * output) {
+  RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
+          
+  float xr = colorJitter * random_color.r + ((1 - colorJitter) * r);
+  float xg = colorJitter * random_color.g + ((1 - colorJitter) * g);
+  float xb = colorJitter * random_color.b + ((1 - colorJitter) * b);
+
+  // excerpted from ministage code
+  RGBColor temp_color = { 
+                          max(min(xr,255),0), 
+                          max(min(xg, 255),0), 
+                          max(min(xb, 255), 0) 
+                        }; 
+  brightness = 1;
+
+  temp_color = colorWithAdjustedBrightness(temp_color, brightness); 
+  setOuputColor(output, temp_color);
+}
+*/
 
 LEDBehavior::LEDBehavior() 
   : Behavior()
@@ -29,18 +59,31 @@ LEDBehavior::LEDBehavior()
 
 void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
 
+  incrementTimer(dt);
 
   switch(behavior_key)
   {
 
     case(SETCOLQ_CC):
     {
-        //COLOR SET AND MANUAL FADE
-        copyLEDStateToOutput(state, output);
-             
-        break;
+      copyLEDStateToOutput(state, output); 
+      break;
     }
-
+    case(DYNAMICQ_CC):
+    {
+      pulseBehavior(dt, state, output);
+      break;
+    }
+    case(FLASHQ_CC):
+    {
+      flashBehavior(state, output);
+      break;
+    }
+    case(AUTOFADEQ_CC):
+    {
+      fadeBehavior(state, output);
+      break;
+    }
     default:
       {
         if (state->colorOn()) {
@@ -103,6 +146,40 @@ void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
     */
 }
 
+
+void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
+
+}
+
+void LEDBehavior::fadeBehavior(RobotState * state, RobotOutput * output) {
+
+}
+
+void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
+
+  // If Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, 
+  // turn LED on using most recent color value and scale brightness based on CC value.
+  // When Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading 
+  // the LED brightness to 0 incrementally based on decat value
+
+  if (state->pulseValue() >= 1) {
+    brightness = 0.01 * map(state->pulseValue(), 1, 127, 10, 100);
+    if (brightness > 1.0) {
+      brightness = 1.0;
+    }
+  } else {
+
+    brightness = Smoothing::brightnessDecay(brightness, dt, state->decay());
+  }     
+
+  RGBColor color_buffer = colorWithAdjustedBrightness(state->ledRedValue(),
+                                                      state->ledGreenValue(),
+                                                      state->ledBlueValue(),
+                                                      brightness);
+
+  setOuputColor(output, color_buffer.r, color_buffer.g, color_buffer.b);
+
+}
 
 namespace LED {
 

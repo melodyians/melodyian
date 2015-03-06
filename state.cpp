@@ -52,7 +52,10 @@ byte RobotState::ledGreenValue() {
 
 byte RobotState::ledBlueValue() {
     return Smoothing::smoothRBGFader(input_values->getValue(BLUE_CC));
+}
 
+byte RobotState::pulseValue() {
+    return input_values->getValue(DYNAMIC_CC);
 }
 
 bool RobotState::colorOn() {

@@ -1,6 +1,9 @@
 #include <Arduino.h>
 #include "smoothing.h"
 
+#define MIN_FADE_TIME_TIMES_ONE_HUNDRED 10
+#define MAX_FADE_TIME_TIMES_ONE_HUNDRED 80
+
 namespace Smoothing {
 
     byte smoothRBGFader(byte value) //smoother fader mapping for RGB faders
@@ -58,5 +61,11 @@ namespace Smoothing {
     float mapByteToThousand(byte value) {
       return map(value,0,127,0,1000) / 1000.f;
     }
+
+    float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed) {
+      float delta_t = (elapsed_millis / 1000.0f) / (map(fadeSpeed,0,127,MIN_FADE_TIME_TIMES_ONE_HUNDRED,MAX_FADE_TIME_TIMES_ONE_HUNDRED) / 100.0f);
+      return brightness - delta_t;
+    }
+
 
 }

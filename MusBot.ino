@@ -67,7 +67,6 @@ void loop()
 
   // Update our Robot from our current state
   Sound::processSoundTriggers(dt, robot->state, robot->hardware);
-  // LED::updateLEDBehavior(robot->state, robot->hardware, dt);
   Motor::actuateMotors(robot->hardware);
 
   robot->updateBehavior(dt);
@@ -99,7 +98,6 @@ void handleControlChange (byte channel, byte number, byte value)
   robot->handleInput(number, value);
 
   // Legacy input handling
-  // LED::processLEDCC(channel, number, value);
   Motor::processMotorCC(channel, number, value);
   Sound::processSoundCC(channel, number, value);     
 }

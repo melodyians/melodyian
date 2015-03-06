@@ -5,6 +5,7 @@
 #include "state.h"
 #include "colorhelper.h"
 #include "state.h"
+#include "smoothing.h"
 
 
 namespace Battery {
@@ -91,15 +92,17 @@ protected:
     unsigned short currentMillis;
     unsigned short previousMillis;
     byte behavior_key;
+    void setCurrentBehavior(byte behavior_key);
+    void clearCurrentBehavior();
+    void resetTimer();
+    void incrementTimer(unsigned short dt);
 
 public:
     Behavior();
-    void setCurrentBehavior(byte behavior_key);
-    byte getCurrentBehavior();
-    void clearCurrentBehavior();
-    void resetTimer();
     virtual void updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) = 0;
     virtual void updateBehaviorKey(byte control_number, byte value) = 0;
+    byte getCurrentBehavior();
+
 };
 
 
@@ -110,6 +113,9 @@ private:
   float brightness;
   boolean lightOnState;
   boolean setColorAct;
+  void flashBehavior(RobotState * state, RobotOutput * output);
+  void fadeBehavior(RobotState * state, RobotOutput * output);
+  void pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output);
 
 public:
   LEDBehavior();

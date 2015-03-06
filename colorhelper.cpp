@@ -62,21 +62,21 @@ RGBColor HSVtoRGB(int h, double s, double v) {
 
 }
 
-
-RGBColor colorWithAdjustedBrightness(RGBColor color, float brightness)
+RGBColor colorWithAdjustedBrightness(byte r, byte g, byte b, float brightness)
 {
    if (brightness < 0) {
     brightness = 0;
    }
-
-   byte r = color.r * brightness;
-   byte g = color.g * brightness;
-   byte b = color.b * brightness;
-
    RGBColor newcolor;
-   newcolor.r = r;
-   newcolor.g = g;
-   newcolor.b = b;
+   newcolor.r = r * brightness;
+   newcolor.g = g * brightness;
+   newcolor.b = b * brightness;
    return newcolor;
+}
+
+
+RGBColor colorWithAdjustedBrightness(RGBColor color, float brightness)
+{
+  return colorWithAdjustedBrightness(color.r, color.g, color.b, brightness);
 }
 

@@ -27,6 +27,9 @@ public:
     byte ledGreenValue();
     byte ledBlueValue();
 
+    byte pulseValue();
+
+
     bool colorOn();
 
 };

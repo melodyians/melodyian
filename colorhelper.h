@@ -16,3 +16,4 @@ struct RGBColor {
 RGBColor HSVtoRGB(int h, double s, double v);
 
 RGBColor colorWithAdjustedBrightness(RGBColor color, float brightness);
+RGBColor colorWithAdjustedBrightness(byte r, byte g, byte b, float brightness);

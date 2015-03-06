@@ -8,6 +8,7 @@ Behavior::Behavior() {
 
 void Behavior::setCurrentBehavior(byte key) { 
     behavior_key = key;
+    resetTimer();
 }
 
 byte Behavior::getCurrentBehavior() {
@@ -23,5 +24,8 @@ void Behavior::clearCurrentBehavior() {
     behavior_key = 0;
 }
 
+void Behavior::incrementTimer(unsigned short dt) {
+    currentMillis =  currentMillis + dt;
+}
 
 

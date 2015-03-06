@@ -11,6 +11,8 @@ namespace Smoothing {
 
   float mapByteToThousand(byte value);
 
+  float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed);
+
 }
 
 
