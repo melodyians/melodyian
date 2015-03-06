@@ -58,7 +58,7 @@ namespace Smoothing {
       }
     } 
 
-    float mapByteToThousand(byte value) {
+    float mapByteToPercentage(byte value) {
       return map(value,0,127,0,1000) / 1000.f;
     }
 

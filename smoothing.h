@@ -9,7 +9,7 @@ namespace Smoothing {
 
   bool booleanButton(byte value);
 
-  float mapByteToThousand(byte value);
+  float mapByteToPercentage(byte value);
 
   float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed);
 

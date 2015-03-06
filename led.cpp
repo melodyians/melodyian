@@ -86,6 +86,8 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
     }
     default:
       {
+
+        // TODO: More intelligent handling of buttons.
         if (state->colorOn()) {
           behavior_key = SETCOLQ_CC;
         } else {
@@ -147,7 +149,53 @@ void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
 }
 
 
+
 void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
+  float colorJitter = 0;
+
+  if (state->bypassRandomColor() == false) {
+      colorJitter = state->randomness();
+  }
+
+  // TODO -- port these to state
+  if (Flags::melodyOneAct() || Flags::melodyTwoAct() || Flags::keyModeAct()) {
+
+    // Flash only when the note is on.
+    if (Flags::noteOn()) {
+      // If colorJitter is 0 this just returns the color
+      RGBColor adjusted_color = getRandomColor(colorJitter, 
+                                               state->ledRedValue(),
+                                               state->ledGreenValue(),
+                                               state->ledBlueValue());
+      setOuputColor(output, adjusted_color.r, adjusted_color.g, adjusted_color.b);
+    } else {
+      setOuputLEDBlack(output);
+    }
+  } else {
+
+    /*
+    currentMillis = millis(); //get the current time
+    unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
+
+    if(timeElapsed > (*(robot_state->rate) / 8)) //check if we need to advance the state of the animation
+    { 
+      RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
+
+      float xr = colorJitter * random_color.r + ((1 - colorJitter) * *(robot_state->red_slider));
+      float xg = colorJitter * random_color.g + ((1 - colorJitter) * *(robot_state->green_slider));
+      float xb = colorJitter * random_color.b + ((1 - colorJitter) * *(robot_state->blue_slider));
+
+      RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
+      brightness = 1;
+
+      robot_state->robot_led_color = temp_color;
+
+      altFlash(robot_state);
+      //go to the first state
+      previousMillis = currentMillis; //set the last time we advanced the state of the animation
+    }
+    */
+  }
 
 }
 
@@ -291,14 +339,6 @@ namespace LED {
     //===========LED LIGHT QUEUES==========   
     switch (queue)
     {   
-      case SETCOLQ_CC:
-      {
-        //COLOR SET AND MANUAL FADE
-        hardware->writeToLED(robot_state->ledRedValue(),
-                            robot_state->ledGreenValue(),
-                            robot_state->ledBlueValue());               
-        break;
-      }
 
       /*
       case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
@@ -368,41 +408,10 @@ namespace LED {
       }
       */       
         
-      /*
-      case DYNAMICQ_CC: //Dynamic Pulse Control
-      {                
-        if (*(robot_state->new_pulse) == true && *(robot_state->color_pulse) >= 1) //if Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, turn LED on using most recent color value and scale brightness based on CC value
-        {
-          brightness = 0.01 * map (*(robot_state->color_pulse), 1, 127, 10, 100);
-          if (brightness > 1.0) {
-            brightness = 1.0;
-          }
-        }
-
-        else {
-
-          brightness = Easing::brightnessDecay(brightness, dt, *(robot_state->decay));
-        }  //when Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading the LED brightness to 0 incrementally based on fadeSpeed value     
-
-        // Probably a common function
-        robot_state->robot_led_color.r = *(robot_state->red_slider);
-        robot_state->robot_led_color.g = *(robot_state->blue_slider);
-        robot_state->robot_led_color.b = *(robot_state->green_slider);
-
-        robot_state->robot_led_color = colorWithAdjustedBrightness(robot_state->robot_led_color, brightness);
-        ArduinoInterface::writeToLED(robot_state->robot_led_color);
-
-        break;
-      }
-      */
-        
+     
       default:
       {
-        if (setColorAct == true) {
-          queue = SETCOLQ_CC;
-        } else {
-          hardware->writeToLED(0, 0, 0);
-        }
+        // Removed
       } 
     }
 
@@ -413,32 +422,6 @@ namespace LED {
   {
 
     //  QUEUE TOGGLE BUTTONS
-
-    /*
-    if (number == DYNAMICQ_CC)
-    {
-      if (value == 127) {
-        queue = DYNAMICQ_CC;
-      } else {
-        queue = 0;
-      }  
-    }
-    */
-    
-    if (number == SETCOLQ_CC) //'SET COLOR' Light queue toggle button
-    {
-      if (value == 127)
-      {
-        setColorAct = true;
-        queue = number;
-      }
-      else
-      {
-        setColorAct = false;
-        queue = 0;
-      }
-    }
-
     /*
     if (number == FLASHQ_CC)
     {

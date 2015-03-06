@@ -30,7 +30,7 @@ bool RobotState::bypassRandomNote() {
 }
 
 float RobotState::randomness() {
-    return Smoothing::mapByteToThousand(input_values->getValue(COLORJITTERBYPASS_CC));
+    return Smoothing::mapByteToPercentage(input_values->getValue(JITTER_CC));
 }
 
 unsigned int RobotState::decay() {
