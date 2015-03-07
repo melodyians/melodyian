@@ -23,8 +23,8 @@ byte InputValues::getValue(byte control_number) {
 void InputValues::storeInput(byte control_number, byte value) {
 
     if (DEBUG) {
-        MidiCC::writeMidiCC(control_number,  value);
-        MidiCC::writeMidiCC(getCCIndex(control_number),  value);
+        MidiCC::writeMidiOut(control_number,  value);
+        MidiCC::writeMidiOut(getCCIndex(control_number),  value);
     }
 
     input_values[getCCIndex(control_number)] = value;

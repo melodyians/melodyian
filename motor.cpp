@@ -1,5 +1,5 @@
 #include "melodyian.h"
-#include "easing.h"
+#include "smoothing.h"
 
 //=========MOTOR DRIVER SETUP============
 //motor A connected between A01 and A02 on motor driver breakout
@@ -95,7 +95,7 @@ namespace Motor {
 
     if (number == MSTRMTRSPD_CC) //Master Motor Speed Control for new steering system (D16 fader)
     {
-      motorSpdVal = Easing::motorFader(value);
+      motorSpdVal = Smoothing::smoothMotorFader(value);
       if (value >= 80)
       {
         motorAdirection = 0; //should be clockwise wheel rotation..

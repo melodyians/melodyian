@@ -56,7 +56,7 @@ namespace Battery {
         //byte bat2VoltageCCVal = map(bat2VoltageIntConv, 330, 420, 0, 127);
         
         // TODO re-enable    
-        MidiCC::writeMidiCC(BAT1VOLTREAD_CC, bat1VoltageCCVal);
+        MidiCC::writeMidiOut(BAT1VOLTREAD_CC, bat1VoltageCCVal);
 
 
 

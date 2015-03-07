@@ -1,9 +1,5 @@
 #include "colorhelper.h"
 
-bool operator==(const RGBColor& lhs, const RGBColor& rhs) {
-    return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
-}
-
 
 RGBColor HSVtoRGB(int h, double s, double v) {
   
@@ -22,12 +18,12 @@ RGBColor HSVtoRGB(int h, double s, double v) {
 
   switch (i)
   {
-    case 0: //rojo dominante
+    case 0: // red dominante
       r = v;
       g = tv;
       b = pv;
       break;
-    case 1: //verde
+    case 1: //green
       r = qv;
       g = v;
       b = pv;
@@ -37,7 +33,7 @@ RGBColor HSVtoRGB(int h, double s, double v) {
       g = v;
       b = tv;
       break;
-    case 3: //azul
+    case 3: //blue
       r = pv;
       g = qv;
       b = v;
@@ -47,7 +43,7 @@ RGBColor HSVtoRGB(int h, double s, double v) {
       g = pv;
       b = v;
       break;
-    case 5: //rojo
+    case 5: //red
       r = v;
       g = pv;
       b = qv;

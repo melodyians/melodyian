@@ -2,7 +2,7 @@
 
 namespace MidiCC {
 
-    void writeMidiCC(byte CC, byte value) {
+    void writeMidiOut(byte CC, byte value) {
       Serial.flush();
       byte MIDICCmessage[3] = {176, CC, value}; 
         

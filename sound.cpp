@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "melodyian.h"
-#include "easing.h"
+#include "smoothing.h"
 #include "pitches.h"
 #include "midicc.h"
 #include "state.h"
@@ -274,7 +274,7 @@ namespace Sound {
 
     if(number == RATE1_CC) //RATE #1  (knob pot 'B5' on axiom)
     {
-      toneRate = Easing::mapRate1(value) * 2;
+      toneRate = Smoothing::smoothRateFader(value);
     }
 
     /*

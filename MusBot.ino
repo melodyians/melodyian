@@ -5,12 +5,10 @@
 #include <midi_Settings.h>
 // #include <Wire.h>
 
-#include "commands.h"
 #include "melodyian.h"
 #include "midicc.h"
 #include "time.h"
 #include "state.h" 
-#include "inputhandler.h"
 #include "smoothing.h"
 
 MIDI_CREATE_DEFAULT_INSTANCE();
@@ -84,10 +82,10 @@ void debug(unsigned short dt) {
     debug_timer = debug_timer + dt;
     if (debug_timer > debug_every) {
       debug_timer = 0;
-      MidiCC::writeMidiCC(RED_CC, robot->state->ledRedValue());
-      MidiCC::writeMidiCC(GREEN_CC, robot->state->ledGreenValue());
-      MidiCC::writeMidiCC(BLUE_CC, robot->state->ledBlueValue());
-      MidiCC::writeMidiCC(66, robot->led_behavior->getCurrentBehavior());
+      MidiCC::writeMidiOut(RED_CC, robot->state->ledRedValue());
+      MidiCC::writeMidiOut(GREEN_CC, robot->state->ledGreenValue());
+      MidiCC::writeMidiOut(BLUE_CC, robot->state->ledBlueValue());
+      MidiCC::writeMidiOut(66, robot->led_behavior->getCurrentBehavior());
     }
 
 }

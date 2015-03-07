@@ -45,7 +45,7 @@
 
 
 namespace MidiCC {
-    void writeMidiCC(byte CC, byte value);
+    void writeMidiOut(byte CC, byte value);
 }
 
 

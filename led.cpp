@@ -221,9 +221,12 @@ void LEDBehavior::fadeBehavior(RobotState * state, RobotOutput * output) {
     }
 
     setOuputColor(output, transition_color.r, transition_color.g, transition_color.b);
+
     transition_color = crossFade(transition_color, next_preset_color);
+
     decrementTimer(fade_interval);
   }  
+
 }
 
 void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
@@ -253,140 +256,3 @@ void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutp
   setOuputColor(output, color_buffer.r, color_buffer.g, color_buffer.b);
 
 }
-
-namespace LED {
-
-
-  float brightness = 1;
-
-  //RGBColor myLEDColor;
-
-  // Used to store CC value of 'DYNAMICQCC' (a light queue which will pulse the 
-  // LED when receiving an external CC message derived from live audio.
-
-
-  boolean lightOnState = false;
-  boolean setColorAct = false;
-
-
-  int queue; //the value of this variable determines which "light queues/patterns" are triggered in the loop() function below
-
-
-  unsigned long currentMillis = 0;
-  unsigned long previousMillis = 0;
-
-
-
-
-  //================LED COLOR PRESET STORAGE & RECALL FUNCTIONS================
-
-
-  /*
-  void crossFade(int color1[3], int color2[3])
-  {
-    //writeToLED....SHOW color1 first!
-    ArduinoInterface::writeToLED(color1[0], color1[1], color1[2]);
-    
-    //then calculate distance between color1 and color2  
-    int stepR = Easing::calculateStep(color1[0], color2[0]);
-    int stepG = Easing::calculateStep(color1[1], color2[1]); 
-    int stepB = Easing::calculateStep(color1[2], color2[2]);
-    
-    //then increment color1 RGB values '1' closer to color2 values
-    transColor[0] = Easing::calculateVal(stepR, color1[0]);
-    transColor[1] = Easing::calculateVal(stepG, color1[1]);
-    transColor[2] = Easing::calculateVal(stepB, color1[2]);
-  }
-
-  //current_color is transColor
-  bool fadeTo(int current_color[3], int target_color[3])
-  {  
-    if( current_color[0] == target_color[0] &&
-    current_color[1] == target_color[1] &&
-    current_color[2] == target_color[2])
-      return true;
-    
-    crossFade(current_color, target_color);
-    return false;
-  }
-
-  */
-
-
-  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned short dt) {
-
-    float colorJitter = 0;
-
-    if (robot_state->bypassRandomColor() == false) {
-        colorJitter = robot_state->randomness();
-    }
-
-    //===========LED LIGHT QUEUES==========   
-    switch (queue)
-    {   
-
-      /*
-        
-      case AUTOFADEQ_CC: //Color Fade Over Time
-      {
-        currentMillis = millis(); //get the current time
-        unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
-        
-        if(timeElapsed > *(robot_state->rate) / 16) //rate1 represents how much time must pass between updates of the animation - we divide it by 16 to get it in a good range
-        {
-          if(activeLightPreset >= lightPresetSelect + 1)
-          {
-            activeLightPreset = 1;
-          }
-          
-          if(fadeTo(transColor, getActiveLightPresetPtr()))
-          {            
-            activeLightPreset++;
-          }
-
-          previousMillis = currentMillis; //set the last time we advanced the state of the animation          
-        }  
-        break;
- 
-      }
-      */       
-        
-     
-      default:
-      {
-        // Removed
-      } 
-    }
-
-  } 
-
-
-  void processLEDCC(byte channel, byte number, byte value) 
-  {
-
-    //  QUEUE TOGGLE BUTTONS
-    /*
-    
-    if (number == AUTOFADEQ_CC)
-    {
-      if (value == 127) {
-        queue = number;
-      }
-      else
-      {
-        queue = 0;
-
-        transColor[0] = getLightPresetPtr(lightPresetSelect)[0]; //this causes LED to always start at the last selected lightPreset color when starting up
-        transColor[1] = getLightPresetPtr(lightPresetSelect)[1]; //the autoFade function. Otherwise the transColor never resets unless a new lightPreset is selected, which
-        transColor[2] = getLightPresetPtr(lightPresetSelect)[2]; //causes the LED color to always pickup where it left off when starting and stopping the autoFade sequence w/out selecting a new lightPreset
-        activeLightPreset = lightPresetSelect;                   //Now, multiple robots being commanded to initiate the autoFade function at the same time should remain in sync and always start at the same lightPreset
-
-      }
-
-    }
-    */
-
-  }
-
-}
-
