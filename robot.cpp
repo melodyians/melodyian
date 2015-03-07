@@ -19,6 +19,7 @@ Robot::Robot() {
 
 void Robot::handleInput(byte control_number, byte value) {
     state->updateInput(control_number, value);
+    led_behavior->updateState(control_number, value, state);
     led_behavior->updateBehaviorKey(control_number, value);
 }
   

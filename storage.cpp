@@ -62,3 +62,25 @@ void LEDStorage::writeEEPROMValues() {
 int* LEDStorage::getLightPresetPtr(int i) {
     return lightPresetData + (i-1)*3;
 }
+
+
+RGBColor LEDStorage::getLightPresetColor(int i) {
+
+    int * preset_pointer = getLightPresetPtr(i);
+    RGBColor color = {
+      preset_pointer[0],
+      preset_pointer[1],
+      preset_pointer[2]
+    };
+    return color;
+}
+
+void LEDStorage::setPresetColor(int i, byte r, byte g, byte b) {
+
+    int * preset_pointer = getLightPresetPtr(i);
+
+    preset_pointer[0] = r;
+    preset_pointer[1] = g;
+    preset_pointer[2] = b; 
+    
+}

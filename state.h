@@ -10,10 +10,11 @@ class RobotState {
 
 private:
     InputValues * input_values;
-    LEDStorage * led_storage;
 
 public:
     RobotState();
+    LEDStorage * led_storage; // TODO probably best private
+
     void updateInput(byte control_number, byte value);
 
     bool bypassRandomColor();
@@ -29,8 +30,12 @@ public:
 
     byte pulseValue();
 
-
     bool colorOn();
+
+    bool recordEEPROMArmed();
+    bool saveColorOn();
+
+    void setCurrentLEDValues(byte r, byte g, byte b);
 
 };
 

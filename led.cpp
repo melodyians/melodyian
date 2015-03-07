@@ -32,6 +32,8 @@ LEDBehavior::LEDBehavior()
   : Behavior()
 {
   flashOnFlag = false;
+  selected_light_preset = 1;
+  current_fade_preset = 1;
 }
 
 void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
@@ -75,54 +77,80 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
 
 }
 
+void LEDBehavior::triggerLightPreset(int preset_number, RobotState * state) {
+
+    selected_light_preset = preset_number; 
+
+    RGBColor preset_color = state->led_storage->getLightPresetColor(preset_number);
+        
+    if (state->saveColorOn()) {
+      state->led_storage->setPresetColor(preset_number,
+                                        state->ledRedValue(), 
+                                        state->ledGreenValue(),
+                                        state->ledBlueValue());
+    } else {
+      state->setCurrentLEDValues(preset_color.r, preset_color.g, preset_color.b);
+    }
+    
+    transition_color = preset_color;
+
+  }
+
+void LEDBehavior::updateState(byte control_number, byte value, RobotState * state) {
+
+  if (control_number == TRIGLP1_CC) { 
+      triggerLightPreset(1, state);
+    } else if (control_number == TRIGLP2_CC) {
+      triggerLightPreset(2, state);
+    } else if (control_number == TRIGLP3_CC) {
+      triggerLightPreset(3, state);
+    } else if (control_number == TRIGLP4_CC) {
+      triggerLightPreset(4, state);
+    } else if (control_number == TRIGLP5_CC) { 
+      triggerLightPreset(5, state);
+    } else if (control_number == TRIGLP6_CC) { 
+      triggerLightPreset(6, state);
+    } else if (control_number == TRIGLP7_CC) { 
+      triggerLightPreset(7, state);
+    } else if (control_number == TRIGLP8_CC) { 
+      triggerLightPreset(8, state);
+    } else if (control_number == AUTOFADEQ_CC && value != 127) {
+    
+    // This causes LED to always start at the last selected lightPreset color when starting up
+    // the autoFade function. Otherwise the transColor never resets unless a new lightPreset 
+    // is selected, which causes the LED color to always pickup where it left off when starting 
+    // and stopping the autoFade sequence w/out selecting a new lightPreset.
+
+    // Now, multiple robots being commanded to initiate the autoFade function at the same time 
+    // should remain in sync and always start at the same lightPreset
+
+    transition_color = state->led_storage->getLightPresetColor(selected_light_preset);
+    current_fade_preset = selected_light_preset;
+  }
+}
+
 
 void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
 
-    if (control_number == SETCOLQ_CC)
-    {
-      if (value == 127) {
-        setCurrentBehavior(control_number);
-      } else {
-        clearCurrentBehavior();
-      }
+  // Standard behavior keys
+  if (control_number == SETCOLQ_CC || 
+      control_number == DYNAMICQ_CC || 
+      control_number == FLASHQ_CC || 
+      control_number == AUTOFADEQ_CC) {
+
+    if (value == 127) {
+      setCurrentBehavior(control_number);
+    } else {
+      clearCurrentBehavior();
     }
 
-    if (control_number == DYNAMICQ_CC)
-    {
-      if (value == 127) {
-        setCurrentBehavior(control_number);
-      } else {
-        clearCurrentBehavior();
-      }  
-    }
+  }
 
-    if (control_number == FLASHQ_CC)
-    {
-      if (value == 127) {
-        setCurrentBehavior(control_number);
-      } else {
-        flashOnFlag = true;
-        clearCurrentBehavior();
-       }
-    }
-
-    /*
-    if (number == AUTOFADEQ_CC)
-    {
-      if (value == 127) {queue = number;}
-      else
-      {
-        queue = 0;
-
-        transColor[0] = getLightPresetPtr(lightPresetSelect)[0]; //this causes LED to always start at the last selected lightPreset color when starting up
-        transColor[1] = getLightPresetPtr(lightPresetSelect)[1]; //the autoFade function. Otherwise the transColor never resets unless a new lightPreset is selected, which
-        transColor[2] = getLightPresetPtr(lightPresetSelect)[2]; //causes the LED color to always pickup where it left off when starting and stopping the autoFade sequence w/out selecting a new lightPreset
-        activeLightPreset = lightPresetSelect;                   //Now, multiple robots being commanded to initiate the autoFade function at the same time should remain in sync and always start at the same lightPreset
-
-      }
-
-    }
-    */
+  // When flash is triggered, turn the flag on.
+  if (control_number == FLASHQ_CC && value != 127) {
+    flashOnFlag = true;
+  }
+    
 }
 
 
@@ -280,33 +308,6 @@ namespace LED {
   */
 
 
-  /*
-
-  void setRandomColor(float colorJitter, RobotState * robot_state) {
-    RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
-            
-    float xr = colorJitter * random_color.r + ((1 - colorJitter) * *(robot_state->red_slider));
-    float xg = colorJitter * random_color.g + ((1 - colorJitter) * *(robot_state->green_slider));
-    float xb = colorJitter * random_color.b + ((1 - colorJitter) * *(robot_state->blue_slider));
-
-    // excerpted from ministage code
-    RGBColor temp_color = { 
-                            max(min(xr,255),0), 
-                            max(min(xg, 255),0), 
-                            max(min(xb, 255), 0) 
-                          }; 
-    brightness = 1;
-
-    robot_state->robot_led_color = colorWithAdjustedBrightness(temp_color, brightness); 
-    ArduinoInterface::writeToLED(robot_state->robot_led_color);
-
-  }
-
-  void setLEDBlack() {
-    ArduinoInterface::writeToLED(0, 0, 0);
-  }
-  */
-
   void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned short dt) {
 
     float colorJitter = 0;
@@ -320,48 +321,6 @@ namespace LED {
     {   
 
       /*
-      case FLASHQ_CC: //FLASH W/ colorJitter (randomness)...imported from ministage_complete_1_1 sketch.
-      {
-        if (Flags::melodyOneAct() || Flags::melodyTwoAct() || Flags::keyModeAct()) { //<-------********uncomment for new FLASH when keyModeAct functionality**************
-          if (Flags::noteOn()) {
-
-            if (*(robot_state->bypass_random_color)) {
-                ArduinoInterface::writeToLED(*(robot_state->red_slider), 
-                                     *(robot_state->green_slider), 
-                                     *(robot_state->blue_slider));   
-
-            } else {
-              setRandomColor(colorJitter, robot_state);
-            }
-          } else {
-            setLEDBlack();
-          }
-        } else {
-
-          currentMillis = millis(); //get the current time
-          unsigned int timeElapsed = currentMillis - previousMillis; //get how much time has passed since we updated the animation
-
-          if(timeElapsed > (*(robot_state->rate) / 8)) //check if we need to advance the state of the animation
-          { 
-            RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
-
-            float xr = colorJitter * random_color.r + ((1 - colorJitter) * *(robot_state->red_slider));
-            float xg = colorJitter * random_color.g + ((1 - colorJitter) * *(robot_state->green_slider));
-            float xb = colorJitter * random_color.b + ((1 - colorJitter) * *(robot_state->blue_slider));
-
-            RGBColor temp_color = {max(min(xr,255),0) , max(min(xg, 255),0) , max(min(xb, 255), 0) }; //excerpted from ministage code
-            brightness = 1;
-
-            robot_state->robot_led_color = temp_color;
-
-            altFlash(robot_state);
-            //go to the first state
-            previousMillis = currentMillis; //set the last time we advanced the state of the animation
-          }
-        } 
-        break;
-      }
-        
         
       case AUTOFADEQ_CC: //Color Fade Over Time
       {
@@ -402,19 +361,12 @@ namespace LED {
 
     //  QUEUE TOGGLE BUTTONS
     /*
-    if (number == FLASHQ_CC)
+    
+    if (number == AUTOFADEQ_CC)
     {
       if (value == 127) {
         queue = number;
-      } else {
-        lightOnState = true;
-        queue = 0;
       }
-    }
-
-    if (number == AUTOFADEQ_CC)
-    {
-      if (value == 127) {queue = number;}
       else
       {
         queue = 0;

@@ -11,14 +11,17 @@ RobotState::RobotState() {
     // TODO must update this if we get a low value. Saves some meory.
     input_values = new InputValues(RED_CC);
 
-    //input_values->storeInput(RED_CC, (byte) 0);
-    //input_values->storeInput(GREEN_CC, (byte) 0);
-    //input_values->storeInput(BLUE_CC, (byte) 0);
     // input_values->storeInput(RATE1_CC, (byte) 84); // Default to 1000
 }
 
 void RobotState::updateInput(byte control_number, byte value) {
     input_values->storeInput(control_number, value);
+}
+
+void RobotState::setCurrentLEDValues(byte r, byte g, byte b) {
+    input_values->storeInput(RED_CC, r);
+    input_values->storeInput(GREEN_CC, g);
+    input_values->storeInput(BLUE_CC, b);
 }
 
 
@@ -49,7 +52,6 @@ byte RobotState::ledRedValue() {
 
 byte RobotState::ledGreenValue() {
     return Smoothing::smoothRBGFader(input_values->getValue(GREEN_CC));
-
 }
 
 byte RobotState::ledBlueValue() {
@@ -62,6 +64,14 @@ byte RobotState::pulseValue() {
 
 bool RobotState::colorOn() {
     return Smoothing::booleanButton(input_values->getValue(SETCOLQ_CC));
+}
+
+bool RobotState::recordEEPROMArmed() {
+    return Smoothing::booleanButton(input_values->getValue(ARMEEPROM_CC));
+}
+
+bool RobotState::saveColorOn() {
+    return Smoothing::booleanButton(input_values->getValue(WRITECOLOR_CC));
 }
 
 
