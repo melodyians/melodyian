@@ -6,6 +6,7 @@
 #include "smoothing.h"
 
 
+// TODO -- functions on output?
 void setOuputColor(RobotOutput * output, byte r, byte g, byte b) {
   output->r = r;
   output->g = g;
@@ -19,13 +20,11 @@ void setOuputLEDBlack(RobotOutput * output) {
 }
 
 
-
 void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
   output->r = state->ledRedValue();
   output->g = state->ledGreenValue();
   output->b = state->ledBlueValue();
 }
-
 
 
 LEDBehavior::LEDBehavior() 
@@ -154,7 +153,6 @@ void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
 }
 
 
-
 void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
   float colorJitter = 0;
 
@@ -206,6 +204,26 @@ void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
 
 void LEDBehavior::fadeBehavior(RobotState * state, RobotOutput * output) {
 
+  unsigned short fade_interval = state->rate() / 16;
+  
+  if (timer > fade_interval) {
+    
+    RGBColor next_preset_color = state->led_storage->getLightPresetColor(current_fade_preset);
+
+    // If we have reached the target preset, move to next one.
+    if (transition_color == next_preset_color) {
+      current_fade_preset++;
+    }
+
+    // Loop Around
+    if (current_fade_preset >= selected_light_preset + 1) {
+      current_fade_preset = 1;
+    }
+
+    setOuputColor(output, transition_color.r, transition_color.g, transition_color.b);
+    transition_color = crossFade(transition_color, next_preset_color);
+    decrementTimer(fade_interval);
+  }  
 }
 
 void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
@@ -292,19 +310,6 @@ namespace LED {
     return false;
   }
 
-
-  void altFlash(RobotState * robot_state)
-  {
-    if (lightOnState == true) {
-      robot_state->robot_led_color = colorWithAdjustedBrightness(robot_state->robot_led_color, brightness); 
-      ArduinoInterface::writeToLED(robot_state->robot_led_color);
-    } else {
-      ArduinoInterface::writeToLED(0, 0, 0);
-    }
-    
-    lightOnState = !lightOnState;
-    
-  }
   */
 
 

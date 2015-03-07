@@ -1,5 +1,10 @@
 #include "colorhelper.h"
 
+bool operator==(const RGBColor& lhs, const RGBColor& rhs) {
+    return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b;
+}
+
+
 RGBColor HSVtoRGB(int h, double s, double v) {
   
   //this is the algorithm to convert from RGB to HSV
@@ -95,5 +100,35 @@ RGBColor getRandomColor(float colorJitter, byte r, byte g, byte b) {
 
     RGBColor combined_color = {clampColor(xr), clampColor(xg), clampColor(xb)};
     return combined_color;
+}
+
+byte stepColor(short distance, byte val) {
+   
+  // Increment the value if we want to go positive...
+  if (distance > 0) {
+    val += 1;  
+  } else if (distance < 0) {
+    val -= 1;
+  }  //...or decrement it if we need to go negative           
+  
+  val = clampColor(val);
+  return val;
+}
+
+RGBColor crossFade(RGBColor origin, RGBColor destination) {
+  
+  // Calculate distance between destination and origin  
+  short distance_r = destination.r - origin.r;
+  short distance_g = destination.g - origin.g;
+  short distance_b = destination.b - origin.b;
+
+  // Then increment Origin RGB values 1 closer to destination values
+  RGBColor new_color = {
+      stepColor(distance_r, origin.r),
+      stepColor(distance_g, origin.g),
+      stepColor(distance_b, origin.b)
+  };
+
+  return new_color;
 }
 

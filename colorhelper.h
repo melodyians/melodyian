@@ -5,7 +5,12 @@ struct RGBColor {
   byte r;
   byte g;
   byte b;
+
+   bool operator==(const RGBColor& rhs) const {
+        return this->r == rhs.r && this->g == rhs.g && this->b == rhs.b;
+    }
 };
+
 
 //Convert a given HSV (Hue Saturation Value) to RGB(Red Green Blue) and set the led to the color
 //  h is hue value, integer between 0 and 360
@@ -18,3 +23,7 @@ RGBColor HSVtoRGB(int h, double s, double v);
 RGBColor colorWithAdjustedBrightness(RGBColor color, float brightness);
 RGBColor colorWithAdjustedBrightness(byte r, byte g, byte b, float brightness);
 RGBColor getRandomColor(float colorJitter, byte r, byte g, byte b);
+
+bool colorsEqual(RGBColor color1, RGBColor color2);
+byte clampColor(float value);
+RGBColor crossFade(RGBColor origin, RGBColor destination);
