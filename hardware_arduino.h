@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Arduino.h>
 #include "core_interfaces.h"
 #include "types.h"
 

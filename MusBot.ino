@@ -27,27 +27,9 @@ void setup()  {
   HardwareInterface * arduino_hardware = new ArduinoInterface();
   robot = new Robot(arduino_hardware);
 
-  initializeInputs();
+  InitializeInputs();
   
 } 
-
-
-void initializeInputs() {
-
-  MIDI.begin();
-  Serial.begin(57600);
-  MIDI.turnThruOff();
-  
-  // Think I need to do this so Arduino can work w/ any MIDI message Max will be sending it
-  MIDI.setInputChannel(MIDI_CHANNEL_OMNI); 
-  MIDI.setHandleControlChange(handleControlChange);
-  MIDI.setHandleNoteOn(noteOnControl);
-
-  // Only needed if receiving MIDI Note Off messages from controller device to stop notes
-  MIDI.setHandleNoteOff(noteOffControl); 
-
-}
-
 
 void loop()
 {
@@ -68,14 +50,30 @@ void loop()
   robot->updateBehavior(dt);
   robot->updateHardware();
 
-  debug(dt);
+  Debug(dt);
 }
 
+
+void InitializeInputs() {
+
+  MIDI.begin();
+  Serial.begin(57600);
+  MIDI.turnThruOff();
+  
+  // Think I need to do this so Arduino can work w/ any MIDI message Max will be sending it
+  MIDI.setInputChannel(MIDI_CHANNEL_OMNI); 
+  MIDI.setHandleControlChange(HandleControlChange);
+  MIDI.setHandleNoteOn(NoteOnControl);
+
+  // Only needed if receiving MIDI Note Off messages from controller device to stop notes
+  MIDI.setHandleNoteOff(NoteOffControl); 
+
+}
 
 unsigned short debug_every = 3000;
 unsigned short debug_timer = 0;
 
-void debug(unsigned short dt) {
+void Debug(unsigned short dt) {
 
     debug_timer = debug_timer + dt;
     if (debug_timer > debug_every) {
@@ -88,7 +86,7 @@ void debug(unsigned short dt) {
 
 }
 
-void handleControlChange (byte channel, byte number, byte value)
+void HandleControlChange (byte channel, byte number, byte value)
 {
   // Process our inputs
   robot->handleInput(number, value);
@@ -99,11 +97,11 @@ void handleControlChange (byte channel, byte number, byte value)
 }
 
 // Special-cased event handling
-void noteOnControl (byte channel, byte note, byte velocity) {
+void NoteOnControl (byte channel, byte note, byte velocity) {
   NoteControl::noteOnControl(channel, note, velocity);
 }
 
-void noteOffControl(byte channel, byte note, byte velocity) {
+void NoteOffControl(byte channel, byte note, byte velocity) {
   NoteControl::noteOffControl(channel, note, velocity);
 }
 

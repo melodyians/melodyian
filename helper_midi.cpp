@@ -9,10 +9,6 @@ namespace MidiCC {
         
       Serial.write(MIDICCmessage, 3);
       
-      //Serial.write(177); //Byte 1: message byte of MIDI CC message (1011CCCC... 10110001 = MIDI CC on channel 1)
-      //Serial.write(CC); //Byte 2: Control number
-      //Serial.write(value); //Byte 3: Value number
-      
     }
 }
 

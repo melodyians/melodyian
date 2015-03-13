@@ -11,7 +11,6 @@ namespace Sound {
 }
 
 namespace Motor {
-
   void processMotorCC (byte channel, byte number, byte value);
   void actuateMotors(HardwareInterface * hardware);
 }
