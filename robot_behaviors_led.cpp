@@ -167,7 +167,7 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
     // Flash only when the note is on.
     if (Flags::noteOn()) {
       // If colorJitter is 0 this just returns the color
-      RGBColor adjusted_color = getRandomColor(colorJitter, 
+      RGBColor adjusted_color = Color::GetRandomColor(colorJitter, 
                                                state->ledRedValue(),
                                                state->ledGreenValue(),
                                                state->ledBlueValue());
@@ -182,7 +182,7 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
     // Check if we need to advance the state of the animation
     if (timer > rate_interval)
     { 
-      RGBColor adjusted_color = getRandomColor(colorJitter, 
+      RGBColor adjusted_color = Color::GetRandomColor(colorJitter, 
                                                state->ledRedValue(),
                                                state->ledGreenValue(),
                                                state->ledBlueValue());
@@ -223,7 +223,7 @@ void RobotLEDBehavior::fadeBehavior(State * state, Output * output) {
 
     output->setColor(transition_color.r, transition_color.g, transition_color.b);
 
-    this->transition_color = crossFade(transition_color, next_preset_color);
+    this->transition_color = Color::CrossFade(transition_color, next_preset_color);
 
     this->decrementTimer(fade_interval);
   }  
@@ -250,7 +250,7 @@ void RobotLEDBehavior::pulseBehavior(unsigned short dt, State * state, Output * 
     this->brightness = Smoothing::brightnessDecay(this->brightness, dt, state->decay());
   }     
 
-  RGBColor color_buffer = colorWithAdjustedBrightness(state->ledRedValue(),
+  RGBColor color_buffer = Color::ColorWithAdjustedBrightness(state->ledRedValue(),
                                                       state->ledGreenValue(),
                                                       state->ledBlueValue(),
                                                       this->brightness);
