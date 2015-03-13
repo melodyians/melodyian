@@ -4,25 +4,25 @@
 
 Robot::Robot(HardwareInterface * hw) {
 
-  hardware = hw;
-  state = new State();
-  output = new Output();
+  this->hardware = hw;
+  this->state = new State();
+  this->output = new Output();
 
-  led_behavior = new RobotLEDBehavior();
+  this->led_behavior = new RobotLEDBehavior();
 
 }
 
 
 void Robot::handleInput(byte control_number, byte value) {
-    state->updateInput(control_number, value);
-    led_behavior->updateState(control_number, value, state);
-    led_behavior->updateBehaviorKey(control_number, value);
+    this->state->updateInput(control_number, value);
+    this->led_behavior->updateState(control_number, value, state);
+    this->led_behavior->updateBehaviorKey(control_number, value);
 }
   
 void Robot::updateBehavior(unsigned short dt) {
-    led_behavior->updateBehavior(dt, state, output);
+    this->led_behavior->updateBehavior(dt, state, output);
 }
   
 void Robot::updateHardware() {
-    hardware->writeToLED(output->r, output->g, output->b);
+    this->hardware->writeToLED(output->r, output->g, output->b);
 }

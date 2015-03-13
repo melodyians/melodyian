@@ -27,7 +27,7 @@ RobotLEDBehavior::RobotLEDBehavior() : Behavior()
 
 void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output * output) {
 
-  incrementTimer(dt);
+  this->incrementTimer(dt);
 
   /*
   if (state->recordEEPROMArmed() && state->saveColorOn()) { 
@@ -49,17 +49,17 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
     }
     case(DYNAMICQ_CC):
     {
-      pulseBehavior(dt, state, output);
+      this->pulseBehavior(dt, state, output);
       break;
     }
     case(FLASHQ_CC):
     {
-      flashBehavior(state, output);
+      this->flashBehavior(state, output);
       break;
     }
     case(AUTOFADEQ_CC):
     {
-      fadeBehavior(state, output);
+      this->fadeBehavior(state, output);
       break;
     }
     default:
@@ -68,7 +68,7 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
         // TODO: More intelligent handling of buttons. 
         // Have priority over button states.
         if (state->colorOn()) {
-          behavior_key = SETCOLQ_CC;
+          this->behavior_key = SETCOLQ_CC;
         } else {
           output->setColorBlack();
         }
@@ -79,7 +79,7 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
 
 void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
 
-    selected_light_preset = preset_number; 
+    this->selected_light_preset = preset_number; 
 
     RGBColor preset_color = state->led_storage->getLightPresetColor(preset_number);
         
@@ -92,28 +92,28 @@ void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
       state->setCurrentLEDValues(preset_color.r, preset_color.g, preset_color.b);
     }
     
-    transition_color = preset_color;
+    this->transition_color = preset_color;
 
   }
 
 void RobotLEDBehavior::updateState(byte control_number, byte value, State * state) {
 
   if (control_number == TRIGLP1_CC) { 
-      triggerLightPreset(1, state);
+      this->triggerLightPreset(1, state);
     } else if (control_number == TRIGLP2_CC) {
-      triggerLightPreset(2, state);
+      this->triggerLightPreset(2, state);
     } else if (control_number == TRIGLP3_CC) {
-      triggerLightPreset(3, state);
+      this->triggerLightPreset(3, state);
     } else if (control_number == TRIGLP4_CC) {
-      triggerLightPreset(4, state);
+      this->triggerLightPreset(4, state);
     } else if (control_number == TRIGLP5_CC) { 
-      triggerLightPreset(5, state);
+      this->triggerLightPreset(5, state);
     } else if (control_number == TRIGLP6_CC) { 
-      triggerLightPreset(6, state);
+      this->triggerLightPreset(6, state);
     } else if (control_number == TRIGLP7_CC) { 
-      triggerLightPreset(7, state);
+      this->triggerLightPreset(7, state);
     } else if (control_number == TRIGLP8_CC) { 
-      triggerLightPreset(8, state);
+      this->triggerLightPreset(8, state);
     } else if (control_number == AUTOFADEQ_CC && value != 127) {
     
     // This causes LED to always start at the last selected lightPreset color when starting up
@@ -124,8 +124,8 @@ void RobotLEDBehavior::updateState(byte control_number, byte value, State * stat
     // Now, multiple robots being commanded to initiate the autoFade function at the same time 
     // should remain in sync and always start at the same lightPreset
 
-    transition_color = state->led_storage->getLightPresetColor(selected_light_preset);
-    current_fade_preset = selected_light_preset;
+    this->transition_color = state->led_storage->getLightPresetColor(selected_light_preset);
+    this->current_fade_preset = selected_light_preset;
   }
 }
 
@@ -139,16 +139,16 @@ void RobotLEDBehavior::updateBehaviorKey(byte control_number, byte value) {
       control_number == AUTOFADEQ_CC) {
 
     if (value == 127) {
-      setCurrentBehavior(control_number);
+      this->setCurrentBehavior(control_number);
     } else {
-      clearCurrentBehavior();
+      this->clearCurrentBehavior();
     }
 
   }
 
   // When flash is triggered, turn the flag on.
   if (control_number == FLASHQ_CC && value != 127) {
-    flashOnFlag = true;
+    this->flashOnFlag = true;
   }
     
 }
@@ -194,10 +194,10 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
       }
       
       // Flip the on/off flag
-      flashOnFlag = !flashOnFlag;
+      this->flashOnFlag = !flashOnFlag;
      
       // Reset the timer to time - how far we've come
-      decrementTimer(rate_interval);
+      this->decrementTimer(rate_interval);
     }
   }
 
@@ -213,19 +213,19 @@ void RobotLEDBehavior::fadeBehavior(State * state, Output * output) {
 
     // If we have reached the target preset, move to next one.
     if (transition_color == next_preset_color) {
-      current_fade_preset++;
+      this->current_fade_preset++;
     }
 
     // Loop Around
     if (current_fade_preset >= selected_light_preset + 1) {
-      current_fade_preset = 1;
+      this->current_fade_preset = 1;
     }
 
     output->setColor(transition_color.r, transition_color.g, transition_color.b);
 
-    transition_color = crossFade(transition_color, next_preset_color);
+    this->transition_color = crossFade(transition_color, next_preset_color);
 
-    decrementTimer(fade_interval);
+    this->decrementTimer(fade_interval);
   }  
 
 }
@@ -239,12 +239,15 @@ void RobotLEDBehavior::pulseBehavior(unsigned short dt, State * state, Output * 
 
 
   if (state->pulseValue() >= 1) {
-    brightness = 0.01 * map(state->pulseValue(), 1, 127, 10, 100);
+
+    this->brightness = 0.01 * map(state->pulseValue(), 1, 127, 10, 100);
+    
     if (brightness > 1.0) {
-      brightness = 1.0;
+      this->brightness = 1.0;
     }
+  
   } else {
-    brightness = Smoothing::brightnessDecay(brightness, dt, state->decay());
+    this->brightness = Smoothing::brightnessDecay(brightness, dt, state->decay());
   }     
 
   RGBColor color_buffer = colorWithAdjustedBrightness(state->ledRedValue(),
