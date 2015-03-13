@@ -7,6 +7,19 @@ Output::Output() {
     b = 0;
 }
 
+// TODO -- functions on output?
+void Output::setColor(byte r, byte g, byte b) {
+  this->r = r;
+  this->g = g;
+  this->b = b;
+}
+
+void Output::setColorBlack() {
+  this->r = 0;
+  this->g = 0;
+  this->b = 0;
+}
+
 
 InputValues::InputValues(byte lowest_cc) {
     offset = lowest_cc;

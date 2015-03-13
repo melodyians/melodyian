@@ -32,7 +32,6 @@ public:
     byte getValue(byte control_number);
 
 };
-
 class Output {
 
 public:
@@ -40,6 +39,9 @@ public:
   byte r;
   byte g;
   byte b;
+
+  void setColor(byte r, byte g, byte b);
+  void setColorBlack();
 
 };
 

@@ -10,25 +10,11 @@
 #include "helper_midi.h"
 
 
-// TODO -- functions on output?
-void setOuputColor(Output * output, byte r, byte g, byte b) {
-  output->r = r;
-  output->g = g;
-  output->b = b;
+
+void SetOutputColorToState(Output * output, State * state) {
+  output->setColor(state->ledRedValue(), state->ledGreenValue(), state->ledBlueValue());
 }
 
-void setOuputLEDBlack(Output * output) {
-  output->r = 0;
-  output->g = 0;
-  output->b = 0;
-}
-
-
-void copyLEDStateToOutput(State * state, Output * output) {
-  output->r = state->ledRedValue();
-  output->g = state->ledGreenValue();
-  output->b = state->ledBlueValue();
-}
 
 
 RobotLEDBehavior::RobotLEDBehavior() : Behavior()
@@ -58,7 +44,7 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
   {
     case(SETCOLQ_CC):
     {
-      copyLEDStateToOutput(state, output); 
+      SetOutputColorToState(output, state); 
       break;
     }
     case(DYNAMICQ_CC):
@@ -84,7 +70,7 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
         if (state->colorOn()) {
           behavior_key = SETCOLQ_CC;
         } else {
-          setOuputLEDBlack(output);
+          output->setColorBlack();
         }
       } 
   }
@@ -185,9 +171,9 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
                                                state->ledRedValue(),
                                                state->ledGreenValue(),
                                                state->ledBlueValue());
-      setOuputColor(output, adjusted_color.r, adjusted_color.g, adjusted_color.b);
+      output->setColor(adjusted_color.r, adjusted_color.g, adjusted_color.b);
     } else {
-      setOuputLEDBlack(output);
+      output->setColorBlack();
     }
   } else {
 
@@ -202,9 +188,9 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
                                                state->ledBlueValue());
 
       if (flashOnFlag == true) {
-        setOuputColor(output, adjusted_color.r, adjusted_color.g, adjusted_color.b);
+        output->setColor(adjusted_color.r, adjusted_color.g, adjusted_color.b);
       } else {
-        setOuputLEDBlack(output);
+        output->setColorBlack();
       }
       
       // Flip the on/off flag
@@ -235,7 +221,7 @@ void RobotLEDBehavior::fadeBehavior(State * state, Output * output) {
       current_fade_preset = 1;
     }
 
-    setOuputColor(output, transition_color.r, transition_color.g, transition_color.b);
+    output->setColor(transition_color.r, transition_color.g, transition_color.b);
 
     transition_color = crossFade(transition_color, next_preset_color);
 
@@ -266,6 +252,6 @@ void RobotLEDBehavior::pulseBehavior(unsigned short dt, State * state, Output * 
                                                       state->ledBlueValue(),
                                                       brightness);
 
-  setOuputColor(output, color_buffer.r, color_buffer.g, color_buffer.b);
+  output->setColor(color_buffer.r, color_buffer.g, color_buffer.b);
 
 }
