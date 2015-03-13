@@ -33,6 +33,7 @@ void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
 
 LEDBehavior::LEDBehavior() : Behavior()
 {
+  brightness = 0.0f;
   flashOnFlag = false;
   selected_light_preset = 1;
   current_fade_preset = 1;
@@ -250,7 +251,6 @@ void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutp
   // When Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading 
   // the LED brightness to 0 incrementally based on decat value
 
-  float brightness = 1.0f;
 
   if (state->pulseValue() >= 1) {
     brightness = 0.01 * map(state->pulseValue(), 1, 127, 10, 100);
@@ -258,7 +258,6 @@ void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutp
       brightness = 1.0;
     }
   } else {
-
     brightness = Smoothing::brightnessDecay(brightness, dt, state->decay());
   }     
 

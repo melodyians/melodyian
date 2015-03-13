@@ -12,6 +12,7 @@ private:
   bool flashOnFlag;
   byte selected_light_preset;
   byte current_fade_preset;
+  float brightness;
 
   void triggerLightPreset(int preset_number, RobotState * state);
   void flashBehavior(RobotState * state, RobotOutput * output);
