@@ -29,35 +29,21 @@ LEDStorage::LEDStorage() {
 
 }
 
-void LEDStorage::saveToEEPROM(int lightPresetVal)
-  {
-      int a = 0;
-      int adrs = (lightPresetVal - 1) * 3;
-      for (int i = adrs; i <= (adrs+2); i++)
-      {
-        EEPROM.write(i, getLightPresetPtr(lightPresetVal)[a]);
-        a++;    
-      } 
-  }
+void LEDStorage::saveToEEPROM(int lightPresetVal) {
+    int a = 0;
+    int adrs = (lightPresetVal - 1) * 3;
+    for (int i = adrs; i <= (adrs+2); i++) {
+      EEPROM.write(i, getLightPresetPtr(lightPresetVal)[a]);
+      a++;    
+    } 
+}
 
-void LEDStorage::readFromEEPROM()
-  {  
+void LEDStorage::readFromEEPROM() {  
     for (int i=0; i<=23; i++)
     { 
       lightPresetData[i] = EEPROM.read(i);
     }
-  }
-
-/*
-void LEDStorage::writeEEPROMValues() {
-
-    if (armEEPROMwrite == true && writeColor == true) { 
-        saveToEEPROM(lightPresetVal);
-        armEEPROMwrite = false;
-    }
 }
-*/
-
 
 int* LEDStorage::getLightPresetPtr(int i) {
     return lightPresetData + (i-1)*3;
@@ -82,5 +68,5 @@ void LEDStorage::setPresetColor(int i, byte r, byte g, byte b) {
     preset_pointer[0] = r;
     preset_pointer[1] = g;
     preset_pointer[2] = b; 
-    
+
 }

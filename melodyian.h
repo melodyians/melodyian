@@ -115,7 +115,6 @@ private:
   byte current_fade_preset;
 
   void triggerLightPreset(int preset_number, RobotState * state);
-
   void flashBehavior(RobotState * state, RobotOutput * output);
   void fadeBehavior(RobotState * state, RobotOutput * output);
   void pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output);
@@ -143,12 +142,6 @@ public:
   void updateHardware();
 
 };
-
-
-namespace LED {
-  void processLEDCC(byte channel, byte number, byte value);
-  void updateLEDBehavior(RobotState * robot_state, HardwareInterface * hardware, unsigned short dt);
-}
 
 
 namespace Sound {

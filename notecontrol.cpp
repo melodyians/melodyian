@@ -2,6 +2,8 @@
 #include "melodyian.h"
 //#include "pitches.h"
 
+
+// TODO: Turn into SoundState
 namespace NoteControl {
   
   const unsigned int NUM_NOTES = 112;

@@ -4,6 +4,7 @@
 #include "easing.h"
 #include "colorhelper.h"
 #include "smoothing.h"
+#include "midicc.h"
 
 
 // TODO -- functions on output?
@@ -38,6 +39,15 @@ LEDBehavior::LEDBehavior()
 void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
 
   incrementTimer(dt);
+
+  if (state->recordEEPROMArmed() && state->saveColorOn()) { 
+    MidiCC::writeMidiOut(99, state->ledRedValue());
+    MidiCC::writeMidiOut(99, state->ledGreenValue());
+    MidiCC::writeMidiOut(99, state->ledBlueValue());
+    MidiCC::writeMidiOut(99, selected_light_preset);
+    state->led_storage->saveToEEPROM(selected_light_preset);
+    state->disarmRecordEEPROM();
+  } 
 
   switch(behavior_key)
   {
@@ -236,7 +246,7 @@ void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutp
   // When Arduino receives a DYNAMIC_CC MIDI message w/ value == 0, start fading 
   // the LED brightness to 0 incrementally based on decat value
 
-  float brightness;
+  float brightness = 1.0f;
 
   if (state->pulseValue() >= 1) {
     brightness = 0.01 * map(state->pulseValue(), 1, 127, 10, 100);

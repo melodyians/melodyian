@@ -44,25 +44,18 @@ void initializeInputs() {
 }
 
 
-
-
 void loop()
 {
   // Read midi from input. Triggers callbacks.
   bool midi_read = MIDI.read();
 
   // Move our clock forward
-  unsigned long dt = timer->step();
+  unsigned short dt = timer->step();
 
   // Battery and Memory housekeeping
-
-  // Disabled -- this seems to unpredictbly impact 
-  // the state of the LED, and I have no idea why.
-  //Battery::pingBatVoltage(midi_read, hardware_interface);
+  // Disabled -- this seems to unpredictbly impact the state of the LED, and I have no idea why.
+  // Battery::pingBatVoltage(midi_read, hardware_interface);
   
-  // TODO: Pull out to behavior
-  // LED::writeEEPROMValues();
-
   // Update our Robot from our current state
   Sound::processSoundTriggers(dt, robot->state, robot->hardware);
   Motor::actuateMotors(robot->hardware);

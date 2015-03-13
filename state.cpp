@@ -70,64 +70,10 @@ bool RobotState::recordEEPROMArmed() {
     return Smoothing::booleanButton(input_values->getValue(ARMEEPROM_CC));
 }
 
+void RobotState::disarmRecordEEPROM() {
+    input_values->storeInput(ARMEEPROM_CC, (byte) 0);
+}
+
 bool RobotState::saveColorOn() {
     return Smoothing::booleanButton(input_values->getValue(WRITECOLOR_CC));
 }
-
-
-/*
-RobotState::RobotState(LEDStorage * storage) {
-
-    led_storage = storage;
-
-    transColor[0] = 0;
-    transColor[1] = 0;
-    transColor[2] = 0;
-
-    initInputPtr<byte>(red_slider);
-    initInputPtr<byte>(green_slider);
-    initInputPtr<byte>(blue_slider);
-
-    initInputPtr<int>(rate);
-    *rate = 1000;
-
-    initInputPtr<unsigned int>(decay);
-    initInputPtr<float>(randomness);
-
-    initInputPtr<bool>(bypass_random_color);
-    initInputPtr<bool>(bypass_random_note);   
-
-
-    // LED Presets
-    initInputPtr<int>(lightPresetSelect);
-    *lightPresetSelect = 1;
-
-    initInputPtr<int>(activeLightPreset);
-    *lightPresetSelect = 1;
-    
-
-    initInputPtr<bool>(arm_rec);
-    initInputPtr<bool>(save_color); 
-
-    initInputPtr<unsigned int>(color_pulse);
-    initInputPtr<bool>(new_pulse); 
-
-
-    initInputPtr<bool>(color_on); 
-    initInputPtr<unsigned int>(current_light_behavior);
-
-
-};
-
-
-int* RobotState::getActiveLightPresetPtr() {
-
-     if (*activeLightPreset > 8) {
-        *activeLightPreset = 8;
-     }
-    
-     return led_storage->getLightPresetPtr(*activeLightPreset); 
-}
-
-*/
-
