@@ -1,10 +1,13 @@
 #include <Arduino.h>
 
-#include "actions.h"
-#include "melodyian.h"
-#include "colorhelper.h"
-#include "smoothing.h"
-#include "midicc.h"
+#include "robot.h"
+#include "legacy.h"
+
+#include "constants_actions.h"
+
+#include "helper_color.h"
+#include "helper_smoothing.h"
+#include "helper_midi.h"
 
 
 // TODO -- functions on output?
@@ -41,10 +44,10 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
 
   /*
   if (state->recordEEPROMArmed() && state->saveColorOn()) { 
-    MidiCC::writeMidiOut(99, state->ledRedValue());
-    MidiCC::writeMidiOut(99, state->ledGreenValue());
-    MidiCC::writeMidiOut(99, state->ledBlueValue());
-    MidiCC::writeMidiOut(99, selected_light_preset);
+    MidiCC::WriteMidiOut(99, state->ledRedValue());
+    MidiCC::WriteMidiOut(99, state->ledGreenValue());
+    MidiCC::WriteMidiOut(99, state->ledBlueValue());
+    MidiCC::WriteMidiOut(99, selected_light_preset);
     state->led_storage->saveToEEPROM(selected_light_preset);
     state->disarmRecordEEPROM();
   } 

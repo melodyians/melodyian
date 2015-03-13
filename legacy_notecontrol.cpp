@@ -1,7 +1,6 @@
 #include <Arduino.h>
-#include "melodyian.h"
-//#include "pitches.h"
-
+#include "legacy.h"
+#include "constants_pitches.h"
 
 // TODO: Turn into SoundState
 namespace NoteControl {

@@ -1,6 +1,7 @@
-#include "actions.h"
-#include "melodyian.h"
-#include "smoothing.h"
+#include "legacy.h"
+
+#include "constants_actions.h"
+#include "helper_smoothing.h"
 
 //=========MOTOR DRIVER SETUP============
 //motor A connected between A01 and A02 on motor driver breakout

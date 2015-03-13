@@ -1,5 +1,5 @@
-#import "input.h"
-#import "midicc.h"
+#import "core_interfaces.h"
+#import "helper_midi.h"
 
 InputValues::InputValues(byte lowest_cc) {
     offset = lowest_cc;
@@ -23,8 +23,8 @@ byte InputValues::getValue(byte control_number) {
 void InputValues::storeInput(byte control_number, byte value) {
 
     if (DEBUG) {
-        MidiCC::writeMidiOut(control_number,  value);
-        MidiCC::writeMidiOut(getCCIndex(control_number),  value);
+        MidiCC::WriteMidiOut(control_number,  value);
+        MidiCC::WriteMidiOut(getCCIndex(control_number),  value);
     }
 
     input_values[getCCIndex(control_number)] = value;

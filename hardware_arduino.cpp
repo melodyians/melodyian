@@ -1,6 +1,4 @@
-#include <Arduino.h>
-#include "hardware.h"
-#include "types.h"
+#include "hardware_arduino.h"
 
 
 ArduinoInterface::ArduinoInterface() {

@@ -1,5 +1,5 @@
 #pragma once
-#include "melodyian.h"
+#include "robot.h"
 
 RobotOutput::RobotOutput() {
     r = 0;

@@ -1,7 +1,8 @@
-#include "actions.h"
-#include "state.h"
+#include "robot.h"
 #include "types.h"
-#include "smoothing.h"
+
+#include "constants_actions.h"
+#include "helper_smoothing.h"
 
 
 RobotState::RobotState() {

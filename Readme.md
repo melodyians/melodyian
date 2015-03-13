@@ -9,6 +9,14 @@ http://www.ftdichip.com/FTDrivers.htm
 https://learn.sparkfun.com/tutorials/how-to-install-ftdi-drivers/mac#yosemite
 
 
+## Current Melodyian Structure Notes
+
+* Robot
+    - Hardware: Inteface to write actions to our current hardware
+    - State: Holds numerical and boolean input variables such as LED values, slider values, etc. in memory for later use. Also keeps a copy of any data stored to EEPROM. Updating the State doesn't directly impact what the robot does -- this must be done through Behaviors.
+    - Behaviors: Logic to 
+
+
 ## Melodyian Architecture
 
 ### Rough Architectural vision

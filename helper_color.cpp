@@ -1,5 +1,4 @@
-#include "colorhelper.h"
-
+#include "helper_color.h"
 
 RGBColor HSVtoRGB(int h, double s, double v) {
   

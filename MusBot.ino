@@ -5,11 +5,15 @@
 #include <midi_Settings.h>
 // #include <Wire.h>
 
-#include "actions.h"
-#include "hardware.h"
-#include "melodyian.h"
-#include "midicc.h"
-#include "time.h"
+#include "hardware_arduino.h"
+#include "robot.h"
+
+#include "constants_actions.h"
+
+#include "helper_midi.h"
+#include "helper_time.h"
+
+#include "legacy.h"
 
 MIDI_CREATE_DEFAULT_INSTANCE();
 
@@ -76,10 +80,10 @@ void debug(unsigned short dt) {
     debug_timer = debug_timer + dt;
     if (debug_timer > debug_every) {
       debug_timer = 0;
-      MidiCC::writeMidiOut(RED_CC, robot->state->ledRedValue());
-      MidiCC::writeMidiOut(GREEN_CC, robot->state->ledGreenValue());
-      MidiCC::writeMidiOut(BLUE_CC, robot->state->ledBlueValue());
-      MidiCC::writeMidiOut(66, robot->led_behavior->getCurrentBehavior());
+      MidiCC::WriteMidiOut(RED_CC, robot->state->ledRedValue());
+      MidiCC::WriteMidiOut(GREEN_CC, robot->state->ledGreenValue());
+      MidiCC::WriteMidiOut(BLUE_CC, robot->state->ledBlueValue());
+      MidiCC::WriteMidiOut(66, robot->led_behavior->getCurrentBehavior());
     }
 
 }

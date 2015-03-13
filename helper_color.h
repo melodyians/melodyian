@@ -1,17 +1,5 @@
 #pragma once
 #include "types.h"
-#include <math.h>
-
-struct RGBColor {
-  byte r;
-  byte g;
-  byte b;
-
-   bool operator==(const RGBColor& rhs) const {
-        return this->r == rhs.r && this->g == rhs.g && this->b == rhs.b;
-    }
-};
-
 
 //Convert a given HSV (Hue Saturation Value) to RGB(Red Green Blue) and set the led to the color
 //  h is hue value, integer between 0 and 360

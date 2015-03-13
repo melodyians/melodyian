@@ -1,6 +1,8 @@
-#include <Arduino.h>
-#include "actions.h"
-#include "melodyian.h"
+#include "types.h"
+#include "legacy.h"
+
+#include "constants_actions.h"
+#include "helper_midi.h"
 
 namespace Battery {
 
@@ -57,9 +59,7 @@ namespace Battery {
         //byte bat2VoltageCCVal = map(bat2VoltageIntConv, 330, 420, 0, 127);
         
         // TODO re-enable    
-        MidiCC::writeMidiOut(BAT1VOLTREAD_CC, bat1VoltageCCVal);
-
-
+        MidiCC::WriteMidiOut(BAT1VOLTREAD_CC, bat1VoltageCCVal);
 
         //MIDICC_TX(31, bat2VoltageCCVal);
            

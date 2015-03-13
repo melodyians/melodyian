@@ -1,8 +1,9 @@
 #include <Arduino.h>
+#include "helper_midi.h"
 
 namespace MidiCC {
 
-    void writeMidiOut(byte CC, byte value) {
+    void WriteMidiOut(byte CC, byte value) {
       Serial.flush();
       byte MIDICCmessage[3] = {176, CC, value}; 
         

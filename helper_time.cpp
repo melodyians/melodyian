@@ -1,5 +1,5 @@
-#include "time.h"
 #include <Arduino.h>
+#include "time.h"
 
 Timer::Timer () {
   start_ts = millis();

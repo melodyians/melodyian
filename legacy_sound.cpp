@@ -1,11 +1,15 @@
 #include <Arduino.h>
 
-#include "actions.h"
-#include "melodyian.h"
-#include "smoothing.h"
-#include "pitches.h"
-#include "midicc.h"
-#include "state.h"
+#include "legacy.h"
+#include "core_interfaces.h"
+
+#include "robot.h"
+
+#include "constants_actions.h"
+#include "constants_pitches.h"
+
+#include "helper_smoothing.h"
+#include "helper_midi.h"
 
 namespace Sound {
 

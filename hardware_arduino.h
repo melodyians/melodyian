@@ -1,24 +1,8 @@
 #pragma once
 
 #include <Arduino.h>
+#include "core_interfaces.h"
 #include "types.h"
-
-
-class HardwareInterface {
-
-public:
-  virtual void writeToLED(byte red, byte green, byte blue) = 0;
-
-  virtual void moveMotor(int motor, int motorSpeed, int motorDirection) = 0;
-  virtual void stopMotors() = 0;
-
-  virtual int readBattery() = 0;
-
-  virtual void playTone(unsigned int freq) = 0;
-  virtual void toneOff() = 0;
-  virtual bool ampIsOn() = 0;
-  virtual void setAmpPower(bool on) = 0;
-};
 
 
 class ArduinoInterface : public HardwareInterface {

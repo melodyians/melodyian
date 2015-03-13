@@ -3,7 +3,7 @@
 #include "types.h"
 
 namespace MidiCC {
-    void writeMidiOut(byte CC, byte value);
+    void WriteMidiOut(byte CC, byte value);
 }
 
 
