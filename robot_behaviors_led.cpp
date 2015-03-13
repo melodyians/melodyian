@@ -11,27 +11,27 @@
 
 
 // TODO -- functions on output?
-void setOuputColor(RobotOutput * output, byte r, byte g, byte b) {
+void setOuputColor(Output * output, byte r, byte g, byte b) {
   output->r = r;
   output->g = g;
   output->b = b;
 }
 
-void setOuputLEDBlack(RobotOutput * output) {
+void setOuputLEDBlack(Output * output) {
   output->r = 0;
   output->g = 0;
   output->b = 0;
 }
 
 
-void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
+void copyLEDStateToOutput(State * state, Output * output) {
   output->r = state->ledRedValue();
   output->g = state->ledGreenValue();
   output->b = state->ledBlueValue();
 }
 
 
-LEDBehavior::LEDBehavior() : Behavior()
+RobotLEDBehavior::RobotLEDBehavior() : Behavior()
 {
   brightness = 0.0f;
   flashOnFlag = false;
@@ -39,7 +39,7 @@ LEDBehavior::LEDBehavior() : Behavior()
   current_fade_preset = 1;
 }
 
-void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
+void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output * output) {
 
   incrementTimer(dt);
 
@@ -91,7 +91,7 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
 
 }
 
-void LEDBehavior::triggerLightPreset(int preset_number, RobotState * state) {
+void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
 
     selected_light_preset = preset_number; 
 
@@ -110,7 +110,7 @@ void LEDBehavior::triggerLightPreset(int preset_number, RobotState * state) {
 
   }
 
-void LEDBehavior::updateState(byte control_number, byte value, RobotState * state) {
+void RobotLEDBehavior::updateState(byte control_number, byte value, State * state) {
 
   if (control_number == TRIGLP1_CC) { 
       triggerLightPreset(1, state);
@@ -144,7 +144,7 @@ void LEDBehavior::updateState(byte control_number, byte value, RobotState * stat
 }
 
 
-void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
+void RobotLEDBehavior::updateBehaviorKey(byte control_number, byte value) {
 
   // Standard behavior keys
   if (control_number == SETCOLQ_CC || 
@@ -168,7 +168,7 @@ void LEDBehavior::updateBehaviorKey(byte control_number, byte value) {
 }
 
 
-void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
+void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
   float colorJitter = 0;
 
   if (state->bypassRandomColor() == false) {
@@ -217,7 +217,7 @@ void LEDBehavior::flashBehavior(RobotState * state, RobotOutput * output) {
 
 }
 
-void LEDBehavior::fadeBehavior(RobotState * state, RobotOutput * output) {
+void RobotLEDBehavior::fadeBehavior(State * state, Output * output) {
 
   unsigned short fade_interval = state->rate() / 16;
   
@@ -244,7 +244,7 @@ void LEDBehavior::fadeBehavior(RobotState * state, RobotOutput * output) {
 
 }
 
-void LEDBehavior::pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output) {
+void RobotLEDBehavior::pulseBehavior(unsigned short dt, State * state, Output * output) {
 
   // If Arduino receives a DYNAMIC_CC MIDI message w/ value greater than 0, 
   // turn LED on using most recent color value and scale brightness based on CC value.

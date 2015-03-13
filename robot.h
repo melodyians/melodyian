@@ -1,11 +1,11 @@
 #pragma once
 
-#include "core_interfaces.h"
+#include "core.h"
 #include "types.h"
 
-// LED stuff
+// Behaviors
 
-class LEDBehavior : public Behavior {
+class RobotLEDBehavior : public Behavior {
 
 private:
   RGBColor transition_color;
@@ -14,19 +14,18 @@ private:
   byte current_fade_preset;
   float brightness;
 
-  void triggerLightPreset(int preset_number, RobotState * state);
-  void flashBehavior(RobotState * state, RobotOutput * output);
-  void fadeBehavior(RobotState * state, RobotOutput * output);
-  void pulseBehavior(unsigned short dt, RobotState * state, RobotOutput * output);
+  void triggerLightPreset(int preset_number, State * state);
+  void flashBehavior(State * state, Output * output);
+  void fadeBehavior(State * state, Output * output);
+  void pulseBehavior(unsigned short dt, State * state, Output * output);
 
 public:
-  LEDBehavior();
-  void updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output);
+  RobotLEDBehavior();
+  void updateBehavior(unsigned short dt, State * state, Output * output);
   void updateBehaviorKey(byte control_number, byte value);
-  void updateState(byte control_number, byte value, RobotState * state);
+  void updateState(byte control_number, byte value, State * state);
 
 };
-
 
 
 // Main interface
@@ -34,11 +33,11 @@ class Robot {
 
 public:
   Robot(HardwareInterface * hardware);
-  RobotState * state;
-  HardwareInterface * hardware;
 
-  RobotOutput * output;
-  LEDBehavior * led_behavior;
+  HardwareInterface * hardware;
+  State * state;
+  Output * output;
+  RobotLEDBehavior * led_behavior;
   
   void handleInput(byte control_number, byte value);
   void updateBehavior(unsigned short dt);

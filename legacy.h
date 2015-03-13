@@ -1,12 +1,12 @@
 #include "types.h"
-#include "core_interfaces.h"
+#include "core.h"
 
 namespace Battery {
   void pingBatVoltage(bool midi_read);
 }
 
 namespace Sound {
-  void processSoundTriggers(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware);
+  void processSoundTriggers(unsigned long dt, State * robot_state, HardwareInterface * hardware);
   void processSoundCC(byte channel, byte number, byte value);
 }
 

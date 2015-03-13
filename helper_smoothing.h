@@ -13,7 +13,6 @@ namespace Smoothing {
 
   float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed);
 
-  int calculateStep(int prevValue, int endValue);
   int calculateVal(int stepSize, int val);
   
 }

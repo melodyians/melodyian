@@ -1,11 +1,11 @@
-#include "robot.h"
+#include "core.h"
 #include "types.h"
 
 #include "constants_actions.h"
 #include "helper_smoothing.h"
 
 
-RobotState::RobotState() {
+State::State() {
 
     led_storage = new LEDStorage();
     led_storage->readFromEEPROM();
@@ -16,11 +16,11 @@ RobotState::RobotState() {
     // input_values->storeInput(RATE1_CC, (byte) 84); // Default to 1000
 }
 
-void RobotState::updateInput(byte control_number, byte value) {
+void State::updateInput(byte control_number, byte value) {
     input_values->storeInput(control_number, value);
 }
 
-void RobotState::setCurrentLEDValues(byte r, byte g, byte b) {
+void State::setCurrentLEDValues(byte r, byte g, byte b) {
     input_values->storeInput(RED_CC, r);
     input_values->storeInput(GREEN_CC, g);
     input_values->storeInput(BLUE_CC, b);
@@ -28,54 +28,54 @@ void RobotState::setCurrentLEDValues(byte r, byte g, byte b) {
 
 
 // Wrapper to input values
-bool RobotState::bypassRandomColor() {
+bool State::bypassRandomColor() {
     return Smoothing::booleanButton(input_values->getValue(COLORJITTERBYPASS_CC));
 }
 
-bool RobotState::bypassRandomNote() {
+bool State::bypassRandomNote() {
     return Smoothing::booleanButton(input_values->getValue(NOTEJITTERBYPASS_CC));
 }
 
-float RobotState::randomness() {
+float State::randomness() {
     return Smoothing::mapByteToPercentage(input_values->getValue(JITTER_CC));
 }
 
-unsigned int RobotState::decay() {
+unsigned int State::decay() {
     return (unsigned int) input_values->getValue(FADESPD_CC);
 }
 
-int RobotState::rate() {
+int State::rate() {
     return Smoothing::smoothRateFader(input_values->getValue(RATE1_CC));
 }
     
-byte RobotState::ledRedValue() {
+byte State::ledRedValue() {
     return Smoothing::smoothRBGFader(input_values->getValue(RED_CC));
 }
 
-byte RobotState::ledGreenValue() {
+byte State::ledGreenValue() {
     return Smoothing::smoothRBGFader(input_values->getValue(GREEN_CC));
 }
 
-byte RobotState::ledBlueValue() {
+byte State::ledBlueValue() {
     return Smoothing::smoothRBGFader(input_values->getValue(BLUE_CC));
 }
 
-byte RobotState::pulseValue() {
+byte State::pulseValue() {
     return input_values->getValue(DYNAMIC_CC);
 }
 
-bool RobotState::colorOn() {
+bool State::colorOn() {
     return Smoothing::booleanButton(input_values->getValue(SETCOLQ_CC));
 }
 
-bool RobotState::recordEEPROMArmed() {
+bool State::recordEEPROMArmed() {
     return Smoothing::booleanButton(input_values->getValue(ARMEEPROM_CC));
 }
 
-void RobotState::disarmRecordEEPROM() {
+void State::disarmRecordEEPROM() {
     input_values->storeInput(ARMEEPROM_CC, (byte) 0);
 }
 
-bool RobotState::saveColorOn() {
+bool State::saveColorOn() {
     return Smoothing::booleanButton(input_values->getValue(WRITECOLOR_CC));
 }

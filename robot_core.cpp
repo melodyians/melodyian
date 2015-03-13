@@ -1,18 +1,14 @@
 #pragma once
 #include "robot.h"
 
-RobotOutput::RobotOutput() {
-    r = 0;
-    g = 0;
-    b = 0;
-}
 
 Robot::Robot(HardwareInterface * hw) {
 
   hardware = hw;
-  state = new RobotState();
-  led_behavior = new LEDBehavior();
-  output = new RobotOutput();
+  state = new State();
+  output = new Output();
+
+  led_behavior = new RobotLEDBehavior();
 
 }
 

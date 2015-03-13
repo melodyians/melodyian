@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "legacy.h"
-#include "core_interfaces.h"
+#include "core.h"
 
 #include "robot.h"
 
@@ -32,7 +32,7 @@ namespace Sound {
   }
 
 
-  void playMelody1(unsigned short dt, RobotState * robot_state, HardwareInterface * hardware)
+  void playMelody1(unsigned short dt, State * robot_state, HardwareInterface * hardware)
   { 
 
     float noteJitter = 0;
@@ -122,7 +122,7 @@ namespace Sound {
 
 
 
-  void playMelody2(unsigned short dt, RobotState * robot_state, HardwareInterface * hardware)
+  void playMelody2(unsigned short dt, State * robot_state, HardwareInterface * hardware)
   { 
 
     float noteJitter = 0;
@@ -221,7 +221,7 @@ namespace Sound {
   }
 
   // TODO: Pass in Note Control stuff
-  void processSoundTriggers(unsigned long dt, RobotState * robot_state, HardwareInterface * hardware) {
+  void processSoundTriggers(unsigned long dt, State * robot_state, HardwareInterface * hardware) {
 
     if (Flags::melodyOneAct() == false && Flags::melodyTwoAct() == false && /*keyModeAct == false*/Flags::keyModeAct() == false) //<-----**********uncomment for new FLASH when keyModeAct FUNCTIONALITY *********
     {

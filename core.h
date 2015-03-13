@@ -33,10 +33,10 @@ public:
 
 };
 
-class RobotOutput {
+class Output {
 
 public:
-  RobotOutput();
+  Output();
   byte r;
   byte g;
   byte b;
@@ -64,13 +64,13 @@ public:
 
 // Output and State
 
-class RobotState {
+class State {
 
 private:
     InputValues * input_values;
 
 public:
-    RobotState();
+    State();
     LEDStorage * led_storage; // TODO probably best private
 
     void updateInput(byte control_number, byte value);
@@ -112,7 +112,7 @@ protected:
 
 public:
     Behavior();
-    virtual void updateBehavior(unsigned short dt, RobotState * state, RobotOutput * output) = 0;
+    virtual void updateBehavior(unsigned short dt, State * state, Output * output) = 0;
     virtual void updateBehaviorKey(byte control_number, byte value) = 0;
     byte getCurrentBehavior();
 
