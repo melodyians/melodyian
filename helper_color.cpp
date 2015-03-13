@@ -89,9 +89,9 @@ RGBColor getRandomColor(float colorJitter, byte r, byte g, byte b) {
     RGBColor random_color = HSVtoRGB(random(0,360), 1, 1);
 
     // Combine a random color with  a pre-existing color.           
-    float xr = colorJitter * random_color.r + ((1 - colorJitter) * r);
-    float xg = colorJitter * random_color.g + ((1 - colorJitter) * g);
-    float xb = colorJitter * random_color.b + ((1 - colorJitter) * b);
+    float xr = colorJitter * random_color.r + ((1.0f - colorJitter) * r);
+    float xg = colorJitter * random_color.g + ((1.0f - colorJitter) * g);
+    float xb = colorJitter * random_color.b + ((1.0f - colorJitter) * b);
 
     RGBColor combined_color = {clampColor(xr), clampColor(xg), clampColor(xb)};
     return combined_color;

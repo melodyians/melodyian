@@ -18,30 +18,28 @@ namespace Sound {
   unsigned long currentMillisTone = 0;
   unsigned long lastNoteOnMillis = 0;
 
-  //int keyStatus[] = {noteC3act, noteG3act, noteA3act};
-  //bool keyModeAct = false;   *******remove after enabling below setKeyMode() function********
-  //Flags::setKeyMode(false); //********adding for new FLASH queue functionality when keyModeAct() == true**********
   byte melody1NoteLength = 7; //Number of notes in a melody - 1 (the highest number address of matrix addresses in an 8x1 matrix (0-7))
 
-
-  //general rate value used by altFlash() & playMelody() functions and AUTOFADE light queue pattern 
+  // General rate value used by altFlash() & playMelody() functions and AUTOFADE light queue pattern 
   int toneRate = 1000; 
-
-  // int randomness = 0; //'randomness' value of melody sequence playback (0 = 100% chance next note in melody sequence is played after the current note, 127 = equal probability of any other note from the sequence being played after the current note)
 
   int melody1[] = {NOTE_C4, NOTE_G3, NOTE_G3, NOTE_A3, NOTE_G3, 0 /*rest*/, NOTE_B3, NOTE_C4};
 
   unsigned int melody1noteDurations[/*melody1NoteLength + 1*/] = {4, 8, 8, 4,4,4,4,4}; // note durations: 4 = quarter note, 8 = eighth note, etc.
 
+  byte MaxRandomNoteValue(float random_jitter, int total_num_notes) {
+    return (byte) (random_jitter * total_num_notes);
+  }
+
+
   void playMelody1(unsigned short dt, RobotState * robot_state, HardwareInterface * hardware)
   { 
 
-    int noteJitter = 0;
+    float noteJitter = 0;
 
     if (robot_state->bypassRandomNote() == false) {
       noteJitter = robot_state->randomness();
     }
-    //tone(tonePin, melody1[notePosition]); //for debugging
      
     currentMillisTone = millis(); 
 
@@ -52,8 +50,8 @@ namespace Sound {
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
       unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes;
 
-      byte randomNoteVal = map(noteJitter, 0, 127, 0, melody1NoteLength);
-      byte randomNote = 1 + random(0, randomNoteVal);
+      byte max_offset = MaxRandomNoteValue(noteJitter, melody1NoteLength);
+      byte randomNote = 1 + random(0, max_offset);
 
       if (timeElapsed <= noteDuration)
       {
@@ -68,7 +66,6 @@ namespace Sound {
       else
       {
         lastNoteOnMillis = currentMillisTone;
-        //notePosition = 0;
 
         notePosition = notePosition + (1 * randomNote);
         if (notePosition > melody1NoteLength)
@@ -86,8 +83,8 @@ namespace Sound {
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
       unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes;
 
-      byte randomNoteVal = map(noteJitter, 0, 127, 0, melody1NoteLength);
-      byte randomNote = 1 + random(0, randomNoteVal);
+      byte max_offset = MaxRandomNoteValue(noteJitter, melody1NoteLength);
+      byte randomNote = 1 + random(0, max_offset);
 
 
       if (timeElapsed <= noteDuration)
@@ -128,7 +125,7 @@ namespace Sound {
   void playMelody2(unsigned short dt, RobotState * robot_state, HardwareInterface * hardware)
   { 
 
-    int noteJitter = 0;
+    float noteJitter = 0;
 
     if (robot_state->bypassRandomNote() == false) {
       noteJitter = robot_state->randomness();
@@ -143,8 +140,8 @@ namespace Sound {
       unsigned int timeElapsed = currentMillisTone - lastNoteOnMillis;
       unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes;
       
-      byte randomNoteVal = map(noteJitter, 0, 127, 0, melody2NoteLength);
-      byte randomNote = 1 + random(0, randomNoteVal);
+      byte max_offset = MaxRandomNoteValue(noteJitter, melody2NoteLength);
+      byte randomNote = 1 + random(0, max_offset);
       
       if (timeElapsed <= noteDuration)
       {
@@ -180,8 +177,8 @@ namespace Sound {
       unsigned int maxNoteEventLength = noteDuration + pauseBetweenNotes; //time of note duration and following rest (space between notes)
       
       ///
-      byte randomNoteVal = map(noteJitter, 0, 127, 0, melody2NoteLength); //scale MIDI CC value range to the amount of addresses of the the melody2 matrix.
-      byte randomNote = 1 + random(0, randomNoteVal); //pick a random note number (add 1 to always be able to advance melody even when noteJitter = 0.)
+      byte max_offset = MaxRandomNoteValue(noteJitter, melody2NoteLength);
+      byte randomNote = 1 + random(0, max_offset); //pick a random note number (add 1 to always be able to advance melody even when noteJitter = 0.)
       ///
       
       if (timeElapsed <= noteDuration)
@@ -277,17 +274,11 @@ namespace Sound {
   void processSoundCC(byte channel, byte number, byte value) {
      //========MUSIC RELATED
 
+    // TODO -- Remove
     if(number == RATE1_CC) //RATE #1  (knob pot 'B5' on axiom)
     {
       toneRate = Smoothing::smoothRateFader(value);
     }
-
-    /*
-    if (number == JITTER_CC) //COLOR RANDOMNESS / JITTER CONTROL (knob B8)
-    {
-      randomness = value;
-    }
-    */
 
     if (number == MEL1TRIG_CC)
     {
