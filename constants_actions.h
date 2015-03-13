@@ -1,5 +1,9 @@
 #pragma once
 
+/*************************************************
+ * Constants for Actions, linked to MIDI Control Signal
+ *************************************************/
+
 #define RED_CC 20  //CC controlling 'Red' amount of LED (0 = red LED off, 127 = red LED at 100% brightness)
 #define GREEN_CC 21 //CC controlling 'Green' amount of LED
 #define BLUE_CC 22 //CC controlling 'Blue' amount of LED
