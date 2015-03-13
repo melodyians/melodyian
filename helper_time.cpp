@@ -2,13 +2,13 @@
 #include "time.h"
 
 Timer::Timer () {
-  start_ts = millis();
-  current_ts = start_ts;
-  previous_ts = start_ts;
+  this->start_ts = millis();
+  this->current_ts = this->start_ts;
+  this->previous_ts = this->start_ts;
 }
 
 unsigned short Timer::step () {
-  previous_ts = current_ts;
-  current_ts = millis();
-  return current_ts - previous_ts;
+  this->previous_ts = this->current_ts;
+  this->current_ts = millis();
+  return this->current_ts - this->previous_ts;
 }

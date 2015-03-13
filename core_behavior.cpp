@@ -1,31 +1,31 @@
 #include "core.h"
 
 Behavior::Behavior() {
-    clearCurrentBehavior();
-    resetTimer();
+    this->clearCurrentBehavior();
+    this->resetTimer();
 }
 
 void Behavior::setCurrentBehavior(byte key) { 
-    behavior_key = key;
-    resetTimer();
+    this->behavior_key = key;
+    this->resetTimer();
 }
 
 byte Behavior::getCurrentBehavior() {
-    return behavior_key;
+    return this->behavior_key;
 }
 
 void Behavior::resetTimer() {
-    timer = 0;
+    this->timer = 0;
 }
 
 void Behavior::clearCurrentBehavior() {
-    behavior_key = 0;
+    this->behavior_key = 0;
 }
 
 void Behavior::incrementTimer(unsigned short dt) {
-    timer =  timer + dt;
+    this->timer =  this->timer + dt;
 }
 
 void Behavior::decrementTimer(unsigned short dt) {
-    timer =  timer - dt;
+    this->timer =  this->timer - dt;
 }

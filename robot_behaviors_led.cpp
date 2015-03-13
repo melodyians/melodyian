@@ -247,13 +247,13 @@ void RobotLEDBehavior::pulseBehavior(unsigned short dt, State * state, Output * 
     }
   
   } else {
-    this->brightness = Smoothing::brightnessDecay(brightness, dt, state->decay());
+    this->brightness = Smoothing::brightnessDecay(this->brightness, dt, state->decay());
   }     
 
   RGBColor color_buffer = colorWithAdjustedBrightness(state->ledRedValue(),
                                                       state->ledGreenValue(),
                                                       state->ledBlueValue(),
-                                                      brightness);
+                                                      this->brightness);
 
   output->setColor(color_buffer.r, color_buffer.g, color_buffer.b);
 
