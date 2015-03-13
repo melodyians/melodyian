@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
 #include "melodyian.h"
-#include "easing.h"
 #include "colorhelper.h"
 #include "smoothing.h"
 #include "midicc.h"
@@ -28,8 +27,7 @@ void copyLEDStateToOutput(RobotState * state, RobotOutput * output) {
 }
 
 
-LEDBehavior::LEDBehavior() 
-  : Behavior()
+LEDBehavior::LEDBehavior() : Behavior()
 {
   flashOnFlag = false;
   selected_light_preset = 1;
@@ -40,6 +38,7 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
 
   incrementTimer(dt);
 
+  /*
   if (state->recordEEPROMArmed() && state->saveColorOn()) { 
     MidiCC::writeMidiOut(99, state->ledRedValue());
     MidiCC::writeMidiOut(99, state->ledGreenValue());
@@ -48,6 +47,7 @@ void LEDBehavior::updateBehavior(unsigned short dt, RobotState * state, RobotOut
     state->led_storage->saveToEEPROM(selected_light_preset);
     state->disarmRecordEEPROM();
   } 
+  */
 
   switch(behavior_key)
   {
