@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "actions.h"
 #include "melodyian.h"
 
 namespace Battery {

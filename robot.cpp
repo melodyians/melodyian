@@ -7,9 +7,9 @@ RobotOutput::RobotOutput() {
     b = 0;
 }
 
-Robot::Robot() {
+Robot::Robot(HardwareInterface * hw) {
 
-  hardware = new ArduinoInterface();
+  hardware = hw;
   state = new RobotState();
   led_behavior = new LEDBehavior();
   output = new RobotOutput();

@@ -1,3 +1,4 @@
+#include "actions.h"
 #include "melodyian.h"
 #include "smoothing.h"
 

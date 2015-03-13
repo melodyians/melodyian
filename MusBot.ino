@@ -5,11 +5,11 @@
 #include <midi_Settings.h>
 // #include <Wire.h>
 
+#include "actions.h"
+#include "hardware.h"
 #include "melodyian.h"
 #include "midicc.h"
 #include "time.h"
-#include "state.h" 
-#include "smoothing.h"
 
 MIDI_CREATE_DEFAULT_INSTANCE();
 
@@ -20,7 +20,8 @@ void setup()  {
 
   timer = new Timer();
 
-  robot = new Robot();
+  HardwareInterface * arduino_hardware = new ArduinoInterface();
+  robot = new Robot(arduino_hardware);
 
   initializeInputs();
   

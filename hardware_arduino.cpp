@@ -1,12 +1,11 @@
 #include <Arduino.h>
-#include "melodyian.h"
+#include "hardware.h"
 #include "types.h"
 
 
 ArduinoInterface::ArduinoInterface() {
   this->setupPins();
   this->stopMotors();
-
 };
 
 

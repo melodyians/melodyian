@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "actions.h"
 #include "melodyian.h"
 #include "colorhelper.h"
 #include "smoothing.h"

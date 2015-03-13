@@ -1,3 +1,4 @@
+#include "actions.h"
 #include "state.h"
 #include "types.h"
 #include "smoothing.h"

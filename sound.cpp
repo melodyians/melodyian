@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "actions.h"
 #include "melodyian.h"
 #include "smoothing.h"
 #include "pitches.h"
