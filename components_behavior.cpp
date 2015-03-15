@@ -1,4 +1,4 @@
-#include "core.h"
+#include "components.h"
 
 Behavior::Behavior() {
     this->clearCurrentBehavior();

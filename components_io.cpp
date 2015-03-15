@@ -1,4 +1,4 @@
-#include "core.h"
+#include "components.h"
 #include "helper_midi.h"
 
 Output::Output() {

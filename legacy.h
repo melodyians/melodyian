@@ -1,5 +1,5 @@
 #include "types.h"
-#include "core.h"
+#include "components.h"
 
 namespace Battery {
   void pingBatVoltage(bool midi_read);

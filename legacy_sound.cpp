@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 #include "legacy.h"
-#include "core.h"
+#include "components.h"
 
 #include "robot.h"
 

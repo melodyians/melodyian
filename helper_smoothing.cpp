@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "smoothing.h"
+#include "helper_smoothing.h"
 
 #define MIN_FADE_TIME_TIMES_ONE_HUNDRED 10
 #define MAX_FADE_TIME_TIMES_ONE_HUNDRED 80
