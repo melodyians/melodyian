@@ -119,3 +119,15 @@ public:
     byte getCurrentBehavior();
 
 };
+
+class BatteryReader {
+
+private:
+  HardwareInterface * hardware;
+  unsigned short timer;
+  byte analogVoltageToMidiValue(int analog_value);
+
+public:
+    BatteryReader(HardwareInterface * hardware);
+    void readBattery(unsigned short dt, bool midi_read);
+};

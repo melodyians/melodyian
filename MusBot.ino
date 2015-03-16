@@ -19,6 +19,7 @@ MIDI_CREATE_DEFAULT_INSTANCE();
 
 Timer * timer;
 Robot * robot;
+BatteryReader * battery_reader;
 
 void setup()  {
 
@@ -26,6 +27,7 @@ void setup()  {
 
   HardwareInterface * arduino_hardware = new ArduinoInterface();
   robot = new Robot(arduino_hardware);
+  battery_reader = new BatteryReader(arduino_hardware);
 
   InitializeInputs();
   
@@ -38,6 +40,8 @@ void loop()
 
   // Move our clock forward
   unsigned short dt = timer->step();
+
+  battery_reader->readBattery(dt, midi_read);
 
   // Battery and Memory housekeeping
   // Disabled -- this seems to unpredictbly impact the state of the LED, and I have no idea why.

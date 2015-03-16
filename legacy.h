@@ -1,9 +1,6 @@
 #include "types.h"
 #include "components.h"
 
-namespace Battery {
-  void pingBatVoltage(bool midi_read);
-}
 
 namespace Sound {
   void processSoundTriggers(unsigned long dt, State * robot_state, HardwareInterface * hardware);
