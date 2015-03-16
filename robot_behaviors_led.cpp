@@ -81,12 +81,6 @@ void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
     this->selected_light_preset = preset_number; 
 
     RGBColor preset_color = state->led_storage->getLightPresetColor(preset_number);
-    
-    if (DEBUG) {
-      MidiCC::WriteMidiOut(99, preset_color.r / 2);
-      MidiCC::WriteMidiOut(99, preset_color.g / 2);
-      MidiCC::WriteMidiOut(99, preset_color.b / 2);
-    }
 
     if (state->saveColorOn()) {
       state->led_storage->setPresetColor(preset_number,
