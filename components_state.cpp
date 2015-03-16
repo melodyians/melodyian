@@ -60,6 +60,20 @@ byte State::ledBlueValue() {
     return Smoothing::smoothRBGFader(this->input_values->getValue(BLUE_CC));
 }
 
+/*
+byte State::rawRedValue() {
+    return this->input_values->getValue(RED_CC);
+}
+
+byte State::rawGreenValue() {
+    return this->input_values->getValue(GREEN_CC);
+}
+
+byte State::rawBlueValue() {
+    return this->input_values->getValue(BLUE_CC);
+}
+*/
+
 byte State::pulseValue() {
     return this->input_values->getValue(DYNAMIC_CC);
 }

@@ -19,6 +19,18 @@ namespace Smoothing {
       return fdrval;
     }
 
+    byte mapByteToRGBFader(byte value) {
+      int fdrval;
+      if (value >= 0 && value <= 8) {
+        fdrval = map(value, 0, 8, 0, 16);
+      } else if (value >= 9 && value <= 200) {
+        fdrval = map(value, 9, 200, 17, 100);
+      } else {
+        fdrval = map(value, 201, 255, 101, 127);
+      }
+      return fdrval;
+    }
+
     byte smoothMotorFader(byte value)
     {
       byte fdrval;

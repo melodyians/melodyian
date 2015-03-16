@@ -81,14 +81,23 @@ void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
     this->selected_light_preset = preset_number; 
 
     RGBColor preset_color = state->led_storage->getLightPresetColor(preset_number);
-        
+    
+    if (DEBUG) {
+      MidiCC::WriteMidiOut(99, preset_color.r / 2);
+      MidiCC::WriteMidiOut(99, preset_color.g / 2);
+      MidiCC::WriteMidiOut(99, preset_color.b / 2);
+    }
+
     if (state->saveColorOn()) {
       state->led_storage->setPresetColor(preset_number,
                                         state->ledRedValue(), 
                                         state->ledGreenValue(),
                                         state->ledBlueValue());
     } else {
-      state->setCurrentLEDValues(preset_color.r, preset_color.g, preset_color.b);
+      state->setCurrentLEDValues(
+            Smoothing::mapByteToRGBFader(preset_color.r),
+            Smoothing::mapByteToRGBFader(preset_color.g), 
+            Smoothing::mapByteToRGBFader(preset_color.b));
     }
     
     this->transition_color = preset_color;

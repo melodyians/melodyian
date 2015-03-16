@@ -2,7 +2,9 @@
 
 namespace Smoothing {
 
-  byte smoothRBGFader(byte value); //smoother fader mapping for RGB faders
+  byte smoothRBGFader(byte value); // Smoother fader mapping for RGB faders
+  byte mapByteToRGBFader(byte value); // Map output back to input value
+  
   byte smoothMotorFader(byte value);
 
   int smoothRateFader(byte value); //Control for light speed / rate parameter settings - Knob B5

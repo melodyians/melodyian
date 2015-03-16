@@ -45,7 +45,7 @@ void InputValues::storeInput(byte control_number, byte value) {
 
     if (DEBUG) {
         MidiCC::WriteMidiOut(control_number,  value);
-        MidiCC::WriteMidiOut(this->getCCIndex(control_number),  value);
+        // MidiCC::WriteMidiOut(this->getCCIndex(control_number),  value);
     }
 
     this->input_values[getCCIndex(control_number)] = value;
