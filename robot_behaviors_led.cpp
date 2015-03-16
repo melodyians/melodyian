@@ -28,16 +28,10 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
 
   this->incrementTimer(dt);
 
-  /*
   if (state->recordEEPROMArmed() && state->saveColorOn()) { 
-    MidiCC::WriteMidiOut(99, state->ledRedValue());
-    MidiCC::WriteMidiOut(99, state->ledGreenValue());
-    MidiCC::WriteMidiOut(99, state->ledBlueValue());
-    MidiCC::WriteMidiOut(99, selected_light_preset);
     state->led_storage->saveToEEPROM(selected_light_preset);
     state->disarmRecordEEPROM();
   } 
-  */
 
   switch(behavior_key)
   {

@@ -3,56 +3,46 @@
 
 LEDStorage::LEDStorage() {
 
-    lightPresetData = new int[24];
-    lightPresetArray = new int*[8];
+    this->lightPresetData = new int[24];
+    this->lightPresetArray = new int*[8];
 
-    // Pointers to position in the int array.
-    // Each pointer advances 3 indexes in the array, representing 3 bytes.
-    int* lightPreset1 = lightPresetData;
-    int* lightPreset2 = lightPresetData + 3*1; //3 4 5
-    int* lightPreset3 = lightPresetData + 3*2;
-    int* lightPreset4 = lightPresetData + 3*3;
-    int* lightPreset5 = lightPresetData + 3*4;
-    int* lightPreset6 = lightPresetData + 3*5;
-    int* lightPreset7 = lightPresetData + 3*6;
-    int* lightPreset8 = lightPresetData + 3*7;
-
-    lightPresetArray[0] = lightPreset1;
-    lightPresetArray[1] = lightPreset2;
-    lightPresetArray[2] = lightPreset3;
-    lightPresetArray[3] = lightPreset4;
-    lightPresetArray[4] = lightPreset5;
-    lightPresetArray[5] = lightPreset6;
-    lightPresetArray[6] = lightPreset7;
-    lightPresetArray[7] = lightPreset8;
-
+    // Create array out of initial preset pointers
+    for (int i = 0; i < 8; i++) {
+        this->lightPresetArray[i] = this->getLightPresetPtr(i + 1);
+    }
 
 }
 
-void LEDStorage::saveToEEPROM(int lightPresetVal) {
-    int a = 0;
-    int adrs = (lightPresetVal - 1) * 3;
-    for (int i = adrs; i <= (adrs+2); i++) {
-      EEPROM.write(i, getLightPresetPtr(lightPresetVal)[a]);
-      a++;    
-    } 
+int GetPointerIndex(int preset_num) {
+    return (preset_num - 1) * 3;
+}
+
+void LEDStorage::saveToEEPROM(int preset_num) {
+
+    RGBColor preset_color = this->getLightPresetColor(preset_num);
+
+    int eeprom_byte = GetPointerIndex(preset_num);
+
+    EEPROM.write(eeprom_byte, preset_color.r);
+    EEPROM.write(eeprom_byte + 1, preset_color.g);
+    EEPROM.write(eeprom_byte + 2, preset_color.b);
+
 }
 
 void LEDStorage::readFromEEPROM() {  
-    for (int i=0; i<=23; i++)
-    { 
-      lightPresetData[i] = EEPROM.read(i);
+    for (int i=0; i<=23; i++) { 
+      this->lightPresetData[i] = EEPROM.read(i);
     }
 }
 
-int* LEDStorage::getLightPresetPtr(int i) {
-    return lightPresetData + (i-1)*3;
+int* LEDStorage::getLightPresetPtr(int preset_num) {
+    return this->lightPresetData + GetPointerIndex(preset_num);
 }
 
 
-RGBColor LEDStorage::getLightPresetColor(int i) {
+RGBColor LEDStorage::getLightPresetColor(int preset_num) {
 
-    int * preset_pointer = getLightPresetPtr(i);
+    int * preset_pointer = this->getLightPresetPtr(preset_num);
     RGBColor color = {
       preset_pointer[0],
       preset_pointer[1],
@@ -61,9 +51,9 @@ RGBColor LEDStorage::getLightPresetColor(int i) {
     return color;
 }
 
-void LEDStorage::setPresetColor(int i, byte r, byte g, byte b) {
+void LEDStorage::setPresetColor(int preset_num, byte r, byte g, byte b) {
 
-    int * preset_pointer = getLightPresetPtr(i);
+    int * preset_pointer = this->getLightPresetPtr(preset_num);
 
     preset_pointer[0] = r;
     preset_pointer[1] = g;
