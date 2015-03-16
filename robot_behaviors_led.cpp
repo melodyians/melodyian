@@ -11,19 +11,18 @@
 
 
 
+RobotLEDBehavior::RobotLEDBehavior() : Behavior()
+{
+  brightness = 0.0f;
+  flash_on_flag = false;
+  selected_light_preset = 1;
+  current_fade_preset = 1;
+}
+
 void SetOutputColorToState(Output * output, State * state) {
   output->setColor(state->ledRedValue(), state->ledGreenValue(), state->ledBlueValue());
 }
 
-
-
-RobotLEDBehavior::RobotLEDBehavior() : Behavior()
-{
-  brightness = 0.0f;
-  flashOnFlag = false;
-  selected_light_preset = 1;
-  current_fade_preset = 1;
-}
 
 void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output * output) {
 
@@ -98,7 +97,7 @@ void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
 
 void RobotLEDBehavior::updateState(byte control_number, byte value, State * state) {
 
-  if (control_number == TRIGLP1_CC) { 
+  if (control_number == TRIGLP1_CC) {
       this->triggerLightPreset(1, state);
     } else if (control_number == TRIGLP2_CC) {
       this->triggerLightPreset(2, state);
@@ -114,7 +113,10 @@ void RobotLEDBehavior::updateState(byte control_number, byte value, State * stat
       this->triggerLightPreset(7, state);
     } else if (control_number == TRIGLP8_CC) { 
       this->triggerLightPreset(8, state);
-    } else if (control_number == AUTOFADEQ_CC && value != 127) {
+    }
+
+
+    if (control_number == AUTOFADEQ_CC && value != 127) {
     
     // This causes LED to always start at the last selected lightPreset color when starting up
     // the autoFade function. Otherwise the transColor never resets unless a new lightPreset 
@@ -126,6 +128,11 @@ void RobotLEDBehavior::updateState(byte control_number, byte value, State * stat
 
     this->transition_color = state->led_storage->getLightPresetColor(selected_light_preset);
     this->current_fade_preset = selected_light_preset;
+  }
+
+  // TODO -- get a different CC for this
+  if (control_number == WRITECOLOR_CC && value < 26) {
+    state->setCurrentLEDValues(0, 0, 0);
   }
 }
 
@@ -148,7 +155,7 @@ void RobotLEDBehavior::updateBehaviorKey(byte control_number, byte value) {
 
   // When flash is triggered, turn the flag on.
   if (control_number == FLASHQ_CC && value != 127) {
-    this->flashOnFlag = true;
+    this->flash_on_flag = true;
   }
     
 }
@@ -187,14 +194,14 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
                                                state->ledGreenValue(),
                                                state->ledBlueValue());
 
-      if (flashOnFlag == true) {
+      if (flash_on_flag == true) {
         output->setColor(adjusted_color.r, adjusted_color.g, adjusted_color.b);
       } else {
         output->setColorBlack();
       }
       
       // Flip the on/off flag
-      this->flashOnFlag = !flashOnFlag;
+      this->flash_on_flag = !flash_on_flag;
      
       // Reset the timer to time - how far we've come
       this->decrementTimer(rate_interval);

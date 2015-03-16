@@ -9,7 +9,7 @@ class RobotLEDBehavior : public Behavior {
 
 private:
   RGBColor transition_color;
-  bool flashOnFlag;
+  bool flash_on_flag;
   byte selected_light_preset;
   byte current_fade_preset;
   float brightness;
