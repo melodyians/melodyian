@@ -31,7 +31,7 @@ void Robot::updateHardware() {
 }
 
 void Robot::noteOnControl(byte channel, byte note, byte velocity) {
-    MidiCC::WriteMidiOut(note,  velocity);
+    MidiOut::WriteMidiNoteOn(note,  velocity);
 
     if (velocity > 0) {
         this->state->sound_state()->turnNoteOn(note);
@@ -41,6 +41,6 @@ void Robot::noteOnControl(byte channel, byte note, byte velocity) {
 }
 
 void Robot::noteOffControl(byte channel, byte note, byte velocity) {
-    MidiCC::WriteMidiOut(note,  velocity);
+    MidiOut::WriteMidiNoteOff(note,  velocity);
     this->state->sound_state()->turnNoteOff(note);
 }

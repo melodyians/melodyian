@@ -85,10 +85,10 @@ void Debug(unsigned short dt) {
       
       // Write out whatever CC values you want to debug here.
 
-      // MidiCC::WriteMidiOut(RED_CC, robot->state->ledRedValue());
-      // MidiCC::WriteMidiOut(GREEN_CC, robot->state->ledGreenValue());
-      // MidiCC::WriteMidiOut(BLUE_CC, robot->state->ledBlueValue());
-      // MidiCC::WriteMidiOut(66, robot->led_behavior->getCurrentBehavior());
+      // MidiOut::WriteMidiCC(RED_CC, robot->state->ledRedValue());
+      // MidiOut::WriteMidiCC(GREEN_CC, robot->state->ledGreenValue());
+      // MidiOut::WriteMidiCC(BLUE_CC, robot->state->ledBlueValue());
+      // MidiOut::WriteMidiCC(66, robot->led_behavior->getCurrentBehavior());
     }
 
 }

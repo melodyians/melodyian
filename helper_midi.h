@@ -2,8 +2,11 @@
 
 #include "types.h"
 
-namespace MidiCC {
-    void WriteMidiOut(byte CC, byte value);
+namespace MidiOut {
+    void WriteMidiCC(byte CC, byte value);
+    void WriteMidiNoteOn(byte note, byte velocity);
+    void WriteMidiNoteOff(byte note, byte velocity);
+
 }
 
 

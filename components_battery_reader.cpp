@@ -24,7 +24,7 @@ void BatteryReader::readBattery(unsigned short dt, bool midi_read) {
         // Read the voltage on battery 1 divider
         int analog_balue = hardware->readBattery();  
         byte midi_value = this->analogVoltageToMidiValue(analog_balue);
-        MidiCC::WriteMidiOut(BAT1VOLTREAD_CC, midi_value);
+        MidiOut::WriteMidiCC(BAT1VOLTREAD_CC, midi_value);
 
         this->timer = 0;
     }
