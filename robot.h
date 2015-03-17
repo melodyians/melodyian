@@ -23,6 +23,18 @@ public:
   RobotLEDBehavior();
   void updateBehavior(unsigned short dt, State * state, Output * output);
   void updateBehaviorKey(byte control_number, byte value);
+
+  void updateState(byte control_number, byte value, State * state);
+
+};
+
+
+class RobotSoundBehavior : public Behavior {
+
+public:
+  RobotSoundBehavior();
+  void updateBehavior(unsigned short dt, State * state, Output * output);
+  void updateBehaviorKey(byte control_number, byte value);
   void updateState(byte control_number, byte value, State * state);
 
 };
@@ -35,13 +47,18 @@ public:
   Robot(HardwareInterface * hardware);
 
   HardwareInterface * hardware;
+  
   State * state;
+
   Output * output;
   RobotLEDBehavior * led_behavior;
+  RobotSoundBehavior * sound_behavior;
   
   void handleInput(byte control_number, byte value);
   void updateBehavior(unsigned short dt);
   void updateHardware();
 
-};
+  void noteOnControl(byte channel, byte note, byte velocity);
+  void noteOffControl(byte channel, byte note, byte velocity);
 
+};

@@ -14,6 +14,8 @@ State::State() {
     this->input_values = new InputValues(RED_CC);
 
     // input_values->storeInput(RATE1_CC, (byte) 84); // Default to 1000
+    this->sound_state_ = new SoundState(112);
+
 }
 
 void State::updateInput(byte control_number, byte value) {
@@ -22,6 +24,10 @@ void State::updateInput(byte control_number, byte value) {
 
 LEDStorage * State::led_storage() {
     return this->led_storage_;
+}
+
+SoundState * State::sound_state() {
+    return this->sound_state_;
 }
 
 void State::setCurrentLEDValues(byte r, byte g, byte b) {
@@ -95,4 +101,26 @@ void State::disarmRecordEEPROM() {
 
 bool State::saveColorOn() {
     return Smoothing::booleanButton(this->input_values->getValue(WRITECOLOR_CC));
+}
+
+bool State::soundActionOn() {
+    return this->melodyOneOn() || this->melodyTwoOn() || this->keyModeOn();
+}
+
+bool State::melodyOneOn() {
+    return Smoothing::booleanButton(this->input_values->getValue(MEL1TRIG_CC));
+}
+
+bool State::melodyTwoOn() {
+    return Smoothing::booleanButton(this->input_values->getValue(MEL2TRIG_CC));
+
+}
+
+bool State::keyModeOn() {
+    return Smoothing::booleanButton(this->input_values->getValue(KEYACT_CC));
+
+}
+
+bool State::midiPanicOn() {
+    return Smoothing::booleanButton(this->input_values->getValue(MIDIPANIC_CC));
 }

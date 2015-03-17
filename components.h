@@ -66,16 +66,38 @@ public:
 
 // Output and State
 
+class SoundState {
+
+private:
+  int num_notes;
+  int last_note_on;
+  bool * acting_notes;
+
+public: 
+  SoundState(unsigned int num_notes);
+  bool anyActingNotes();
+  unsigned int currentHz();
+
+  void turnNoteOn(int note);
+  void turnNoteOff(int note);
+  void turnOffAllNotes();
+
+  bool isNoteOn(int note);
+
+};
+
 class State {
 
 private:
     InputValues * input_values;
     LEDStorage * led_storage_; // TODO probably best private
+    SoundState * sound_state_;
 
 public:
     State();
 
     LEDStorage * led_storage();
+    SoundState * sound_state();
 
     void updateInput(byte control_number, byte value);
 
@@ -102,8 +124,12 @@ public:
 
     void setCurrentLEDValues(byte r, byte g, byte b);
 
-    // TODO -- Sound
-
+    // Sound
+    bool soundActionOn();
+    bool melodyOneOn();
+    bool melodyTwoOn();
+    bool keyModeOn(); 
+    bool midiPanicOn();
 
     // TODO -- Motor
 
