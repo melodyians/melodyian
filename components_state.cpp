@@ -7,8 +7,8 @@
 
 State::State() {
 
-    this->led_storage = new LEDStorage();
-    this->led_storage->readFromEEPROM();
+    this->led_storage_ = new LEDStorage();
+    this->led_storage_->readFromEEPROM();
     
     // TODO must update this if we get a low value. Saves some meory.
     this->input_values = new InputValues(RED_CC);
@@ -20,12 +20,15 @@ void State::updateInput(byte control_number, byte value) {
     this->input_values->storeInput(control_number, value);
 }
 
+LEDStorage * State::led_storage() {
+    return this->led_storage_;
+}
+
 void State::setCurrentLEDValues(byte r, byte g, byte b) {
     this->input_values->storeInput(RED_CC, r);
     this->input_values->storeInput(GREEN_CC, g);
     this->input_values->storeInput(BLUE_CC, b);
 }
-
 
 // Wrapper to input values
 bool State::bypassRandomColor() {

@@ -70,13 +70,16 @@ class State {
 
 private:
     InputValues * input_values;
+    LEDStorage * led_storage_; // TODO probably best private
 
 public:
     State();
-    LEDStorage * led_storage; // TODO probably best private
+
+    LEDStorage * led_storage();
 
     void updateInput(byte control_number, byte value);
 
+    // Shared Buttons
     bool bypassRandomColor();
     bool bypassRandomNote();
 
@@ -84,6 +87,7 @@ public:
     unsigned int decay();
     int rate();
     
+    // LED
     byte ledRedValue();
     byte ledGreenValue();
     byte ledBlueValue();
@@ -97,6 +101,11 @@ public:
     void disarmRecordEEPROM();
 
     void setCurrentLEDValues(byte r, byte g, byte b);
+
+    // TODO -- Sound
+
+
+    // TODO -- Motor
 
 };
 

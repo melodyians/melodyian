@@ -29,7 +29,7 @@ void RobotLEDBehavior::updateBehavior(unsigned short dt, State * state, Output *
   this->incrementTimer(dt);
 
   if (state->recordEEPROMArmed() && state->saveColorOn()) { 
-    state->led_storage->saveToEEPROM(selected_light_preset);
+    state->led_storage()->saveToEEPROM(selected_light_preset);
     state->disarmRecordEEPROM();
   } 
 
@@ -74,10 +74,10 @@ void RobotLEDBehavior::triggerLightPreset(int preset_number, State * state) {
 
     this->selected_light_preset = preset_number; 
 
-    RGBColor preset_color = state->led_storage->getLightPresetColor(preset_number);
+    RGBColor preset_color = state->led_storage()->getLightPresetColor(preset_number);
 
     if (state->saveColorOn()) {
-      state->led_storage->setPresetColor(preset_number,
+      state->led_storage()->setPresetColor(preset_number,
                                         state->ledRedValue(), 
                                         state->ledGreenValue(),
                                         state->ledBlueValue());
@@ -123,7 +123,7 @@ void RobotLEDBehavior::updateState(byte control_number, byte value, State * stat
     // Now, multiple robots being commanded to initiate the autoFade function at the same time 
     // should remain in sync and always start at the same lightPreset
 
-    this->transition_color = state->led_storage->getLightPresetColor(selected_light_preset);
+    this->transition_color = state->led_storage()->getLightPresetColor(selected_light_preset);
     this->current_fade_preset = selected_light_preset;
   }
 
@@ -213,7 +213,7 @@ void RobotLEDBehavior::fadeBehavior(State * state, Output * output) {
   
   if (timer > fade_interval) {
     
-    RGBColor next_preset_color = state->led_storage->getLightPresetColor(current_fade_preset);
+    RGBColor next_preset_color = state->led_storage()->getLightPresetColor(current_fade_preset);
 
     // If we have reached the target preset, move to next one.
     if (transition_color == next_preset_color) {
