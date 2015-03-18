@@ -31,6 +31,9 @@ public:
 
 class RobotSoundBehavior : public Behavior {
 
+private:
+  Melody * melody_one;
+  Melody * melody_two;
 public:
   RobotSoundBehavior();
   void updateBehavior(unsigned short dt, State * state, Output * output);

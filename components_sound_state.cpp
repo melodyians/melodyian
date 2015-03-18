@@ -12,14 +12,18 @@ SoundState::SoundState(unsigned int num_notes) {
     this->last_note_on = 60; // default value
     this->acting_notes = new bool[this->num_notes];
 
-    for (int i = 0; i < this->num_notes; i++) {
-        this->acting_notes[i] = false;
-    }
+    this->turnOffAllNotes();
 
 }
 
+void SoundState::turnOffAllNotes() {
+    for (int i = 0; i < this->num_notes; i++) {
+      this->acting_notes[i] = false;
+    }
+}
+
 bool SoundState::anyActingNotes() {
-    for (int i = 0; i <= this->num_notes; i++) {
+    for (int i = 0; i < this->num_notes; i++) {
       if (this->acting_notes[i]) {
         return true;
       }
@@ -32,11 +36,6 @@ unsigned int SoundState::currentHz() {
     return FrequencyFromMidiNote(this->last_note_on);
 }
 
-void SoundState::turnOffAllNotes() {
-    for (int i = 0; i <= this->num_notes; i++) {
-      this->acting_notes[i] = false;
-    }
-}
 
 void SoundState::turnNoteOn(int note) {
     this->acting_notes[note] = true;

@@ -28,22 +28,31 @@ void Robot::updateBehavior(unsigned short dt) {
     this->sound_behavior->updateBehavior(dt, state, output);
 
 }
-  
+
 void Robot::updateHardware() {
     
     // Light
     this->hardware->writeToLED(this->output->r, this->output->g, this->output->b);
 
     // Sound
-    if (this->output->amp_on) {
+    if (this->output->amp_on == true) {
+        
+        // Turn amp on if it is off
         if (!hardware->ampIsOn()) {
-            this->hardware->setAmpPower(false);
+            this->hardware->setAmpPower(true);
         }
+
         this->hardware->playTone(this->output->tone);
+
     } else {
+        
+        // Turn amp off if it is on
         if (hardware->ampIsOn()) {
             this->hardware->setAmpPower(false);
+
         }
+        this->hardware->toneOff();
+    
     }
 }
 

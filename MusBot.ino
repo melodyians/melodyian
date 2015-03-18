@@ -48,7 +48,6 @@ void loop()
   // Battery::pingBatVoltage(midi_read, hardware_interface);
   
   // Update our Robot from our current state
-  Sound::processSoundTriggers(dt, robot->state, robot->hardware);
   Motor::actuateMotors(robot->hardware);
 
   robot->updateBehavior(dt);
@@ -100,18 +99,15 @@ void HandleControlChange (byte channel, byte number, byte value)
 
   // Legacy input handling
   Motor::processMotorCC(channel, number, value);
-  //Sound::processSoundCC(channel, number, value);     
 }
 
 // Special-cased event handling
 void NoteOnControl (byte channel, byte note, byte velocity) {
   robot->noteOnControl(channel, note, velocity);
-  //NoteControl::noteOnControl(channel, note, velocity);
 }
 
 void NoteOffControl(byte channel, byte note, byte velocity) {
   robot->noteOffControl(channel, note, velocity);
-  //NoteControl::noteOffControl(channel, note, velocity);
 }
 
 

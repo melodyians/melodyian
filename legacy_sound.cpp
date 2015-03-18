@@ -121,7 +121,6 @@ namespace Sound {
 
 
 
-
   void playMelody2(unsigned short dt, State * robot_state, HardwareInterface * hardware)
   { 
 
@@ -250,7 +249,7 @@ namespace Sound {
       turnOnPowerIfOff(hardware);
       Flags::setMelodyOne(false);
       Flags::setMelodyTwo(false);
-      if (NoteControl::anyActingNotes()){
+      if (NoteControl::anyActingNotes()) {
         Flags::setNoteOn(true);  //********Add for new FLASH - keyModeAct flag Functionality******
         hardware->playTone(NoteControl::currentHz());
       }

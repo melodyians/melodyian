@@ -172,3 +172,22 @@ public:
     BatteryReader(HardwareInterface * hardware);
     void readBattery(unsigned short dt, bool midi_read);
 };
+
+
+
+class Melody {
+
+private:
+  byte length;
+  byte * melody;
+  byte * durations;
+  byte note_position;
+  int elapsed;
+  unsigned int current_note_duration(int rate);
+
+public:
+  Melody(byte * melody, byte * durations);
+  void reset();
+  void play(unsigned short dt, State * robot_state);
+  byte current_note();
+};
