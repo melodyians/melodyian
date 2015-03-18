@@ -8,6 +8,8 @@ RobotSoundBehavior::RobotSoundBehavior() : Behavior() {
 
 void RobotSoundBehavior::updateBehavior(unsigned short dt, State * state, Output * output) {
 
+    this->incrementTimer(dt);
+
     switch(behavior_key)
     {
         case(KEYACT_CC):

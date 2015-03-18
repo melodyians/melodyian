@@ -1,7 +1,6 @@
 #include <Arduino.h>
 
 #include "robot.h"
-#include "legacy.h"
 
 #include "constants_actions.h"
 
@@ -166,10 +165,9 @@ void RobotLEDBehavior::flashBehavior(State * state, Output * output) {
   }
 
   // TODO -- port these to state
-  if (Flags::melodyOneAct() || Flags::melodyTwoAct() || Flags::keyModeAct()) {
-
+  if (state->soundActionOn()) {
     // Flash only when the note is on.
-    if (Flags::noteOn()) {
+    if (state->sound_state()->anyActingNotes()) {
       // If colorJitter is 0 this just returns the color
       RGBColor adjusted_color = Color::GetRandomColor(colorJitter, 
                                                state->ledRedValue(),
