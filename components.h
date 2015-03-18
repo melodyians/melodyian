@@ -32,6 +32,7 @@ public:
     byte getValue(byte control_number);
 
 };
+
 class Output {
 
 public:
@@ -40,8 +41,13 @@ public:
   byte g;
   byte b;
 
+  bool amp_on;
+  unsigned int tone;
+
   void setColor(byte r, byte g, byte b);
   void setColorBlack();
+
+  void setAmpPower(bool toggle);
 
 };
 

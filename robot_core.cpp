@@ -1,4 +1,3 @@
-#pragma once
 #include "robot.h"
 #include "helper_midi.h"
 
@@ -19,15 +18,33 @@ Robot::Robot(HardwareInterface * hw) {
 void Robot::handleInput(byte control_number, byte value) {
     this->state->updateInput(control_number, value);
     this->led_behavior->updateState(control_number, value, state);
+
     this->led_behavior->updateBehaviorKey(control_number, value);
+    this->sound_behavior->updateBehaviorKey(control_number, value);
 }
   
 void Robot::updateBehavior(unsigned short dt) {
     this->led_behavior->updateBehavior(dt, state, output);
+    this->sound_behavior->updateBehavior(dt, state, output);
+
 }
   
 void Robot::updateHardware() {
-    this->hardware->writeToLED(output->r, output->g, output->b);
+    
+    // Light
+    this->hardware->writeToLED(this->output->r, this->output->g, this->output->b);
+
+    // Sound
+    if (this->output->amp_on) {
+        if (!hardware->ampIsOn()) {
+            this->hardware->setAmpPower(false);
+        }
+        this->hardware->playTone(this->output->tone);
+    } else {
+        if (hardware->ampIsOn()) {
+            this->hardware->setAmpPower(false);
+        }
+    }
 }
 
 void Robot::noteOnControl(byte channel, byte note, byte velocity) {

@@ -100,18 +100,18 @@ void HandleControlChange (byte channel, byte number, byte value)
 
   // Legacy input handling
   Motor::processMotorCC(channel, number, value);
-  Sound::processSoundCC(channel, number, value);     
+  //Sound::processSoundCC(channel, number, value);     
 }
 
 // Special-cased event handling
 void NoteOnControl (byte channel, byte note, byte velocity) {
   robot->noteOnControl(channel, note, velocity);
-  NoteControl::noteOnControl(channel, note, velocity);
+  //NoteControl::noteOnControl(channel, note, velocity);
 }
 
 void NoteOffControl(byte channel, byte note, byte velocity) {
   robot->noteOffControl(channel, note, velocity);
-  NoteControl::noteOffControl(channel, note, velocity);
+  //NoteControl::noteOffControl(channel, note, velocity);
 }
 
 
