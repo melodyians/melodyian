@@ -52,7 +52,6 @@ void Robot::updateHardware() {
 
         }
         this->hardware->toneOff();
-    
     }
 }
 

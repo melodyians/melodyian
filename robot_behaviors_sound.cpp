@@ -4,10 +4,27 @@
 
 RobotSoundBehavior::RobotSoundBehavior() : Behavior() {
 
-    byte m1notes[] = {MIDINOTE_C4, MIDINOTE_G3, MIDINOTE_G3, MIDINOTE_A3, MIDINOTE_G3, 0, MIDINOTE_B3, MIDINOTE_C4};
-    byte m1durations[] = {4, 8, 8, 4,4,4,4,4};
+    int * m1notes = new int[8];
+    m1notes[0] = MIDINOTE_C4;
+    m1notes[1] = MIDINOTE_G3;
+    m1notes[2] = MIDINOTE_G3;
+    m1notes[3] = MIDINOTE_A3;
+    m1notes[4] = MIDINOTE_G3;
+    m1notes[5] = 0;
+    m1notes[6] = MIDINOTE_B3;
+    m1notes[7] = MIDINOTE_C4;
 
-    this->melody_one = new Melody(m1notes, m1durations);
+    int * m1durations = new int[8];
+    m1notes[0] = 4;
+    m1notes[1] = 8;
+    m1notes[2] = 8;
+    m1notes[3] = 4;
+    m1notes[4] = 4;
+    m1notes[5] = 4;
+    m1notes[6] = 4;
+    m1notes[7] = 4;
+
+    this->melody_one = new Melody(8, m1notes, m1durations);
 
 // Foo
 }
@@ -27,8 +44,6 @@ void RobotSoundBehavior::updateBehavior(unsigned short dt, State * state, Output
 
     switch(behavior_key)
     {
-        
-   
         case(MEL1TRIG_CC):
         {
             this->melody_one->play(dt, state);

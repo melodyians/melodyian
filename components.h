@@ -178,16 +178,16 @@ public:
 class Melody {
 
 private:
-  byte length;
-  byte * melody;
-  byte * durations;
-  byte note_position;
+  int length;
+  int * melody;
+  int * durations;
+  int note_position;
   int elapsed;
-  unsigned int current_note_duration(int rate);
+  int current_note_duration(int rate);
 
 public:
-  Melody(byte * melody, byte * durations);
+  Melody(int length, int melody[], int durations[]);
   void reset();
   void play(unsigned short dt, State * robot_state);
-  byte current_note();
+  int current_note();
 };

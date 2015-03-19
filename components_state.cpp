@@ -13,6 +13,9 @@ State::State() {
     // TODO must update this if we get a low value. Saves some meory.
     this->input_values = new InputValues(RED_CC);
 
+    // Default to "1000"
+    this->updateInput(RATE1_CC, (byte) 84);
+
     // input_values->storeInput(RATE1_CC, (byte) 84); // Default to 1000
     this->sound_state_ = new SoundState(112);
 
