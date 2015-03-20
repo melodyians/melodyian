@@ -118,7 +118,6 @@ void RobotSoundBehavior::updateState(byte control_number, byte value, State * st
       control_number == MEL2TRIG_CC || 
       control_number == KEYACT_CC || 
       control_number == MIDIPANIC_CC) {
-    
         // Always reset the note state when we change keys
         state->sound_state()->turnOffAllNotes();
 

@@ -14,7 +14,7 @@ State::State() {
     this->input_values = new InputValues(RED_CC);
 
     // Default to "1000"
-    this->updateInput(RATE1_CC, (byte) 84);
+    this->updateInput(RATE1_CC, (byte) 60);
 
     // input_values->storeInput(RATE1_CC, (byte) 84); // Default to 1000
     this->sound_state_ = new SoundState(112);
@@ -71,20 +71,6 @@ byte State::ledGreenValue() {
 byte State::ledBlueValue() {
     return Smoothing::smoothRBGFader(this->input_values->getValue(BLUE_CC));
 }
-
-/*
-byte State::rawRedValue() {
-    return this->input_values->getValue(RED_CC);
-}
-
-byte State::rawGreenValue() {
-    return this->input_values->getValue(GREEN_CC);
-}
-
-byte State::rawBlueValue() {
-    return this->input_values->getValue(BLUE_CC);
-}
-*/
 
 byte State::pulseValue() {
     return this->input_values->getValue(DYNAMIC_CC);

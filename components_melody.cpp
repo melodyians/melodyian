@@ -14,11 +14,12 @@ Melody::Melody(int length, int m[], int d[]) {
     this->melody = new int[length];
     this->durations = new int[length];
 
+    // Copy note and duration arrays. Necessary so these
+    // don't get garbage collected.
     for (int i = 0; i < length; i++) {
         this->melody[i] = m[i];
         this->durations[i] = d[i];
     }
-
 
     this->note_position = 0;
     this->elapsed = 0;
@@ -33,9 +34,7 @@ int Melody::current_note_duration(int rate) {
     // To calculate the note duration, take a time value (2ms - ~10 seconds) 
     // divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
     
-    //return 1000 / 4;
-    return 1000 / this->durations[this->note_position];
-    //return rate / this->durations[this->note_position];
+    return rate / this->durations[this->note_position];
 }
 
 
@@ -51,23 +50,16 @@ void Melody::play(unsigned short dt, State * robot_state) {
 
     float jitter = 0;
 
-    /*
     if (robot_state->bypassRandomNote() == false) {
       jitter = robot_state->randomness();
     }
-    */
 
     this->elapsed += dt;
 
     int current_note_duration = this->current_note_duration(robot_state->rate());
     int pause_duration = current_note_duration * 1.30; 
     int max_note_event_length = current_note_duration + pause_duration;
-   
-
-
-
-    //MidiOut::WriteMidiCC(68, this->durations[this->note_position]);
-   
+      
     // If we are still playing the note
     if (this->elapsed <= current_note_duration) {
 
@@ -83,23 +75,19 @@ void Melody::play(unsigned short dt, State * robot_state) {
 
     // Progress to next note next time around
     } else {
-        MidiOut::WriteMidiCC(this->current_note(), 123);
-        MidiOut::WriteMidiCC(66, this->note_position);
-        MidiOut::WriteMidiCC(67, this->durations[this->note_position]);
 
+        // Reset time
         this->elapsed = 0;
-        this->note_position += 1;
-        if (this->note_position >= this->length) {
-            this->note_position = 0;
-        } 
-        // Add jitter
-        //byte max_offset = MaxRandomNoteValue(jitter, this->length);
-        //byte random_note = 1 + random(0, max_offset);
+
+        // Progress note, with jitter if we have it. If we are bypassing,
+        // or jitter == 0, this reduces to "advance to the next note"
+        byte max_offset = MaxRandomNoteValue(jitter, this->length);
+        byte random_note = 1 + random(0, max_offset);
         
-        //this->note_position = this->note_position  + (1 * random_note);
-        //if (this->note_position >= this->length) {
-        //  this->note_position = this->note_position - this->length; 
-        //}
+        this->note_position = this->note_position  + (1 * random_note);
+        if (this->note_position >= this->length) {
+          this->note_position = this->note_position - this->length; 
+        }
 
     }
 }
