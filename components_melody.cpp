@@ -7,10 +7,18 @@ byte MaxRandomNoteValue(float random_jitter, int total_num_notes) {
     return (byte) (random_jitter * total_num_notes);
   }
 
-Melody::Melody(int length, int melody[], int durations[]) {
-    this->melody = melody;
-    this->durations = durations;
+Melody::Melody(int length, int m[], int d[]) {
+
     this->length = length;
+
+    this->melody = new int[length];
+    this->durations = new int[length];
+
+    for (int i = 0; i < length; i++) {
+        this->melody[i] = m[i];
+        this->durations[i] = d[i];
+    }
+
 
     this->note_position = 0;
     this->elapsed = 0;
@@ -25,15 +33,16 @@ int Melody::current_note_duration(int rate) {
     // To calculate the note duration, take a time value (2ms - ~10 seconds) 
     // divided by the note type. (e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.)
     
-    return 1000 / 8;
+    //return 1000 / 4;
+    return 1000 / this->durations[this->note_position];
     //return rate / this->durations[this->note_position];
 }
 
 
 int Melody::current_note() {
     
-    return 60;
-    //return this->melody[this->note_position];
+    //return 60;
+    return this->melody[this->note_position];
 }
 
 void Melody::play(unsigned short dt, State * robot_state) {
@@ -55,9 +64,7 @@ void Melody::play(unsigned short dt, State * robot_state) {
     int max_note_event_length = current_note_duration + pause_duration;
    
 
-    MidiOut::WriteMidiCC(this->current_note(), 123);
-    MidiOut::WriteMidiCC(66, this->note_position);
-    MidiOut::WriteMidiCC(67, this->durations[this->note_position]);
+
 
     //MidiOut::WriteMidiCC(68, this->durations[this->note_position]);
    
@@ -65,7 +72,7 @@ void Melody::play(unsigned short dt, State * robot_state) {
     if (this->elapsed <= current_note_duration) {
 
         if (this->current_note() == 0) {
-           robot_state->sound_state()->turnOffAllNotes();
+            robot_state->sound_state()->turnOffAllNotes();
         } else {
             robot_state->sound_state()->turnNoteOn(this->current_note());
         }
@@ -76,6 +83,10 @@ void Melody::play(unsigned short dt, State * robot_state) {
 
     // Progress to next note next time around
     } else {
+        MidiOut::WriteMidiCC(this->current_note(), 123);
+        MidiOut::WriteMidiCC(66, this->note_position);
+        MidiOut::WriteMidiCC(67, this->durations[this->note_position]);
+
         this->elapsed = 0;
         this->note_position += 1;
         if (this->note_position >= this->length) {

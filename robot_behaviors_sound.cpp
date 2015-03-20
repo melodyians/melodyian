@@ -4,7 +4,20 @@
 
 RobotSoundBehavior::RobotSoundBehavior() : Behavior() {
 
-    int * m1notes = new int[8];
+    int m1notes[] = {
+                        MIDINOTE_C4, 
+                        MIDINOTE_G3, 
+                        MIDINOTE_G3, 
+                        MIDINOTE_A3, 
+                        MIDINOTE_G3, 
+                        0, 
+                        MIDINOTE_B3, 
+                        MIDINOTE_C4
+                    };
+    int m1durations[] = {4, 8, 8, 4,4,4,4,4};
+
+    /*
+        int * m1notes = new int[8];
     m1notes[0] = MIDINOTE_C4;
     m1notes[1] = MIDINOTE_G3;
     m1notes[2] = MIDINOTE_G3;
@@ -23,6 +36,7 @@ RobotSoundBehavior::RobotSoundBehavior() : Behavior() {
     m1notes[5] = 4;
     m1notes[6] = 4;
     m1notes[7] = 4;
+    */
 
     this->melody_one = new Melody(8, m1notes, m1durations);
 
