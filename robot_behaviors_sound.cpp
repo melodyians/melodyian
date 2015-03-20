@@ -5,42 +5,35 @@
 RobotSoundBehavior::RobotSoundBehavior() : Behavior() {
 
     int m1notes[] = {
-                        MIDINOTE_C4, 
-                        MIDINOTE_G3, 
-                        MIDINOTE_G3, 
-                        MIDINOTE_A3, 
-                        MIDINOTE_G3, 
-                        0, 
-                        MIDINOTE_B3, 
-                        MIDINOTE_C4
-                    };
+        MIDINOTE_C4, 
+        MIDINOTE_G3, 
+        MIDINOTE_G3, 
+        MIDINOTE_A3, 
+        MIDINOTE_G3, 
+        0, 
+        MIDINOTE_B3, 
+        MIDINOTE_C4
+    };
     int m1durations[] = {4, 8, 8, 4,4,4,4,4};
-
-    /*
-        int * m1notes = new int[8];
-    m1notes[0] = MIDINOTE_C4;
-    m1notes[1] = MIDINOTE_G3;
-    m1notes[2] = MIDINOTE_G3;
-    m1notes[3] = MIDINOTE_A3;
-    m1notes[4] = MIDINOTE_G3;
-    m1notes[5] = 0;
-    m1notes[6] = MIDINOTE_B3;
-    m1notes[7] = MIDINOTE_C4;
-
-    int * m1durations = new int[8];
-    m1notes[0] = 4;
-    m1notes[1] = 8;
-    m1notes[2] = 8;
-    m1notes[3] = 4;
-    m1notes[4] = 4;
-    m1notes[5] = 4;
-    m1notes[6] = 4;
-    m1notes[7] = 4;
-    */
 
     this->melody_one = new Melody(8, m1notes, m1durations);
 
-// Foo
+    int m2notes[] = {
+        0,
+        MIDINOTE_FS3, 
+        MIDINOTE_GS3, 
+        MIDINOTE_AS3, 
+        MIDINOTE_CS4, 
+        MIDINOTE_DS4, 
+        MIDINOTE_CS4, 
+        MIDINOTE_F4, 
+        MIDINOTE_DS4
+    };
+
+    int m2durations[] = {8,8,8,8,8,16,16,8,8}; 
+
+    this->melody_two= new Melody(9, m2notes, m2durations);
+
 }
 
 void UpdateOutputFromState(State * state, Output * output) {
@@ -64,14 +57,12 @@ void RobotSoundBehavior::updateBehavior(unsigned short dt, State * state, Output
             UpdateOutputFromState(state, output);
             break;
         }
-        /*
         case(MEL2TRIG_CC):
         {
-            // TODO
+            this->melody_two->play(dt, state);
             UpdateOutputFromState(state, output);
             break;
         }
-        */
         case(KEYACT_CC):
         {
             UpdateOutputFromState(state, output);
@@ -120,7 +111,6 @@ void RobotSoundBehavior::updateState(byte control_number, byte value, State * st
       control_number == MIDIPANIC_CC) {
         // Always reset the note state when we change keys
         state->sound_state()->turnOffAllNotes();
-
     }
 
     if (control_number == MEL1TRIG_CC) {
@@ -129,7 +119,8 @@ void RobotSoundBehavior::updateState(byte control_number, byte value, State * st
     } 
 
     if (control_number == MEL2TRIG_CC) {
-        //this->melody_two->reset();
+        this->melody_two->reset();
+        state->sound_state()->turnOffAllNotes();
     }
-    // TODO
+
 }
