@@ -17,13 +17,16 @@ Robot::Robot(HardwareInterface * hw) {
 
 void Robot::handleInput(byte control_number, byte value) {
     this->state->updateInput(control_number, value);
+
     this->led_behavior->updateState(control_number, value, state);
+    this->sound_behavior->updateState(control_number, value, state);
 
     this->led_behavior->updateBehaviorKey(control_number, value);
     this->sound_behavior->updateBehaviorKey(control_number, value);
 }
   
 void Robot::updateBehavior(unsigned short dt) {
+  
     this->led_behavior->updateBehavior(dt, state, output);
     this->sound_behavior->updateBehavior(dt, state, output);
 
