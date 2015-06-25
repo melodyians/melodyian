@@ -33,9 +33,9 @@ In this vision:
 * When each event that gets triggered (I.E. a MIDI note or control change), we consult a table that links from the particular event to the function that should be called to react to that event. Each function should contain only the logic necessary to update the Robot's state based on that input. In this way, we isolate the behavior changes based on each input.
 * The class representing the Robot's state provides an abstraction layer over any particular hardware. Input events should only ever write to this state, they should never directly write to hardware.
 * When we update the robot hardware, we always read from only the Robot state. All information about what the Robot should be a combination of what is stored in this state, and any timed actions we have set up.
-
+<!--
 ![High-Level Architecture](doc/architecture.png)
-
+-->
 ### Running The Melodyian
 
 During Setup, we:
