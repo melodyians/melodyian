@@ -43,13 +43,6 @@ void loop()
 
   battery_reader->readBattery(dt, midi_read);
 
-  // Battery and Memory housekeeping
-  // Disabled -- this seems to unpredictbly impact the state of the LED, and I have no idea why.
-  // Battery::pingBatVoltage(midi_read, hardware_interface);
-  
-  // Update our Robot from our current state
-  Motor::actuateMotors(robot->hardware);
-
   robot->updateBehavior(dt);
   robot->updateHardware();
 
@@ -83,22 +76,19 @@ void Debug(unsigned short dt) {
       debug_timer = 0;
       
       // Write out whatever CC values you want to debug here.
+      MidiOut::WriteMidiCC(10, robot->state->motorSpeedValue() / 2);
+      MidiOut::WriteMidiCC(11, robot->state->steerDirection());
 
-      // MidiOut::WriteMidiCC(RED_CC, robot->state->ledRedValue());
-      // MidiOut::WriteMidiCC(GREEN_CC, robot->state->ledGreenValue());
-      // MidiOut::WriteMidiCC(BLUE_CC, robot->state->ledBlueValue());
-      // MidiOut::WriteMidiCC(66, robot->led_behavior->getCurrentBehavior());
+      MidiOut::WriteMidiCC(1, robot->output->motor_a.speed / 2);
+      MidiOut::WriteMidiCC(2, robot->output->motor_b.speed / 2);
+      MidiOut::WriteMidiCC(3, robot->output->motor_a.direction);
+      MidiOut::WriteMidiCC(4, robot->output->motor_b.direction);
     }
-
 }
 
-void HandleControlChange (byte channel, byte number, byte value)
-{
+void HandleControlChange (byte channel, byte number, byte value) {
   // Process our inputs
   robot->handleInput(number, value);
-
-  // Legacy input handling
-  Motor::processMotorCC(channel, number, value);
 }
 
 // Special-cased event handling

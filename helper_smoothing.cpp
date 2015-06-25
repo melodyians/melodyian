@@ -31,6 +31,7 @@ namespace Smoothing {
       return fdrval;
     }
 
+    // TODO -- account for forward / backwards
     byte smoothMotorFader(byte value)
     {
       byte fdrval;

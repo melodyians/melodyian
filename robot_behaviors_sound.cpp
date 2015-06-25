@@ -38,10 +38,7 @@ RobotSoundBehavior::RobotSoundBehavior() : Behavior() {
 
 void UpdateOutputFromState(State * state, Output * output) {
     if (state->sound_state()->anyActingNotes()) {
-        output->setAmpPower(true) ;
         output->tone = state->sound_state()->currentHz();
-    } else {
-        output->setAmpPower(false);
     }
 }
 
@@ -53,18 +50,21 @@ void RobotSoundBehavior::updateBehavior(unsigned short dt, State * state, Output
     {
         case(MEL1TRIG_CC):
         {
+            output->setAmpPower(true);
             this->melody_one->play(dt, state);
             UpdateOutputFromState(state, output);
             break;
         }
         case(MEL2TRIG_CC):
         {
+            output->setAmpPower(true);
             this->melody_two->play(dt, state);
             UpdateOutputFromState(state, output);
             break;
         }
         case(KEYACT_CC):
         {
+            output->setAmpPower(true);
             UpdateOutputFromState(state, output);
             break;
         }

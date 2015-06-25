@@ -7,6 +7,15 @@ Output::Output() {
     this->b = 0;
 
     this->amp_on = false;
+
+    this->motors_on = false;
+
+    this->motor_a.speed = 0;
+    this->motor_a.direction = 0;
+
+    this->motor_b.speed = 0;
+    this->motor_b.direction = 0;
+
 }
 
 // TODO -- functions on output?
@@ -26,6 +35,11 @@ void Output::setAmpPower(bool toggle) {
   this->amp_on = toggle;
 }
 
+
+void Output::reverseDirection() {
+  this->motor_a.direction = !(this->motor_a.direction);
+  this->motor_b.direction = !(this->motor_b.direction);
+}
 
 InputValues::InputValues(byte lowest_cc) {
     this->offset = lowest_cc;

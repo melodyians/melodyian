@@ -113,3 +113,21 @@ bool State::keyModeOn() {
 bool State::midiPanicOn() {
     return Smoothing::booleanButton(this->input_values->getValue(MIDIPANIC_CC));
 }
+
+bool State::motorsOn() {
+    return Smoothing::booleanButton(this->input_values->getValue(MTRACT_CC));
+}
+
+bool State::reverseOn() {
+    return Smoothing::booleanButton(this->input_values->getValue(MTRDIRREV_CC));
+}
+
+byte State::motorSpeedValue() {
+    return Smoothing::smoothMotorFader(this->input_values->getValue(MSTRMTRSPD_CC));
+}
+
+byte State::steerDirection() {
+    return this->input_values->getValue(MTRSTEER_CC);
+}
+
+

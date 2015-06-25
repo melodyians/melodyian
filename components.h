@@ -33,6 +33,7 @@ public:
 
 };
 
+
 class Output {
 
 public:
@@ -48,6 +49,13 @@ public:
   void setColorBlack();
 
   void setAmpPower(bool toggle);
+
+  bool motors_on;
+
+  motor motor_a;
+  motor motor_b;
+
+  void reverseDirection();
 
 };
 
@@ -137,7 +145,11 @@ public:
     bool keyModeOn(); 
     bool midiPanicOn();
 
-    // TODO -- Motor
+    // Motor
+    bool motorsOn();
+    bool reverseOn();
+    byte motorSpeedValue();
+    byte steerDirection();
 
 };
 

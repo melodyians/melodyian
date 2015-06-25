@@ -4,6 +4,9 @@
 
 #define DEBUG true
 
+#define FORWARD true
+#define BACKWARD false
+
 typedef unsigned char byte;
 
 struct RGBColor {
@@ -14,4 +17,9 @@ struct RGBColor {
    bool operator==(const RGBColor& rhs) const {
         return this->r == rhs.r && this->g == rhs.g && this->b == rhs.b;
     }
+};
+
+struct motor {
+    int speed;
+    bool direction;
 };

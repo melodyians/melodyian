@@ -42,6 +42,15 @@ public:
 
 };
 
+class RobotMotorBehavior : public Behavior {
+
+public:
+  RobotMotorBehavior();
+  void updateBehavior(unsigned short dt, State * state, Output * output);
+  void updateBehaviorKey(byte control_number, byte value);
+
+};
+
 
 // Main interface
 class Robot {
@@ -56,6 +65,7 @@ public:
   Output * output;
   RobotLEDBehavior * led_behavior;
   RobotSoundBehavior * sound_behavior;
+  RobotMotorBehavior * motor_behavior;
   
   void handleInput(byte control_number, byte value);
   void updateBehavior(unsigned short dt);
