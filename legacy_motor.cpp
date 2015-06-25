@@ -1,5 +1,7 @@
-#include "melodyian.h"
-#include "easing.h"
+#include "legacy.h"
+
+#include "constants_actions.h"
+#include "helper_smoothing.h"
 
 //=========MOTOR DRIVER SETUP============
 //motor A connected between A01 and A02 on motor driver breakout
@@ -22,21 +24,6 @@ namespace Motor {
   bool test = false;
 
 
-  void printDebug(int value) {
-
-    Serial.print("MotorASpd: ");
-    Serial.print(motorAspeed);
-    Serial.print(" / MotorBSpd: ");
-    Serial.print(motorBspeed);
-    Serial.print(" / Steer Val: ");
-    Serial.print(value);
-    Serial.print(" / MtrADr: ");
-    Serial.print(motorAdirection);
-    Serial.print(" / MtrBDr: ");
-    Serial.println(motorBdirection);
-
-  }
-
   bool straightAhead(int value) {
     return value >= 59 && value <= 69;
   }
@@ -55,7 +42,6 @@ namespace Motor {
 
   void steerControl(int value)
   {
-    /* printDebug(value) */
 
     if (straightAhead(value)) {
 
@@ -111,7 +97,7 @@ namespace Motor {
 
     if (number == MSTRMTRSPD_CC) //Master Motor Speed Control for new steering system (D16 fader)
     {
-      motorSpdVal = Easing::motorFader(value);
+      motorSpdVal = Smoothing::smoothMotorFader(value);
       if (value >= 80)
       {
         motorAdirection = 0; //should be clockwise wheel rotation..
@@ -152,22 +138,22 @@ namespace Motor {
   }
 
 
-  void actuateMotors() {
+  void actuateMotors(HardwareInterface * hardware) {
 
     //============MOTOR CONTROLS===========
     steerControl(steerDirection);
 
     // MOTOR A
     if (motorAon) {
-      ArduinoInterface::moveMotor(0, motorAspeed, motorAdirection);
+      hardware->moveMotor(0, motorAspeed, motorAdirection);
     } else {
-      ArduinoInterface::moveMotor(0, 0, motorAdirection);
+      hardware->moveMotor(0, 0, motorAdirection);
     }
     // MOTOR B
     if (motorBon) {
-      ArduinoInterface::moveMotor(1, motorBspeed, motorBdirection);
+      hardware->moveMotor(1, motorBspeed, motorBdirection);
     } else {
-      ArduinoInterface::moveMotor(1, 0, motorBdirection);
+      hardware->moveMotor(1, 0, motorBdirection);
     }
     
   }

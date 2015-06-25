@@ -5,43 +5,59 @@
 #include <midi_Settings.h>
 // #include <Wire.h>
 
-#include "melodyian.h"
-#include "midicc.h"
-#include "time.h"
-#include "state.h" 
-#include "inputhandler.h"
-#include "smoothing.h"
+#include "hardware_arduino.h"
+#include "robot.h"
+
+#include "constants_actions.h"
+
+#include "helper_midi.h"
+#include "helper_time.h"
+
+#include "legacy.h"
 
 MIDI_CREATE_DEFAULT_INSTANCE();
 
-#define NUM_LIGHT_PRESETS 8
-
 Timer * timer;
-RobotState * robot_state;
-InputHandler * input_handler;
+Robot * robot;
+BatteryReader * battery_reader;
 
 void setup()  {
 
   timer = new Timer();
 
-  initializeState();
-  initializeHardware();
-  initializeInputs();
+  HardwareInterface * arduino_hardware = new ArduinoInterface();
+  robot = new Robot(arduino_hardware);
+  battery_reader = new BatteryReader(arduino_hardware);
+
+  InitializeInputs();
   
 } 
 
-void initializeState() {
-  robot_state = new RobotState(NUM_LIGHT_PRESETS);
-  LED::readFromEEPROM();
+void loop()
+{
+  // Read midi from input. Triggers callbacks.
+  bool midi_read = MIDI.read();
+
+  // Move our clock forward
+  unsigned short dt = timer->step();
+
+  battery_reader->readBattery(dt, midi_read);
+
+  // Battery and Memory housekeeping
+  // Disabled -- this seems to unpredictbly impact the state of the LED, and I have no idea why.
+  // Battery::pingBatVoltage(midi_read, hardware_interface);
+  
+  // Update our Robot from our current state
+  Motor::actuateMotors(robot->hardware);
+
+  robot->updateBehavior(dt);
+  robot->updateHardware();
+
+  Debug(dt);
 }
 
-void initializeHardware() {
-  ArduinoInterface::setupPins();
-  ArduinoInterface::stopMotors();
-}
 
-void initializeInputs() {
-  input_handler = new InputHandler(127);
+void InitializeInputs() {
 
   MIDI.begin();
   Serial.begin(57600);
@@ -49,60 +65,49 @@ void initializeInputs() {
   
   // Think I need to do this so Arduino can work w/ any MIDI message Max will be sending it
   MIDI.setInputChannel(MIDI_CHANNEL_OMNI); 
-  MIDI.setHandleControlChange(handleControlChange);
-  MIDI.setHandleNoteOn(noteOnControl);
+  MIDI.setHandleControlChange(HandleControlChange);
+  MIDI.setHandleNoteOn(NoteOnControl);
 
   // Only needed if receiving MIDI Note Off messages from controller device to stop notes
-  MIDI.setHandleNoteOff(noteOffControl); 
-
-  input_handler->registerInput(COLORJITTERBYPASS_CC, 
-      new StoreInputValue<bool>(robot_state->bypass_random_color, Smoothing::booleanButton));
-  
-  input_handler->registerInput(NOTEJITTERBYPASS_CC, 
-      new StoreInputValue<bool>(robot_state->bypass_random_note, Smoothing::booleanButton));
-
-  input_handler->registerInput(JITTER_CC, 
-      new StoreInputValue<float>(robot_state->randomness, Smoothing::mapByteToThousand));
+  MIDI.setHandleNoteOff(NoteOffControl); 
 
 }
 
+unsigned short debug_every = 3000;
+unsigned short debug_timer = 0;
 
-void loop()
-{
-  // Move our clock forward
-  unsigned long dt = timer->step();
+void Debug(unsigned short dt) {
 
-  // Battery and Memory housekeeping
-  bool midi_read = MIDI.read();
-  Battery::pingBatVoltage(midi_read);
-  LED::writeEEPROMValues();
+    debug_timer = debug_timer + dt;
+    if (debug_timer > debug_every) {
+      debug_timer = 0;
+      
+      // Write out whatever CC values you want to debug here.
 
-  // Update our Robot from our current state
-  Sound::processSoundTriggers(dt, robot_state);
-  LED::processQueue(dt, robot_state);
-  Motor::actuateMotors();
- 
+      // MidiOut::WriteMidiCC(RED_CC, robot->state->ledRedValue());
+      // MidiOut::WriteMidiCC(GREEN_CC, robot->state->ledGreenValue());
+      // MidiOut::WriteMidiCC(BLUE_CC, robot->state->ledBlueValue());
+      // MidiOut::WriteMidiCC(66, robot->led_behavior->getCurrentBehavior());
+    }
+
 }
 
-void handleControlChange (byte channel, byte number, byte value)
+void HandleControlChange (byte channel, byte number, byte value)
 {
   // Process our inputs
-  input_handler->processInput(channel, number, value);
-
+  robot->handleInput(number, value);
 
   // Legacy input handling
-  LED::processLEDCC(channel, number, value);
   Motor::processMotorCC(channel, number, value);
-  Sound::processSoundCC(channel, number, value);     
 }
 
 // Special-cased event handling
-void noteOnControl (byte channel, byte note, byte velocity) {
-  NoteControl::noteOnControl(channel, note, velocity);
+void NoteOnControl (byte channel, byte note, byte velocity) {
+  robot->noteOnControl(channel, note, velocity);
 }
 
-void noteOffControl(byte channel, byte note, byte velocity) {
-  NoteControl::noteOffControl(channel, note, velocity);
+void NoteOffControl(byte channel, byte note, byte velocity) {
+  robot->noteOffControl(channel, note, velocity);
 }
 
 

@@ -1,7 +1,7 @@
 #pragma once
 
 /*************************************************
- * Public Constants
+ * Pitch Constants
  *************************************************/
 #define NOTE_B0  31
 #define NOTE_C1  33
@@ -93,7 +93,9 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
-//=====MIDI NOTE VALUES
+/*************************************************
+ * MIDI Note Constants
+ *************************************************/
 #define MIDINOTE_B0  23
 #define MIDINOTE_C1  24
 #define MIDINOTE_CS1 25

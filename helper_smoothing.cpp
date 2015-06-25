@@ -1,5 +1,8 @@
 #include <Arduino.h>
-#include "smoothing.h"
+#include "helper_smoothing.h"
+
+#define MIN_FADE_TIME_TIMES_ONE_HUNDRED 10
+#define MAX_FADE_TIME_TIMES_ONE_HUNDRED 80
 
 namespace Smoothing {
 
@@ -12,6 +15,18 @@ namespace Smoothing {
         fdrval = map(value, 17, 100, 9, 200);
       } else {
         fdrval = map(value, 101, 127, 201, 255);
+      }
+      return fdrval;
+    }
+
+    byte mapByteToRGBFader(byte value) {
+      int fdrval;
+      if (value >= 0 && value <= 8) {
+        fdrval = map(value, 0, 8, 0, 16);
+      } else if (value >= 9 && value <= 200) {
+        fdrval = map(value, 9, 200, 17, 100);
+      } else {
+        fdrval = map(value, 201, 255, 101, 127);
       }
       return fdrval;
     }
@@ -43,7 +58,7 @@ namespace Smoothing {
         encdrVal = map(value, 85, 127, 1001, 5000);
       }
 
-      return encdrVal;
+      return encdrVal * 2;
     } 
 
     bool booleanButton(byte value) {
@@ -55,8 +70,14 @@ namespace Smoothing {
       }
     } 
 
-    float mapByteToThousand(byte value) {
+    float mapByteToPercentage(byte value) {
       return map(value,0,127,0,1000) / 1000.f;
     }
+
+    float brightnessDecay(float brightness, int elapsed_millis, int fadeSpeed) {
+      float delta_t = (elapsed_millis / 1000.0f) / (map(fadeSpeed,0,127,MIN_FADE_TIME_TIMES_ONE_HUNDRED,MAX_FADE_TIME_TIMES_ONE_HUNDRED) / 100.0f);
+      return brightness - delta_t;
+    }
+
 
 }

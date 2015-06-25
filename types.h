@@ -1,9 +1,17 @@
 #pragma once
 #include <Arduino.h>
-
 #include <stddef.h>
 
-typedef unsigned char byte;
-typedef void (*MidiCallback)(byte channel, byte note, byte velocity);
+#define DEBUG true
 
-typedef void (*ValueMutator)(byte);
+typedef unsigned char byte;
+
+struct RGBColor {
+  byte r;
+  byte g;
+  byte b;
+
+   bool operator==(const RGBColor& rhs) const {
+        return this->r == rhs.r && this->g == rhs.g && this->b == rhs.b;
+    }
+};
