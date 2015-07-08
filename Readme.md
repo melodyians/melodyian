@@ -1,12 +1,14 @@
 # Melodyian Arduino Code
 
+## License
+### [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
+## Arduino Board
 Pro Mini 3.3 =- 328
 
-Get FTDI Drivers
-http://www.ftdichip.com/FTDrivers.htm
-
-https://learn.sparkfun.com/tutorials/how-to-install-ftdi-drivers/mac#yosemite
+Requires FTDI Drivers
+- http://www.ftdichip.com/FTDrivers.htm
+- https://learn.sparkfun.com/tutorials/how-to-install-ftdi-drivers/mac#yosemite
 
 
 ## Current Melodyian Structure Notes
